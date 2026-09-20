@@ -14,11 +14,9 @@ The resulting method is intentionally slow, stable, and quality-focused.
 
 ## Core Inheritance
 
-Prototype working name:
+The clan's core inheritance is:
 
-**Primordial Testudo Longevity Art**
-
-The name can be replaced later without changing the clan's mechanical identity.
+**Primordialis Testudo Longevity Art**
 
 ### Identity
 
@@ -75,3 +73,37 @@ A qualifying village can receive a small Primordialis Testudo compound containin
 - disciple NPCs.
 
 The clan should make a village safer than wilderness without making it completely immune to hostile cultivators or beasts.
+
+
+## Admission by Service
+
+The clan does not hand its inheritance to a random Mortal.
+
+A prospective disciple proves reliability by completing practical service quests for the clan and village.
+
+Initial admission quest pool:
+
+- repair damaged parts of the clan compound,
+- act as an errand runner and collect clan weapons from the Blacksmith,
+- collect pills and medicine from the Alchemist,
+- collect baked goods from the Bakery,
+- collect Noodle Soup from the Inn.
+
+These jobs deliberately connect the clan to the settlement economy. They also give a Mortal useful tasks that do not require surviving high-level wilderness combat.
+
+### Service Merit
+
+The implementation uses **Service Merit** as the technical admission progress value.
+
+Current prototype weights:
+
+- repairing the clan compound: 2 merit,
+- ordinary delivery/errand: 1 merit.
+
+Current prototype admission threshold: 3 merit.
+
+These numbers are tuning values and may be changed without altering the lore.
+
+Once accepted, the player enters as a **Junior Disciple** and receives access to the Primordialis Testudo Longevity Art.
+
+The final NPC interaction should still involve an Elder/Master formally accepting the player rather than silently changing membership in the background.
