@@ -180,6 +180,7 @@ myriad_ascension
 - `docs/design/inheritance-and-techniques.md` — manuals, monuments, technique traits, Qi nature
 - `docs/design/primordialis-testudo-clan.md` — first test clan
 - `docs/design/empire-politics.md` — Empire diplomacy and succession
+- `docs/design/bloodlines.md` — bloodline acquisition, purity, conflict, and Primordial Tortoise lineage
 - `docs/core-systems.md` — technical core-system specification
 - `docs/roadmap.md` — implementation roadmap
 
