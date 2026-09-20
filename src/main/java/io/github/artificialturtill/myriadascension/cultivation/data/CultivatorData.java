@@ -43,6 +43,10 @@ public final class CultivatorData implements INBTSerializable<CompoundTag> {
     private int passiveQiRechargingLevel;
     private int meditationLevel;
 
+    // Runtime-only anti-spam state. These values intentionally do not persist to disk.
+    private long lastCirculationControlTick = Long.MIN_VALUE;
+    private long lastBurstToggleTick = Long.MIN_VALUE;
+
     public CultivationAlignment alignment() {
         return alignment;
     }
@@ -230,6 +234,22 @@ public final class CultivatorData implements INBTSerializable<CompoundTag> {
         return alignment != CultivationAlignment.UNDECIDED && bodyPolarity != BodyPolarity.UNSET;
     }
 
+    public boolean tryAcceptCirculationControl(long gameTime) {
+        if (!hasElapsed(gameTime, lastCirculationControlTick, QiRules.MIN_CIRCULATION_CONTROL_INTERVAL_TICKS)) {
+            return false;
+        }
+        lastCirculationControlTick = gameTime;
+        return true;
+    }
+
+    public boolean tryAcceptBurstToggle(long gameTime) {
+        if (!hasElapsed(gameTime, lastBurstToggleTick, QiRules.MIN_BURST_TOGGLE_INTERVAL_TICKS)) {
+            return false;
+        }
+        lastBurstToggleTick = gameTime;
+        return true;
+    }
+
     public void applyDeathRecoveryState() {
         burstMode = false;
         circulationPercent = 0.0D;
@@ -348,6 +368,10 @@ public final class CultivatorData implements INBTSerializable<CompoundTag> {
 
         passiveQiRechargingLevel = QiRules.clampSkillLevel(tag.getInt("PassiveQiRechargingLevel"));
         meditationLevel = QiRules.clampSkillLevel(tag.getInt("MeditationLevel"));
+    }
+
+    private static boolean hasElapsed(long now, long previous, int requiredTicks) {
+        return previous == Long.MIN_VALUE || now < previous || now - previous >= requiredTicks;
     }
 
     private static double clamp(double value, double minimum, double maximum) {
