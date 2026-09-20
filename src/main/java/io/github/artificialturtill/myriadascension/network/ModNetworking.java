@@ -36,6 +36,11 @@ public final class ModNetworking {
                 GenesisResultPayload.TYPE,
                 GenesisResultPayload.STREAM_CODEC,
                 ClientPayloadBridge::handleGenesisResult);
+
+        registrar.playToClient(
+                CultivatorSyncPayload.TYPE,
+                CultivatorSyncPayload.STREAM_CODEC,
+                ClientPayloadBridge::handleCultivatorSync);
     }
 
     private static void handleSubmitGenesis(SubmitGenesisPayload payload, IPayloadContext context) {
@@ -46,6 +51,7 @@ public final class ModNetworking {
         CultivatorData data = player.getData(ModAttachments.CULTIVATOR_DATA);
         if (data.hasCompletedInitialSetup()) {
             context.reply(GenesisResultPayload.from(data));
+            context.reply(CultivatorSyncPayload.from(data));
             return;
         }
 
@@ -56,6 +62,7 @@ public final class ModNetworking {
         double startingAlignment = payload.benevolent() ? 1.0D : -1.0D;
         data.completeInitialSetup(payload.sex(), startingAlignment, player.getRandom());
         context.reply(GenesisResultPayload.from(data));
+        context.reply(CultivatorSyncPayload.from(data));
     }
 
     private static void handleQiControl(QiControlPayload payload, IPayloadContext context) {
@@ -83,6 +90,7 @@ public final class ModNetworking {
         }
 
         data.increaseCirculation(QiRules.CIRCULATION_PERCENT_PER_CONTROL_PULSE);
+        syncPlayer(player, data);
     }
 
     private static void handleSuppress(ServerPlayer player, CultivatorData data) {
@@ -95,6 +103,8 @@ public final class ModNetworking {
         if (data.circulationPercent() <= 0.0D) {
             data.setBurstMode(false);
         }
+
+        syncPlayer(player, data);
     }
 
     private static void handleBurstToggle(ServerPlayer player, CultivatorData data) {
@@ -104,6 +114,7 @@ public final class ModNetworking {
 
         if (data.burstMode()) {
             data.setBurstMode(false);
+            syncPlayer(player, data);
             return;
         }
 
@@ -114,6 +125,13 @@ public final class ModNetworking {
 
         if (canBurst) {
             data.setBurstMode(true);
+            syncPlayer(player, data);
         }
+    }
+
+    public static void syncPlayer(ServerPlayer player, CultivatorData data) {
+        net.neoforged.neoforge.network.PacketDistributor.sendToPlayer(
+                player,
+                CultivatorSyncPayload.from(data));
     }
 }
