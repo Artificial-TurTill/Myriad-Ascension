@@ -45,18 +45,29 @@ This clan is ideal as the first test faction because it stresses systems other t
 - village integration,
 - full-method realm ceilings.
 
-## NPC Hierarchy — Prototype
+## Clan Hierarchy
 
-The actual NPC implementation should support at minimum:
+The Primordialis Testudo Clan has a defined institutional hierarchy:
 
-- Clan Head
-- Elder
-- Master
-- Senior Disciple
-- Junior Disciple
-- Mortal Clan Member
+1. **Clan Leader** — exactly 1
+2. **Elders** — exactly 6
+3. **Custodian** — exactly 1 senior office
+4. **Masters**
+5. **Senior Disciples**
+6. **Junior Disciples**
+7. **Servants** — Mortals
 
-The specific cast, names, buildings, and visuals remain asset/lore work for later.
+The Clan Leader is the sole head of the clan.
+
+The six Elders form the senior advisory/executive layer. In the Clan Leader Hall they receive commands from the Clan Leader, advise the leader, and assist with clan administration.
+
+The Custodian is a senior office below the Elders in broad authority and is the primary overseer of the clan library.
+
+Masters teach and supervise disciples.
+
+A sufficiently high-ranking disciple can become eligible for direct tutelage under the Clan Leader. The current implementation uses **Senior Disciple** as the provisional minimum rank for being considered; additional merit, talent, service, relationship, or quest requirements can be added later.
+
+Servants are mortal clan workers rather than cultivator disciples.
 
 ## Village Integration
 
@@ -120,3 +131,75 @@ The early defined grade is **Earth Rank**, whose effective power remains competi
 A stronger compatible Tortoise lineage may later overwrite it. Unrelated lineages such as Tiger bloodlines cannot simply replace it and instead cause bloodline conflict.
 
 See `docs/design/bloodlines.md`.
+
+
+## Clan Facilities
+
+The first clan compound is designed around these institutional spaces:
+
+- **Clan Leader Hall** — command, Elder meetings, governance, formal audiences.
+- **Hall of Punishment** — discipline, sanctions, punishment proceedings.
+- **Clan Library** — history, factual records, fundamentals, and sparse technique manuals.
+- **Training Court** — disciple practice, sparring, physical training, technique training.
+- **Meditation Chamber** — calm cultivation.
+- **Inheritance Room** — protected inheritance/manual access.
+- **Disciple Quarters**
+- **Servant Quarters**
+
+The implementation may combine some rooms in the first small village structure for practical world-generation size, but the logical facilities remain separate systems.
+
+
+## Clan Library
+
+The library contains several kinds of books:
+
+- clan and regional history,
+- factual/reference works,
+- cultivation fundamentals,
+- technique manuals.
+
+Technique manuals are deliberately **sparse**. The library must not function as a free technique-selection menu.
+
+### Possession is not permission
+
+A player may physically carry multiple books or even steal books from the library, but possession does not make them usable.
+
+A carried library book requires authorization from the library overseer before its contents can be used outside the permitted library context.
+
+The Custodian is the normal library overseer. Elders and the Clan Leader retain senior authority to approve access when appropriate.
+
+### One verified take-out book
+
+Each clan member may have only **one currently verified take-out book** from this library.
+
+When the overseer verifies a different book:
+
+- the previous authorization is replaced,
+- the newly verified book becomes the only usable take-out book,
+- every other carried clan-library book remains inaccessible/unusable.
+
+Therefore stealing or carrying many manuals gives no technique advantage by itself.
+
+### Rank and technique restrictions
+
+Verification does not bypass clan rank restrictions.
+
+A Junior Disciple cannot use a book reserved for Senior Disciples or Masters merely because they possess the item.
+
+Technique manuals can also require additional eligibility such as:
+
+- cultivation realm,
+- affinity,
+- technique prerequisites,
+- Master approval,
+- clan merit,
+- quest completion,
+- compatibility with the disciple's current cultivation.
+
+This prevents players from simply choosing whichever rare technique they want from a shelf.
+
+### Library authorization persistence
+
+Take-out authorization persists with the character and is server-authoritative.
+
+The player save stores the authorized book separately from physical inventory items so copying, stealing, dropping, or moving an item does not manufacture permission.
