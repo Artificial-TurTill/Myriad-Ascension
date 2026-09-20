@@ -18,6 +18,10 @@ public record CultivatorSyncPayload(
         CultivationRealm realm,
         int minorStage,
         String activeCultivationMethodId,
+        String bloodlineName,
+        String bloodlineGrade,
+        double bloodlinePurity,
+        double bloodlineConflictDamage,
         double moralAlignment,
         double karma,
         int wood,
@@ -59,6 +63,10 @@ public record CultivatorSyncPayload(
                 data.realm(),
                 data.minorStage(),
                 data.cultivationMethods().activeMethodId(),
+                data.bloodline().lineageDisplayName(),
+                data.bloodline().gradeDisplayName(),
+                data.bloodline().purity(),
+                data.bloodline().conflictDamage(),
                 data.moralAlignment(),
                 data.karma(),
                 a.get(AffinityType.WOOD),
@@ -98,6 +106,10 @@ public record CultivatorSyncPayload(
         buf.writeVarInt(p.realm().ordinal());
         buf.writeVarInt(p.minorStage());
         buf.writeUtf(p.activeCultivationMethodId());
+        buf.writeUtf(p.bloodlineName());
+        buf.writeUtf(p.bloodlineGrade());
+        buf.writeDouble(p.bloodlinePurity());
+        buf.writeDouble(p.bloodlineConflictDamage());
         buf.writeDouble(p.moralAlignment());
         buf.writeDouble(p.karma());
 
@@ -139,6 +151,10 @@ public record CultivatorSyncPayload(
                 safeEnum(CultivationRealm.values(), buf.readVarInt(), CultivationRealm.MORTAL),
                 buf.readVarInt(),
                 buf.readUtf(),
+                buf.readUtf(),
+                buf.readUtf(),
+                buf.readDouble(),
+                buf.readDouble(),
                 buf.readDouble(),
                 buf.readDouble(),
                 buf.readVarInt(),
