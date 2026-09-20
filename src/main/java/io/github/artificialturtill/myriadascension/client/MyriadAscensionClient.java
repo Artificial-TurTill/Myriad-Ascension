@@ -13,6 +13,7 @@ public final class MyriadAscensionClient {
         ClientPayloadBridge.installGenesisHandlers(
                 ClientGenesisPayloadHandler::openGenesis,
                 ClientGenesisPayloadHandler::handleGenesisResult);
+        ClientPayloadBridge.installCultivatorSyncHandler(ClientCultivatorState::update);
 
         modEventBus.addListener(ClientKeyMappings::register);
         NeoForge.EVENT_BUS.addListener(ClientCultivationInput::onClientTick);
