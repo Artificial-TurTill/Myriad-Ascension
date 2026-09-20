@@ -84,6 +84,27 @@ On death:
 
 The design must never silently de-rank a player because they died.
 
+## Cultivation Inheritances
+
+A Mortal needs a valid cultivation inheritance before progressing.
+
+Initial acquisition routes include:
+
+- Master
+- Clan
+- Sect
+- Cultivator Tomb
+- Monument
+- other inheritance structures
+
+Tombs may grant methods that are poorly suited to the player and methods can have a maximum supported realm.
+
+Monuments are selective and may test specific elemental affinity, innate potential, current attunement, or sex-aligned Yin/Yang potential.
+
+The first test clan is the **Primordialis Testudo Clan**, whose Earth-aligned inheritance is slow but foundation/lifespan focused and supports progression through Transcendent.
+
+See `docs/design/inheritance-and-techniques.md` and `docs/design/primordialis-testudo-clan.md`.
+
 ## Calm Cultivation
 
 Calm cultivation is an intentional seated/meditative state.
@@ -101,6 +122,14 @@ Benefits can include:
 A cultivation session can accumulate progress before it is safely stabilized.
 
 Being interrupted can cause some of the unstable progress from that session to become internal damage or Qi deviation. Calm, uninterrupted cultivation itself does not randomly cause Qi deviation.
+
+## Cultivation as Sleep
+
+Starting at **Qi Transformation**, uninterrupted cultivation can substitute for sleep.
+
+- Required cultivation duration: **60 real minutes**.
+- Tempered Body and Mortals cannot use this rule.
+- In multiplayer, the night can advance only when every relevant player is sleeping or has satisfied the cultivation-rest requirement.
 
 ## Combat Cultivation
 
@@ -191,6 +220,27 @@ R activates a separate Burst/overdrive state:
 Burst is intended for emergencies, pursuit, escape, travel, decisive attacks, and other short high-output windows rather than permanent use.
 
 A cultivator with only a small fraction of their reserve remaining may technically force high circulation, but cannot sustain it for long.
+
+## Technique Signatures and Qi Nature
+
+Techniques carry independent path, element, and mechanical-nature traits.
+
+Path traits include:
+
+- Neutral
+- Righteous
+- Demonic
+- Buddhist
+- Unorthodox
+- Imperial
+
+Imperial can coexist with the other path traits.
+
+Practicing arts can imprint their path nature into the player's Qi. Official affiliation and actual Qi nature are separate systems.
+
+Burst, Qi techniques, weapon infusion, and active cultivation expose the Qi traits actually being circulated.
+
+See `docs/design/inheritance-and-techniques.md`.
 
 ## Technique Mastery
 
