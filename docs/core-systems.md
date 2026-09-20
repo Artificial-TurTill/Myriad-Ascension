@@ -29,6 +29,7 @@ The initial data schema contains:
 - Demonic Qi contamination
 - Passive Qi Recharging level
 - Meditation level
+- Qi Concealment level
 
 The model has an explicit schema version so save migrations can be added as systems evolve.
 
@@ -272,3 +273,46 @@ The client may request actions, but the server will validate:
 Client synchronization is the next layer and will use NeoForge payload networking.
 
 The client is responsible for presentation, input, UI, and safe prediction only.
+
+
+## 14. Character Genesis
+
+Character creation is server-authoritative.
+
+Flow:
+
+1. Server detects an incomplete player profile on login.
+2. Client is instructed to open the genesis screen.
+3. Player chooses Male/Female and Benevolent/Malicious.
+4. Client submits only those choices.
+5. Server validates that setup has not already been completed.
+6. Server assigns moral alignment exactly +1 or -1, sets Unaffiliated, derives Yin/Yang polarity, and rolls affinities.
+7. Server returns the generated affinity result to the client.
+
+The client cannot choose or reroll its own affinities.
+
+## 15. Qi Signature Exposure and Concealment
+
+Qi use has an exposure strength.
+
+Current categories:
+
+- suppressed
+- passive aura
+- active circulation
+- calm cultivation
+- weapon infusion
+- Qi technique
+- Burst
+
+Burst is a beacon-level exposure of the active Qi signature.
+
+Qi Concealment is stored as a level 1-10 passive skill once learned. Level-10 hard guarantees currently encoded:
+
+- same/lower major realm observer: concealed
+- exactly one major realm higher: concealed unless user is only minor stage 1
+- World Creation observer: always detects
+
+Lower-level resolution remains contested until Spiritual Sense/perception rules are implemented.
+
+Concealment artifacts are modeled separately so artifacts can mask or falsify affiliation signatures according to artifact rank.
