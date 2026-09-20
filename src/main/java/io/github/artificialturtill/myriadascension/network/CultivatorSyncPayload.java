@@ -17,6 +17,7 @@ public record CultivatorSyncPayload(
         CultivationAffiliation affiliation,
         CultivationRealm realm,
         int minorStage,
+        String activeCultivationMethodId,
         double moralAlignment,
         double karma,
         int wood,
@@ -57,6 +58,7 @@ public record CultivatorSyncPayload(
                 data.affiliation(),
                 data.realm(),
                 data.minorStage(),
+                data.cultivationMethods().activeMethodId(),
                 data.moralAlignment(),
                 data.karma(),
                 a.get(AffinityType.WOOD),
@@ -95,6 +97,7 @@ public record CultivatorSyncPayload(
         buf.writeVarInt(p.affiliation().ordinal());
         buf.writeVarInt(p.realm().ordinal());
         buf.writeVarInt(p.minorStage());
+        buf.writeUtf(p.activeCultivationMethodId());
         buf.writeDouble(p.moralAlignment());
         buf.writeDouble(p.karma());
 
@@ -135,6 +138,7 @@ public record CultivatorSyncPayload(
                 safeEnum(CultivationAffiliation.values(), buf.readVarInt(), CultivationAffiliation.UNDECIDED),
                 safeEnum(CultivationRealm.values(), buf.readVarInt(), CultivationRealm.MORTAL),
                 buf.readVarInt(),
+                buf.readUtf(),
                 buf.readDouble(),
                 buf.readDouble(),
                 buf.readVarInt(),
