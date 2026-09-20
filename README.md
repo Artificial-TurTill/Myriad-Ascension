@@ -100,9 +100,15 @@ Players can overcome poor initial circumstances through systems such as:
 
 Exceptional starting talent accelerates early development, while difficult constitutions can gain unique late-game strengths.
 
+## Alpha Build
+
+Current test version: **0.1.0-alpha.1**
+
+Successful GitHub Actions builds publish an installable JAR artifact. See `docs/ALPHA.md` for the implemented systems, alpha-only commands, controls, and known limitations.
+
 ## Development Status
 
-**Phase:** Cultivation core implementation
+**Phase:** Alpha 0.1.0-alpha.1
 
 Initial development will focus on the cultivation core before expanding into large content systems.
 
