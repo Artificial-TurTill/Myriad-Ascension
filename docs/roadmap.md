@@ -2,7 +2,7 @@
 
 ## Milestone 0 — Repository and Architecture
 
-- [ ] Choose Fabric or NeoForge for Minecraft 1.21.2
+- [x] Choose NeoForge for Minecraft 1.21.2
 - [ ] Establish Gradle project
 - [ ] Define package structure
 - [ ] Establish common registries and networking conventions
