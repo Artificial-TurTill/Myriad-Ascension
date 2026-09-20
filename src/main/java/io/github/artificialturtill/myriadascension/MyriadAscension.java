@@ -18,6 +18,7 @@ public final class MyriadAscension {
     public MyriadAscension(IEventBus modEventBus, ModContainer modContainer) {
         ModAttachments.register(modEventBus);
         modEventBus.addListener(ModNetworking::registerPayloads);
+        NeoForge.EVENT_BUS.addListener(PlayerCultivationEvents::onPlayerLoggedIn);
         NeoForge.EVENT_BUS.addListener(PlayerCultivationEvents::onPlayerClone);
 
         LOGGER.info("Myriad Ascension initializing on NeoForge.");
