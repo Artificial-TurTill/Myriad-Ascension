@@ -10,13 +10,14 @@ import io.github.artificialturtill.myriadascension.cultivation.qi.QiNatureProfil
 import io.github.artificialturtill.myriadascension.cultivation.qi.QiRules;
 import io.github.artificialturtill.myriadascension.cultivation.realm.CultivationRealm;
 import io.github.artificialturtill.myriadascension.inheritance.CultivationMethodState;
+import io.github.artificialturtill.myriadascension.organization.OrganizationStandingState;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.RandomSource;
 import net.neoforged.neoforge.common.util.INBTSerializable;
 
 public final class CultivatorData implements INBTSerializable<CompoundTag> {
-    public static final int SCHEMA_VERSION = 4;
+    public static final int SCHEMA_VERSION = 5;
 
     private int schemaVersion = SCHEMA_VERSION;
 
@@ -29,6 +30,7 @@ public final class CultivatorData implements INBTSerializable<CompoundTag> {
     private final AffinityProfile affinities = new AffinityProfile();
     private final QiNatureProfile qiNature = new QiNatureProfile();
     private final CultivationMethodState cultivationMethods = new CultivationMethodState();
+    private final OrganizationStandingState organizationStandings = new OrganizationStandingState();
 
     private CultivationRealm realm = CultivationRealm.MORTAL;
     private int minorStage;
@@ -119,6 +121,10 @@ public final class CultivatorData implements INBTSerializable<CompoundTag> {
 
     public CultivationMethodState cultivationMethods() {
         return cultivationMethods;
+    }
+
+    public OrganizationStandingState organizationStandings() {
+        return organizationStandings;
     }
 
     public void completeInitialSetup(CharacterSex sex, double startingMoralAlignment, RandomSource random) {
@@ -359,6 +365,7 @@ public final class CultivatorData implements INBTSerializable<CompoundTag> {
         affinities.copyFrom(other.affinities);
         qiNature.copyFrom(other.qiNature);
         cultivationMethods.copyFrom(other.cultivationMethods);
+        organizationStandings.copyFrom(other.organizationStandings);
 
         realm = other.realm;
         minorStage = other.minorStage;
@@ -400,6 +407,7 @@ public final class CultivatorData implements INBTSerializable<CompoundTag> {
         tag.put("Affinities", affinities.save());
         tag.put("QiNature", qiNature.save());
         tag.put("CultivationMethods", cultivationMethods.save());
+        tag.put("OrganizationStandings", organizationStandings.save());
 
         tag.putString("Realm", realm.name());
         tag.putInt("MinorStage", minorStage);
@@ -466,6 +474,10 @@ public final class CultivatorData implements INBTSerializable<CompoundTag> {
 
         if (loadedSchemaVersion >= 4 && tag.contains("CultivationMethods")) {
             cultivationMethods.load(tag.getCompound("CultivationMethods"));
+        }
+
+        if (loadedSchemaVersion >= 5 && tag.contains("OrganizationStandings")) {
+            organizationStandings.load(tag.getCompound("OrganizationStandings"));
         }
 
         realm = CultivationRealm.fromSerializedName(tag.getString("Realm"));
