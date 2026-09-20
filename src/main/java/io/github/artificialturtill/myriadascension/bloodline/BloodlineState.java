@@ -91,8 +91,9 @@ public final class BloodlineState {
             return false;
         }
 
+        double improvement = clamped - purity;
         purity = clamped;
-        conflictDamage = Math.max(0.0D, conflictDamage - (clamped - purity) * 0.25D);
+        conflictDamage = Math.max(0.0D, conflictDamage - improvement * 0.25D);
         return true;
     }
 
