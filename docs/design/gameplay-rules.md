@@ -10,9 +10,11 @@ A new player begins as a **Mortal**.
 - Vanilla base health remains 20 HP unless another system modifies it.
 - A Mortal begins with **0 Qi** and no usable cultivation by default.
 - Cultivation requires obtaining a method, inheritance, teacher, resource, or another valid route into cultivation.
-- The initial character setup presents cultivation information and requires the player to establish their starting alignment.
+- The initial character setup asks the player to choose **Male** or **Female**.
+- Male establishes a Yang body polarity; Female establishes a Yin body polarity.
+- The initial setup also establishes the player's starting moral alignment on the Malicious ↔ Benevolent axis.
+- Affiliation is separate from morality and begins unaffiliated until world/faction/cultivation choices establish it.
 - Classical elemental affinity is random rather than chosen.
-- Body polarity determines the starting Yin/Yang bias. Minecraft has no built-in character sex, so the exact source of this value remains a setup-screen decision.
 - Early settlements are deliberately important because ordinary wilderness threats are intended to be lethal to Mortals.
 
 The first settlement implementation should build on vanilla villages. Martial clans, sect branches, cities, capitals, and other settlement tiers will be layered on later.
@@ -29,17 +31,42 @@ The initial core affinity set is:
 - Yin
 - Yang
 
-Starting attunement is intentionally limited. The design target is an overall low starting pool with no starting affinity above 10.
+Starting attunement is intentionally limited and uses the following exact genesis rule:
 
-Yin/Yang are influenced by body polarity:
-
-- Yin-aligned bodies favor Yin.
-- Yang-aligned bodies favor Yang.
-- The opposite polarity begins at a lower baseline.
+- Male starts at **Yang 2 / Yin 1**.
+- Female starts at **Yin 2 / Yang 1**.
+- After that fixed baseline, exactly **10 additional random affinity points** are distributed.
+- Bonus points may go to Wood, Fire, Earth, Metal, Water, and the character's matching polarity.
+- Bonus points may **not** go to Yin for a Male character or Yang for a Female character.
+- No starting affinity may exceed **10**.
+- Therefore the generated seven-aspect starting profile totals **13 points** including the fixed polarity baseline.
 
 Affinity affects efficiency and ease of development. It is **not** a hard class lock. A poor natural affinity can ultimately be overcome through extraordinary effort, resources, techniques, ascension choices, constitutions, demonic methods, or other systems.
 
 Rare higher-ranked resources can be consumed to influence affinity, but this competes with using those same resources for cultivation or technique training.
+
+## Affiliation, Morality, and Karma
+
+Affiliation and morality are independent systems.
+
+Moral alignment is a continuous Malicious ↔ Benevolent axis.
+
+Affiliation describes the broad political/cultural/cultivation side a character belongs to, such as:
+
+- Righteous
+- Unorthodox
+- Demonic
+- Buddhist
+- Imperial
+- Unaffiliated
+
+A member of a nominally Righteous affiliation can still become malicious. A Demonic cultivator can become benevolent enough to be regarded as weak or disloyal by their own side.
+
+Technique use, visible aura, Burst, meditation, weapon infusion, and other exposed Qi can reveal a cultivator's actual path to NPCs. Hostile NPCs may attack when they detect an incompatible cultivation signature.
+
+Buddhist cultivation additionally uses Karma. Karma is not identical to moral alignment.
+
+See `docs/design/affiliation-and-morality.md` for the current detailed rules.
 
 ## Death and Recovery
 
