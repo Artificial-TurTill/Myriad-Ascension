@@ -23,7 +23,13 @@ public final class BloodlineRules {
                 return BloodlineApplicationResult.OVERWRITTEN_BY_STRONGER_SAME_LINEAGE;
             }
 
-            return BloodlineApplicationResult.REJECTED_SAME_OR_WEAKER_LINEAGE;
+            if (incomingGrade.sourcePowerTier() == current.gradePowerTier()
+                    && effectivePurity > current.purity()) {
+                current.refinePurity(effectivePurity);
+                return BloodlineApplicationResult.REFINED_SAME_LINEAGE;
+            }
+
+            return BloodlineApplicationResult.REJECTED_WEAKER_OR_IMPURE_SAME_LINEAGE;
         }
 
         // Different beast families do not overwrite the established lineage.
