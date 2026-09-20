@@ -22,4 +22,30 @@ public enum PrimordialisTestudoRank {
     public boolean atLeast(PrimordialisTestudoRank other) {
         return authority >= other.authority;
     }
+
+    public String displayName() {
+        return switch (this) {
+            case SERVANT -> "Servant";
+            case JUNIOR_DISCIPLE -> "Junior Disciple";
+            case SENIOR_DISCIPLE -> "Senior Disciple";
+            case MASTER -> "Master";
+            case CUSTODIAN -> "Custodian";
+            case ELDER -> "Elder";
+            case CLAN_LEADER -> "Clan Leader";
+        };
+    }
+
+    public static PrimordialisTestudoRank fromStandingRank(String value) {
+        if (value == null || value.isBlank()) {
+            return SERVANT;
+        }
+
+        for (PrimordialisTestudoRank rank : values()) {
+            if (rank.displayName().equalsIgnoreCase(value)) {
+                return rank;
+            }
+        }
+
+        return SERVANT;
+    }
 }
