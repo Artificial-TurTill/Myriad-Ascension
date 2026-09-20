@@ -8,8 +8,11 @@ Player cultivation data is stored as a persistent NeoForge entity data attachmen
 
 The initial data schema contains:
 
-- alignment
+- character sex
 - body polarity
+- cultivation affiliation
+- moral alignment
+- karma
 - Wood / Fire / Earth / Metal / Water / Yin / Yang affinities
 - realm and minor stage
 - cultivation progress
@@ -37,9 +40,12 @@ New data defaults to:
 - Qi: 0 / 0
 - circulation: 0%
 - Burst: off
-- alignment: undecided
+- character sex: unset
 - body polarity: unset
-- affinities: ungenerated/zero until initial character generation is finalized
+- affiliation: undecided
+- moral alignment: neutral
+- karma: 0
+- affinities: ungenerated/zero until initial character generation
 
 Mortal is an internal pre-cultivation state rather than one of the major cultivation realms.
 
@@ -203,7 +209,13 @@ Affinity modifies efficiency and development difficulty rather than acting as a 
 
 The player does not freely choose classical elemental affinity at spawn.
 
-The exact first-spawn generator will be finalized after the body-polarity input rule is decided.
+The first-spawn generator is now defined:
+
+- Male: Yang 2 / Yin 1
+- Female: Yin 2 / Yang 1
+- 10 additional points distributed randomly among the five elements plus matching polarity
+- opposite polarity excluded from bonus distribution
+- starter cap of 10 per affinity
 
 ## 10. Purity and Impurities
 
