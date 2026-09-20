@@ -107,3 +107,16 @@ These numbers are tuning values and may be changed without altering the lore.
 Once accepted, the player enters as a **Junior Disciple** and receives access to the Primordialis Testudo Longevity Art.
 
 The final NPC interaction should still involve an Elder/Master formally accepting the player rather than silently changing membership in the background.
+
+
+## Tortoise Bloodline
+
+The clan's cultivation art has strong synergy with Tortoise-family bloodlines, but the clan does not provide one to every disciple.
+
+Player bloodlines must come from rare/specific progression sources such as quests, ancient cultivator tombs, monuments, auctions, spirit pacts, or compatible spirit-beast refinement.
+
+The early defined grade is **Earth Rank**, whose effective power remains competitive through Saint.
+
+A stronger compatible Tortoise lineage may later overwrite it. Unrelated lineages such as Tiger bloodlines cannot simply replace it and instead cause bloodline conflict.
+
+See `docs/design/bloodlines.md`.
