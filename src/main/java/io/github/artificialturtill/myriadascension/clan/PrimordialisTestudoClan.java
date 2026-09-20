@@ -3,9 +3,7 @@ package io.github.artificialturtill.myriadascension.clan;
 import io.github.artificialturtill.myriadascension.MyriadAscension;
 import io.github.artificialturtill.myriadascension.affinity.AffinityType;
 import io.github.artificialturtill.myriadascension.cultivation.realm.CultivationRealm;
-import io.github.artificialturtill.myriadascension.inheritance.AffinityRequirementMode;
 import io.github.artificialturtill.myriadascension.inheritance.CultivationMethodDefinition;
-import io.github.artificialturtill.myriadascension.inheritance.InheritanceRequirement;
 import io.github.artificialturtill.myriadascension.technique.TechniqueNatureTrait;
 import io.github.artificialturtill.myriadascension.technique.TechniquePathTrait;
 import io.github.artificialturtill.myriadascension.technique.TechniqueSignature;
@@ -40,10 +38,7 @@ public final class PrimordialisTestudoClan {
                                     TechniqueNatureTrait.BODY_TEMPERING,
                                     TechniqueNatureTrait.LONGEVITY,
                                     TechniqueNatureTrait.DEFENSIVE)),
-                    List.of(new InheritanceRequirement(
-                            AffinityType.EARTH,
-                            1,
-                            AffinityRequirementMode.CURRENT)));
+                    List.of());
 
     private PrimordialisTestudoClan() {
     }
