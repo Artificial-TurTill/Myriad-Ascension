@@ -316,3 +316,37 @@ Qi Concealment is stored as a level 1-10 passive skill once learned. Level-10 ha
 Lower-level resolution remains contested until Spiritual Sense/perception rules are implemented.
 
 Concealment artifacts are modeled separately so artifacts can mask or falsify affiliation signatures according to artifact rank.
+
+
+## 16. Bloodlines
+
+CultivatorData schema v7 persists one primary bloodline lineage.
+
+Bloodline state stores:
+
+- lineage/family identity
+- grade identity
+- grade effectiveness ceiling
+- grade power tier
+- purity
+- bloodline-conflict damage
+
+### Rules
+
+- bloodline grade and purity are separate,
+- same-family stronger grade can overwrite a weaker one,
+- same-grade compatible sources can improve purity,
+- incompatible families cannot replace the existing lineage and instead cause conflict damage,
+- Earth-Rank Primordial Tortoise bloodline keeps pace through Saint,
+- the player model does not receive forced visible mutations from this lineage,
+- exact stat modifiers remain data/balance work.
+
+### Acquisition
+
+Player acquisition is restricted to explicit progression sources such as quests, ancient tombs, monuments, auctions, spirit pacts, or beast-derived refinement.
+
+NPCs may inherit bloodlines from family lineage at birth.
+
+Ancient Tortoise placement is intentionally sparse, targeting roughly five candidates per 10,000 × 10,000 block area rather than normal mob density.
+
+See `docs/design/bloodlines.md`.
