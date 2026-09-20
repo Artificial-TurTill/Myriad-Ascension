@@ -176,6 +176,10 @@ myriad_ascension
 - `docs/design/gameplay-rules.md` — authoritative gameplay decisions
 - `docs/design/realm-hierarchy.md` — full realm/world progression
 - `docs/design/audio.md` — placeholder/final audio policy
+- `docs/design/martial-peak-progression-adaptation.md` — realm subdivision/unlock adaptation
+- `docs/design/inheritance-and-techniques.md` — manuals, monuments, technique traits, Qi nature
+- `docs/design/primordialis-testudo-clan.md` — first test clan
+- `docs/design/empire-politics.md` — Empire diplomacy and succession
 - `docs/core-systems.md` — technical core-system specification
 - `docs/roadmap.md` — implementation roadmap
 
