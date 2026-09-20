@@ -22,5 +22,6 @@
   "screen.myriad_ascension.genesis.result_title": "Heaven has revealed your affinities",
   "screen.myriad_ascension.genesis.result_benevolent": "Initial disposition: Benevolent (+1) — Unaffiliated",
   "screen.myriad_ascension.genesis.result_malicious": "Initial disposition: Malicious (-1) — Unaffiliated",
-  "screen.myriad_ascension.genesis.enter_world": "Enter the Mortal World"
+  "screen.myriad_ascension.genesis.enter_world": "Enter the Mortal World",
+  "screen.myriad_ascension.status.title": "Cultivator Status"
 }
