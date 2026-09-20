@@ -11,10 +11,18 @@ public final class PrimordialisTestudoQuestRewards {
     private PrimordialisTestudoQuestRewards() {
     }
 
+    public static boolean acceptServiceQuest(
+            CultivatorData data,
+            ServiceQuestDefinition quest) {
+        return PrimordialisTestudoServiceQuests.ADMISSION_POOL.contains(quest)
+                && data.questJournal().accept(quest.id());
+    }
+
     public static boolean completeServiceQuest(
             CultivatorData data,
             ServiceQuestDefinition quest) {
-        if (!PrimordialisTestudoServiceQuests.ADMISSION_POOL.contains(quest)) {
+        if (!PrimordialisTestudoServiceQuests.ADMISSION_POOL.contains(quest)
+                || !data.questJournal().complete(quest.id())) {
             return false;
         }
 
