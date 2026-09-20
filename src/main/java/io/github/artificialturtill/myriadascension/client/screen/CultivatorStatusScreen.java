@@ -32,6 +32,7 @@ public final class CultivatorStatusScreen extends Screen {
 
         int yLeft = top + 24;
         yLeft = line(graphics, left, yLeft, "Realm", realmText());
+        yLeft = line(graphics, left, yLeft, "Method", methodText());
         yLeft = line(graphics, left, yLeft, "Sex", pretty(data.sex().name()));
         yLeft = line(graphics, left, yLeft, "Affiliation", pretty(data.affiliation().name()));
         yLeft = line(graphics, left, yLeft, "Moral Alignment", signed(data.moralAlignment()));
@@ -92,6 +93,19 @@ public final class CultivatorStatusScreen extends Screen {
                 + data.realm().subdivisionType().displayName()
                 + " "
                 + data.minorStage();
+    }
+
+    private String methodText() {
+        String id = data.activeCultivationMethodId();
+        if (id == null || id.isBlank()) {
+            return "None";
+        }
+
+        int slash = id.lastIndexOf('/');
+        int colon = id.lastIndexOf(':');
+        int start = Math.max(slash, colon) + 1;
+        String path = id.substring(Math.max(0, start));
+        return pretty(path.toUpperCase(Locale.ROOT));
     }
 
     private static String level(int value) {
