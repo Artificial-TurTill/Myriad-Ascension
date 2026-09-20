@@ -6,6 +6,7 @@ import io.github.artificialturtill.myriadascension.affinity.StartingAffinityGene
 import io.github.artificialturtill.myriadascension.alignment.CultivationAffiliation;
 import io.github.artificialturtill.myriadascension.alignment.MoralAlignment;
 import io.github.artificialturtill.myriadascension.character.CharacterSex;
+import io.github.artificialturtill.myriadascension.bloodline.BloodlineState;
 import io.github.artificialturtill.myriadascension.cultivation.qi.QiNatureProfile;
 import io.github.artificialturtill.myriadascension.cultivation.qi.QiRules;
 import io.github.artificialturtill.myriadascension.cultivation.realm.CultivationRealm;
@@ -18,7 +19,7 @@ import net.minecraft.util.RandomSource;
 import net.neoforged.neoforge.common.util.INBTSerializable;
 
 public final class CultivatorData implements INBTSerializable<CompoundTag> {
-    public static final int SCHEMA_VERSION = 6;
+    public static final int SCHEMA_VERSION = 7;
 
     private int schemaVersion = SCHEMA_VERSION;
 
@@ -33,6 +34,7 @@ public final class CultivatorData implements INBTSerializable<CompoundTag> {
     private final CultivationMethodState cultivationMethods = new CultivationMethodState();
     private final OrganizationStandingState organizationStandings = new OrganizationStandingState();
     private final QuestJournalState questJournal = new QuestJournalState();
+    private final BloodlineState bloodline = new BloodlineState();
 
     private CultivationRealm realm = CultivationRealm.MORTAL;
     private int minorStage;
@@ -131,6 +133,10 @@ public final class CultivatorData implements INBTSerializable<CompoundTag> {
 
     public QuestJournalState questJournal() {
         return questJournal;
+    }
+
+    public BloodlineState bloodline() {
+        return bloodline;
     }
 
     public void completeInitialSetup(CharacterSex sex, double startingMoralAlignment, RandomSource random) {
@@ -373,6 +379,7 @@ public final class CultivatorData implements INBTSerializable<CompoundTag> {
         cultivationMethods.copyFrom(other.cultivationMethods);
         organizationStandings.copyFrom(other.organizationStandings);
         questJournal.copyFrom(other.questJournal);
+        bloodline.copyFrom(other.bloodline);
 
         realm = other.realm;
         minorStage = other.minorStage;
@@ -416,6 +423,7 @@ public final class CultivatorData implements INBTSerializable<CompoundTag> {
         tag.put("CultivationMethods", cultivationMethods.save());
         tag.put("OrganizationStandings", organizationStandings.save());
         tag.put("QuestJournal", questJournal.save());
+        tag.put("Bloodline", bloodline.save());
 
         tag.putString("Realm", realm.name());
         tag.putInt("MinorStage", minorStage);
@@ -490,6 +498,10 @@ public final class CultivatorData implements INBTSerializable<CompoundTag> {
 
         if (loadedSchemaVersion >= 6 && tag.contains("QuestJournal")) {
             questJournal.load(tag.getCompound("QuestJournal"));
+        }
+
+        if (loadedSchemaVersion >= 7 && tag.contains("Bloodline")) {
+            bloodline.load(tag.getCompound("Bloodline"));
         }
 
         realm = CultivationRealm.fromSerializedName(tag.getString("Realm"));
