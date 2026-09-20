@@ -6,6 +6,7 @@ import io.github.artificialturtill.myriadascension.affinity.StartingAffinityGene
 import io.github.artificialturtill.myriadascension.alignment.CultivationAffiliation;
 import io.github.artificialturtill.myriadascension.alignment.MoralAlignment;
 import io.github.artificialturtill.myriadascension.character.CharacterSex;
+import io.github.artificialturtill.myriadascension.cultivation.qi.QiNatureProfile;
 import io.github.artificialturtill.myriadascension.cultivation.qi.QiRules;
 import io.github.artificialturtill.myriadascension.cultivation.realm.CultivationRealm;
 import net.minecraft.core.HolderLookup;
@@ -14,7 +15,7 @@ import net.minecraft.util.RandomSource;
 import net.neoforged.neoforge.common.util.INBTSerializable;
 
 public final class CultivatorData implements INBTSerializable<CompoundTag> {
-    public static final int SCHEMA_VERSION = 2;
+    public static final int SCHEMA_VERSION = 3;
 
     private int schemaVersion = SCHEMA_VERSION;
 
@@ -23,7 +24,9 @@ public final class CultivatorData implements INBTSerializable<CompoundTag> {
     private CultivationAffiliation affiliation = CultivationAffiliation.UNDECIDED;
     private double moralAlignment = MoralAlignment.NEUTRAL;
     private double karma;
+    private final AffinityProfile innateAffinities = new AffinityProfile();
     private final AffinityProfile affinities = new AffinityProfile();
+    private final QiNatureProfile qiNature = new QiNatureProfile();
 
     private CultivationRealm realm = CultivationRealm.MORTAL;
     private int minorStage;
@@ -100,8 +103,16 @@ public final class CultivatorData implements INBTSerializable<CompoundTag> {
         this.karma += amount;
     }
 
+    public AffinityProfile innateAffinities() {
+        return innateAffinities;
+    }
+
     public AffinityProfile affinities() {
         return affinities;
+    }
+
+    public QiNatureProfile qiNature() {
+        return qiNature;
     }
 
     public void completeInitialSetup(CharacterSex sex, double startingMoralAlignment, RandomSource random) {
@@ -119,7 +130,10 @@ public final class CultivatorData implements INBTSerializable<CompoundTag> {
         setCharacterSex(sex);
         setMoralAlignment(startingMoralAlignment);
         setAffiliation(CultivationAffiliation.UNAFFILIATED);
-        affinities.copyFrom(StartingAffinityGenerator.generate(sex, random));
+
+        AffinityProfile generated = StartingAffinityGenerator.generate(sex, random);
+        innateAffinities.copyFrom(generated);
+        affinities.copyFrom(generated);
     }
 
     public CultivationRealm realm() {
@@ -335,7 +349,9 @@ public final class CultivatorData implements INBTSerializable<CompoundTag> {
         affiliation = other.affiliation;
         moralAlignment = other.moralAlignment;
         karma = other.karma;
+        innateAffinities.copyFrom(other.innateAffinities);
         affinities.copyFrom(other.affinities);
+        qiNature.copyFrom(other.qiNature);
 
         realm = other.realm;
         minorStage = other.minorStage;
@@ -373,7 +389,9 @@ public final class CultivatorData implements INBTSerializable<CompoundTag> {
         tag.putString("Affiliation", affiliation.name());
         tag.putDouble("MoralAlignment", moralAlignment);
         tag.putDouble("Karma", karma);
+        tag.put("InnateAffinities", innateAffinities.save());
         tag.put("Affinities", affinities.save());
+        tag.put("QiNature", qiNature.save());
 
         tag.putString("Realm", realm.name());
         tag.putInt("MinorStage", minorStage);
@@ -425,6 +443,18 @@ public final class CultivatorData implements INBTSerializable<CompoundTag> {
         }
 
         affinities.load(tag.getCompound("Affinities"));
+
+        if (loadedSchemaVersion >= 3 && tag.contains("InnateAffinities")) {
+            innateAffinities.load(tag.getCompound("InnateAffinities"));
+        } else {
+            // Schema v1/v2 had only one profile. Treat the saved values as both
+            // innate potential and current attunement during migration.
+            innateAffinities.copyFrom(affinities);
+        }
+
+        if (loadedSchemaVersion >= 3 && tag.contains("QiNature")) {
+            qiNature.load(tag.getCompound("QiNature"));
+        }
 
         realm = CultivationRealm.fromSerializedName(tag.getString("Realm"));
         minorStage = tag.getInt("MinorStage");
