@@ -84,7 +84,14 @@ public final class CultivatorStatusScreen extends Screen {
         if (!data.realm().isCultivatorRealm()) {
             return data.realm().displayName();
         }
-        return data.realm().displayName() + " — Rank " + data.minorStage();
+        if (!data.realm().hasSubdivisions()) {
+            return data.realm().displayName();
+        }
+        return data.realm().displayName()
+                + " — "
+                + data.realm().subdivisionType().displayName()
+                + " "
+                + data.minorStage();
     }
 
     private static String level(int value) {
