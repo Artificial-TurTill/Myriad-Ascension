@@ -10,6 +10,11 @@
 
 ## Milestone 1 — Cultivation Core
 
+- [x] Character genesis data model
+- [x] Server-side starter affinity generation
+- [x] First-login genesis networking
+- [x] Placeholder character genesis screen
+
 - [x] Persistent CultivatorData
 - [x] Qi reserve data model
 - [ ] Qi regeneration
@@ -18,6 +23,8 @@
 - [ ] G/H/R controls
 - [ ] Minimal HUD
 - [ ] Server synchronization
+- [x] Qi signature exposure categories
+- [x] Qi Concealment rule foundation
 
 ## Milestone 2 — Cultivator Interfaces
 
