@@ -3,7 +3,7 @@ package io.github.artificialturtill.myriadascension.client.screen;
 import io.github.artificialturtill.myriadascension.character.CharacterSex;
 import io.github.artificialturtill.myriadascension.network.GenesisResultPayload;
 import io.github.artificialturtill.myriadascension.network.SubmitGenesisPayload;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
@@ -69,7 +69,7 @@ public final class CharacterGenesisScreen extends Screen {
                 Component.translatable("screen.myriad_ascension.genesis.enter_world"),
                 button -> {
                     if (result != null) {
-                        this.minecraft.gui.setScreen(null);
+                        this.minecraft.setScreen(null);
                     }
                 }).bounds(centerX - 75, top + 150, 150, 20).build());
 
@@ -137,33 +137,28 @@ public final class CharacterGenesisScreen extends Screen {
     @Override
     public void onClose() {
         if (result != null) {
-            this.minecraft.gui.setScreen(null);
+            this.minecraft.setScreen(null);
         }
     }
 
     @Override
-    public void extractBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
-        extractTransparentBackground(graphics);
-    }
-
-    @Override
-    public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
-        super.extractRenderState(graphics, mouseX, mouseY, partialTick);
+    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+        super.render(graphics, mouseX, mouseY, partialTick);
 
         int centerX = this.width / 2;
         int top = Math.max(35, this.height / 2 - 95);
 
-        graphics.centeredText(this.font, this.title, centerX, top, 0xFFFFFFFF);
+        graphics.drawCenteredString(this.font, this.title, centerX, top, 0xFFFFFFFF);
 
         if (result == null) {
-            graphics.centeredText(
+            graphics.drawCenteredString(
                     this.font,
                     Component.translatable("screen.myriad_ascension.genesis.sex_prompt"),
                     centerX,
                     top + 20,
                     0xFFD8C690);
 
-            graphics.centeredText(
+            graphics.drawCenteredString(
                     this.font,
                     Component.translatable("screen.myriad_ascension.genesis.morality_prompt"),
                     centerX,
@@ -174,18 +169,18 @@ public final class CharacterGenesisScreen extends Screen {
                     ? Component.translatable("screen.myriad_ascension.genesis.awaiting")
                     : Component.translatable("screen.myriad_ascension.genesis.fate_note");
 
-            graphics.centeredText(this.font, status, centerX, top + 110, 0xFFAAAAAA);
+            graphics.drawCenteredString(this.font, status, centerX, top + 110, 0xFFAAAAAA);
             return;
         }
 
-        graphics.centeredText(
+        graphics.drawCenteredString(
                 this.font,
                 Component.translatable("screen.myriad_ascension.genesis.result_title"),
                 centerX,
                 top + 20,
                 0xFFFFD978);
 
-        graphics.centeredText(
+        graphics.drawCenteredString(
                 this.font,
                 Component.literal("Wood " + result.wood()
                         + "   Fire " + result.fire()
@@ -194,7 +189,7 @@ public final class CharacterGenesisScreen extends Screen {
                 top + 52,
                 0xFFFFFFFF);
 
-        graphics.centeredText(
+        graphics.drawCenteredString(
                 this.font,
                 Component.literal("Metal " + result.metal()
                         + "   Water " + result.water()),
@@ -202,7 +197,7 @@ public final class CharacterGenesisScreen extends Screen {
                 top + 68,
                 0xFFFFFFFF);
 
-        graphics.centeredText(
+        graphics.drawCenteredString(
                 this.font,
                 Component.literal("Yin " + result.yin()
                         + "   Yang " + result.yang()),
@@ -210,7 +205,7 @@ public final class CharacterGenesisScreen extends Screen {
                 top + 84,
                 0xFFFFFFFF);
 
-        graphics.centeredText(
+        graphics.drawCenteredString(
                 this.font,
                 Component.translatable(
                         result.moralAlignment() > 0
