@@ -2,20 +2,27 @@ package io.github.artificialturtill.myriadascension.cultivation.data;
 
 import io.github.artificialturtill.myriadascension.affinity.AffinityProfile;
 import io.github.artificialturtill.myriadascension.affinity.BodyPolarity;
-import io.github.artificialturtill.myriadascension.alignment.CultivationAlignment;
+import io.github.artificialturtill.myriadascension.affinity.StartingAffinityGenerator;
+import io.github.artificialturtill.myriadascension.alignment.CultivationAffiliation;
+import io.github.artificialturtill.myriadascension.alignment.MoralAlignment;
+import io.github.artificialturtill.myriadascension.character.CharacterSex;
 import io.github.artificialturtill.myriadascension.cultivation.qi.QiRules;
 import io.github.artificialturtill.myriadascension.cultivation.realm.CultivationRealm;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.RandomSource;
 import net.neoforged.neoforge.common.util.INBTSerializable;
 
 public final class CultivatorData implements INBTSerializable<CompoundTag> {
-    public static final int SCHEMA_VERSION = 1;
+    public static final int SCHEMA_VERSION = 2;
 
     private int schemaVersion = SCHEMA_VERSION;
 
-    private CultivationAlignment alignment = CultivationAlignment.UNDECIDED;
+    private CharacterSex characterSex = CharacterSex.UNSET;
     private BodyPolarity bodyPolarity = BodyPolarity.UNSET;
+    private CultivationAffiliation affiliation = CultivationAffiliation.UNDECIDED;
+    private double moralAlignment = MoralAlignment.NEUTRAL;
+    private double karma;
     private final AffinityProfile affinities = new AffinityProfile();
 
     private CultivationRealm realm = CultivationRealm.MORTAL;
@@ -47,24 +54,67 @@ public final class CultivatorData implements INBTSerializable<CompoundTag> {
     private long lastCirculationControlTick = Long.MIN_VALUE;
     private long lastBurstToggleTick = Long.MIN_VALUE;
 
-    public CultivationAlignment alignment() {
-        return alignment;
+    public CharacterSex characterSex() {
+        return characterSex;
     }
 
-    public void setAlignment(CultivationAlignment alignment) {
-        this.alignment = alignment == null ? CultivationAlignment.UNDECIDED : alignment;
+    public void setCharacterSex(CharacterSex characterSex) {
+        this.characterSex = characterSex == null ? CharacterSex.UNSET : characterSex;
+        this.bodyPolarity = this.characterSex.polarity();
     }
 
     public BodyPolarity bodyPolarity() {
         return bodyPolarity;
     }
 
-    public void setBodyPolarity(BodyPolarity bodyPolarity) {
-        this.bodyPolarity = bodyPolarity == null ? BodyPolarity.UNSET : bodyPolarity;
+    public CultivationAffiliation affiliation() {
+        return affiliation;
+    }
+
+    public void setAffiliation(CultivationAffiliation affiliation) {
+        this.affiliation = affiliation == null ? CultivationAffiliation.UNDECIDED : affiliation;
+    }
+
+    public double moralAlignment() {
+        return moralAlignment;
+    }
+
+    public void setMoralAlignment(double moralAlignment) {
+        this.moralAlignment = MoralAlignment.clamp(moralAlignment);
+    }
+
+    public void adjustMoralAlignment(double amount) {
+        setMoralAlignment(moralAlignment + amount);
+    }
+
+    public double karma() {
+        return karma;
+    }
+
+    public void setKarma(double karma) {
+        this.karma = karma;
+    }
+
+    public void adjustKarma(double amount) {
+        this.karma += amount;
     }
 
     public AffinityProfile affinities() {
         return affinities;
+    }
+
+    public void completeInitialSetup(CharacterSex sex, double startingMoralAlignment, RandomSource random) {
+        if (hasCompletedInitialSetup()) {
+            throw new IllegalStateException("Initial cultivation setup has already been completed.");
+        }
+        if (sex == null || sex == CharacterSex.UNSET) {
+            throw new IllegalArgumentException("Character sex must be Male or Female.");
+        }
+
+        setCharacterSex(sex);
+        setMoralAlignment(startingMoralAlignment);
+        setAffiliation(CultivationAffiliation.UNAFFILIATED);
+        affinities.copyFrom(StartingAffinityGenerator.generate(sex, random));
     }
 
     public CultivationRealm realm() {
@@ -231,7 +281,10 @@ public final class CultivatorData implements INBTSerializable<CompoundTag> {
     }
 
     public boolean hasCompletedInitialSetup() {
-        return alignment != CultivationAlignment.UNDECIDED && bodyPolarity != BodyPolarity.UNSET;
+        return characterSex != CharacterSex.UNSET
+                && bodyPolarity != BodyPolarity.UNSET
+                && affiliation != CultivationAffiliation.UNDECIDED
+                && affinities.total() > 0;
     }
 
     public boolean tryAcceptCirculationControl(long gameTime) {
@@ -264,8 +317,11 @@ public final class CultivatorData implements INBTSerializable<CompoundTag> {
 
     public void copyFrom(CultivatorData other) {
         schemaVersion = other.schemaVersion;
-        alignment = other.alignment;
+        characterSex = other.characterSex;
         bodyPolarity = other.bodyPolarity;
+        affiliation = other.affiliation;
+        moralAlignment = other.moralAlignment;
+        karma = other.karma;
         affinities.copyFrom(other.affinities);
 
         realm = other.realm;
@@ -297,9 +353,12 @@ public final class CultivatorData implements INBTSerializable<CompoundTag> {
     public CompoundTag serializeNBT(HolderLookup.Provider provider) {
         CompoundTag tag = new CompoundTag();
 
-        tag.putInt("SchemaVersion", schemaVersion);
-        tag.putString("Alignment", alignment.name());
+        tag.putInt("SchemaVersion", SCHEMA_VERSION);
+        tag.putString("CharacterSex", characterSex.name());
         tag.putString("BodyPolarity", bodyPolarity.name());
+        tag.putString("Affiliation", affiliation.name());
+        tag.putDouble("MoralAlignment", moralAlignment);
+        tag.putDouble("Karma", karma);
         tag.put("Affinities", affinities.save());
 
         tag.putString("Realm", realm.name());
@@ -331,10 +390,25 @@ public final class CultivatorData implements INBTSerializable<CompoundTag> {
 
     @Override
     public void deserializeNBT(HolderLookup.Provider provider, CompoundTag tag) {
-        schemaVersion = Math.max(1, tag.getInt("SchemaVersion"));
+        int loadedSchemaVersion = Math.max(1, tag.getInt("SchemaVersion"));
+        schemaVersion = SCHEMA_VERSION;
 
-        alignment = CultivationAlignment.fromSerializedName(tag.getString("Alignment"));
-        bodyPolarity = BodyPolarity.fromSerializedName(tag.getString("BodyPolarity"));
+        if (loadedSchemaVersion >= 2) {
+            characterSex = CharacterSex.fromSerializedName(tag.getString("CharacterSex"));
+            bodyPolarity = BodyPolarity.fromSerializedName(tag.getString("BodyPolarity"));
+            affiliation = CultivationAffiliation.fromSerializedName(tag.getString("Affiliation"));
+            moralAlignment = MoralAlignment.clamp(tag.getDouble("MoralAlignment"));
+            karma = tag.getDouble("Karma");
+        } else {
+            migrateLegacyAlignment(tag.getString("Alignment"));
+            bodyPolarity = BodyPolarity.fromSerializedName(tag.getString("BodyPolarity"));
+            characterSex = switch (bodyPolarity) {
+                case YANG -> CharacterSex.MALE;
+                case YIN -> CharacterSex.FEMALE;
+                case UNSET -> CharacterSex.UNSET;
+            };
+        }
+
         affinities.load(tag.getCompound("Affinities"));
 
         realm = CultivationRealm.fromSerializedName(tag.getString("Realm"));
@@ -368,6 +442,33 @@ public final class CultivatorData implements INBTSerializable<CompoundTag> {
 
         passiveQiRechargingLevel = QiRules.clampSkillLevel(tag.getInt("PassiveQiRechargingLevel"));
         meditationLevel = QiRules.clampSkillLevel(tag.getInt("MeditationLevel"));
+    }
+
+    private void migrateLegacyAlignment(String legacyAlignment) {
+        String value = legacyAlignment == null ? "" : legacyAlignment.toUpperCase(java.util.Locale.ROOT);
+        switch (value) {
+            case "RIGHTEOUS" -> {
+                affiliation = CultivationAffiliation.RIGHTEOUS;
+                moralAlignment = 25.0D;
+            }
+            case "DEMONIC" -> {
+                affiliation = CultivationAffiliation.DEMONIC;
+                moralAlignment = MoralAlignment.NEUTRAL;
+            }
+            case "BUDDHIST" -> {
+                affiliation = CultivationAffiliation.BUDDHIST;
+                moralAlignment = 25.0D;
+            }
+            case "UNALIGNED" -> {
+                affiliation = CultivationAffiliation.UNAFFILIATED;
+                moralAlignment = MoralAlignment.NEUTRAL;
+            }
+            default -> {
+                affiliation = CultivationAffiliation.UNDECIDED;
+                moralAlignment = MoralAlignment.NEUTRAL;
+            }
+        }
+        karma = 0.0D;
     }
 
     private static boolean hasElapsed(long now, long previous, int requiredTicks) {
