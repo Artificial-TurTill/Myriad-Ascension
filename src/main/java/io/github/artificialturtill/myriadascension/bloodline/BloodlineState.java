@@ -85,6 +85,17 @@ public final class BloodlineState {
         install(lineage, grade, purity);
     }
 
+    public boolean refinePurity(double incomingPurity) {
+        double clamped = clamp(incomingPurity, 0.0D, 100.0D);
+        if (clamped <= purity) {
+            return false;
+        }
+
+        purity = clamped;
+        conflictDamage = Math.max(0.0D, conflictDamage - (clamped - purity) * 0.25D);
+        return true;
+    }
+
     public void copyFrom(BloodlineState other) {
         lineageId = other.lineageId;
         lineageFamilyId = other.lineageFamilyId;
