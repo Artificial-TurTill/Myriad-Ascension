@@ -2,6 +2,8 @@ package io.github.artificialturtill.myriadascension.bloodline;
 
 import io.github.artificialturtill.myriadascension.MyriadAscension;
 import io.github.artificialturtill.myriadascension.cultivation.realm.CultivationRealm;
+import java.util.EnumSet;
+import java.util.Set;
 import net.minecraft.resources.ResourceLocation;
 
 public final class PrimordialTortoiseBloodline {
@@ -30,6 +32,17 @@ public final class PrimordialTortoiseBloodline {
                     "Earth Rank",
                     CultivationRealm.SAINT,
                     1);
+
+    public static final BloodlinePhenotype PHENOTYPE = BloodlinePhenotype.INTERNAL_ONLY;
+
+    public static final Set<BloodlineBenefitType> BENEFITS = Set.copyOf(EnumSet.of(
+            BloodlineBenefitType.LONGEVITY,
+            BloodlineBenefitType.DEFENSE,
+            BloodlineBenefitType.REGENERATION,
+            BloodlineBenefitType.EARTH_COMPATIBILITY,
+            BloodlineBenefitType.RESISTANCE,
+            BloodlineBenefitType.SHELL_TECHNIQUE_COMPATIBILITY,
+            BloodlineBenefitType.BREAKTHROUGH_STABILITY));
 
     private PrimordialTortoiseBloodline() {
     }
