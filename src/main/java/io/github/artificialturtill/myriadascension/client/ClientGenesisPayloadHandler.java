@@ -10,21 +10,21 @@ public final class ClientGenesisPayloadHandler {
 
     public static void openGenesis() {
         Minecraft minecraft = Minecraft.getInstance();
-        if (!(minecraft.gui.screen() instanceof CharacterGenesisScreen)) {
-            minecraft.gui.setScreen(new CharacterGenesisScreen());
+        if (!(minecraft.screen instanceof CharacterGenesisScreen)) {
+            minecraft.setScreen(new CharacterGenesisScreen());
         }
     }
 
     public static void handleGenesisResult(GenesisResultPayload payload) {
         Minecraft minecraft = Minecraft.getInstance();
 
-        if (minecraft.gui.screen() instanceof CharacterGenesisScreen screen) {
+        if (minecraft.screen instanceof CharacterGenesisScreen screen) {
             screen.applyResult(payload);
             return;
         }
 
         CharacterGenesisScreen screen = new CharacterGenesisScreen();
-        minecraft.gui.setScreen(screen);
+        minecraft.setScreen(screen);
         screen.applyResult(payload);
     }
 }
