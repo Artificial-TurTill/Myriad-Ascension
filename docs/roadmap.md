@@ -3,18 +3,18 @@
 ## Milestone 0 — Repository and Architecture
 
 - [x] Choose NeoForge for Minecraft 1.21.2
-- [ ] Establish Gradle project
-- [ ] Define package structure
+- [x] Establish Gradle project
+- [x] Define package structure
 - [ ] Establish common registries and networking conventions
-- [ ] Establish persistent player-data strategy
+- [x] Establish persistent player-data strategy
 
 ## Milestone 1 — Cultivation Core
 
-- [ ] Persistent CultivatorData
-- [ ] Qi reserve
+- [x] Persistent CultivatorData
+- [x] Qi reserve data model
 - [ ] Qi regeneration
-- [ ] Active output
-- [ ] Meridian load
+- [x] Circulation + Burst data model
+- [x] Meridian load/injury data model
 - [ ] G/H/R controls
 - [ ] Minimal HUD
 - [ ] Server synchronization
