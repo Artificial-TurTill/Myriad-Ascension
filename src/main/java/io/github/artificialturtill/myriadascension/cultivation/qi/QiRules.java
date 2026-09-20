@@ -5,6 +5,11 @@ public final class QiRules {
     public static final double PASSIVE_RECHARGE_CEILING_PER_LEVEL = 0.04D;
     public static final int MAX_CORE_SKILL_LEVEL = 10;
 
+    // Prototype tuning constants. These are mechanics, not permanent lore values.
+    public static final double CIRCULATION_PERCENT_PER_CONTROL_PULSE = 2.0D;
+    public static final int MIN_CIRCULATION_CONTROL_INTERVAL_TICKS = 3;
+    public static final int MIN_BURST_TOGGLE_INTERVAL_TICKS = 6;
+
     private QiRules() {
     }
 
