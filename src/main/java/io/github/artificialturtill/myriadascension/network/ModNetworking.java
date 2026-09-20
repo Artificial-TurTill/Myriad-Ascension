@@ -10,7 +10,7 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 
 public final class ModNetworking {
-    public static final String NETWORK_VERSION = "1";
+    public static final String NETWORK_VERSION = "2";
 
     private ModNetworking() {
     }
@@ -21,6 +21,41 @@ public final class ModNetworking {
                 QiControlPayload.TYPE,
                 QiControlPayload.STREAM_CODEC,
                 ModNetworking::handleQiControl);
+
+        registrar.playToServer(
+                SubmitGenesisPayload.TYPE,
+                SubmitGenesisPayload.STREAM_CODEC,
+                ModNetworking::handleSubmitGenesis);
+
+        registrar.playToClient(
+                OpenGenesisPayload.TYPE,
+                OpenGenesisPayload.STREAM_CODEC,
+                ClientPayloadBridge::handleOpenGenesis);
+
+        registrar.playToClient(
+                GenesisResultPayload.TYPE,
+                GenesisResultPayload.STREAM_CODEC,
+                ClientPayloadBridge::handleGenesisResult);
+    }
+
+    private static void handleSubmitGenesis(SubmitGenesisPayload payload, IPayloadContext context) {
+        if (!(context.player() instanceof ServerPlayer player)) {
+            return;
+        }
+
+        CultivatorData data = player.getData(ModAttachments.CULTIVATOR_DATA);
+        if (data.hasCompletedInitialSetup()) {
+            context.reply(GenesisResultPayload.from(data));
+            return;
+        }
+
+        if (payload.sex() == null || payload.sex() == io.github.artificialturtill.myriadascension.character.CharacterSex.UNSET) {
+            return;
+        }
+
+        double startingAlignment = payload.benevolent() ? 1.0D : -1.0D;
+        data.completeInitialSetup(payload.sex(), startingAlignment, player.getRandom());
+        context.reply(GenesisResultPayload.from(data));
     }
 
     private static void handleQiControl(QiControlPayload payload, IPayloadContext context) {
