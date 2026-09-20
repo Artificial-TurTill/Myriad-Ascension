@@ -122,8 +122,12 @@ Initial development will focus on the cultivation core before expanding into lar
 ## Technical Target
 
 - **Minecraft:** 1.21.2
-- **Language:** Java
-- **Loader:** To be finalized
+- **Language:** Java 21
+- **Loader:** NeoForge
+- **Build tooling:** ModDevGradle
+- **NeoForge:** 21.2.1-beta
+- **Minecraft:** 1.21.2
+- **Base package:** `io.github.artificialturtill.myriadascension`
 - **Mod ID:** `myriad_ascension`
 
 ## Repository Structure
