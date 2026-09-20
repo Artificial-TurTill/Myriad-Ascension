@@ -1,147 +1,120 @@
 # Core Systems Specification
 
-This document defines the first mechanical foundation of Myriad Ascension.
+This document defines the first technical foundation of Myriad Ascension. Gameplay intent is recorded in `docs/design/gameplay-rules.md`.
 
 ## 1. Cultivator State
 
-Persistent player state should be logically separated from temporary combat state.
+Player cultivation data is stored as a persistent NeoForge entity data attachment.
 
-### Persistent state
+The initial data schema contains:
 
-Examples:
+- alignment
+- body polarity
+- Wood / Fire / Earth / Metal / Water / Yin / Yang affinities
+- realm and minor stage
+- cultivation progress
+- cultivation comprehension
+- battle comprehension
+- current and maximum Qi
+- normal circulation percentage
+- Burst state
+- meridian load
+- body, meridian, and soul injury state
+- recovery debt
+- vessel purity
+- impurity load
+- Demonic Qi contamination
+- Passive Qi Recharging level
+- Meditation level
 
-- Realm
-- Minor stage
-- Cultivation progress
-- Maximum Qi
-- Base Qi regeneration
-- Affinities
-- Constitution
-- Meridian quality
-- Meridian damage
-- Dantian quality/state
-- Bloodlines
-- Alignment/path data
-- Known techniques
-- Technique mastery
-- Spiritual sense
-- Permanent modifiers
+The model has an explicit schema version so save migrations can be added as systems evolve.
 
-### Temporary state
+## 2. Mortal State
 
-Examples:
+New data defaults to:
 
-- Current Qi
-- Active output
-- Current Qi allocation
-- Current technique
-- Casting state
-- Cooldowns
-- Combat strain
-- Active buffs/debuffs
-- Poise
-- Aura state
-- Weapon infusion state
+- Realm: Mortal
+- Qi: 0 / 0
+- circulation: 0%
+- Burst: off
+- alignment: undecided
+- body polarity: unset
+- affinities: ungenerated/zero until initial character generation is finalized
 
-The server should remain authoritative over combat-relevant state.
+Mortal is an internal pre-cultivation state rather than one of the major cultivation realms.
 
-## 2. Qi Reserve
+## 3. Qi Reserve
 
-Every cultivator has:
+Qi is both a resource and the fuel for active reinforcement.
 
-- Current Qi
-- Maximum Qi
-- Base regeneration
-- Environmental regeneration modifier
-- Technique efficiency modifiers
-- Active drain
+A cultivator tracks:
 
-Qi is not merely mana. It also fuels passive physical enhancement when the cultivator raises active output.
+- current Qi
+- maximum Qi
+- passive refill ceiling
+- active gathering
+- normal circulation
+- Burst overdrive
+- environmental modifiers
+- technique efficiency
+- meridian load
 
-## 3. Active Output
+### Passive recovery
 
-The player can circulate only a portion of their accessible cultivation power.
+Base natural recovery stops at **10% of maximum Qi**.
 
-Example:
+Passive Qi Recharging extends that ceiling by **4 percentage points per skill level**, up to level 10.
+
+Current target:
 
 ```text
-Current Qi:     8,450 / 10,000
-Active Output:  35%
-Meridian Load:  18%
+No skill       10%
+Level 1        14%
+Level 5        30%
+Level 10       50%
 ```
 
-Higher output can improve:
+Active gathering/cultivation is required to fill beyond the applicable passive ceiling.
 
-- Movement speed
-- Jump performance
-- Physical attack scaling
-- Knockback resistance
-- Defensive reinforcement
-- Technique scaling
-- Spiritual pressure
-- Weapon infusion
-- Perception
+## 4. G / H / R Control Model
 
-Higher output also increases:
+### G — Gather and Circulate
 
-- Qi drain
-- Meridian load
-- Visibility of aura
-- Risk from unstable techniques
+Holding G has two roles:
 
-Output scaling should avoid making maximum output the optimal permanent state.
+1. gather/refill Qi when the player has a valid cultivation route;
+2. increase normal circulation for immediate use.
 
-## 4. Input Model
+The amount that can be sustained depends on the actual reserve. High circulation on an almost-empty reserve is possible only briefly.
 
-### G — Gather / Charge
+### H — Suppress
 
-Holding G gathers and circulates Qi into an immediately usable state.
+H lowers normal circulation.
 
-Potential uses:
+This is the efficient way to reduce passive drain and suppress the cultivator's active power.
 
-- Recover combat-ready Qi
-- Prepare techniques
-- Stabilize circulation
-- Accelerate recovery while stationary
-- Interact with cultivation locations
+### R — Burst
 
-### R — Raise Output
+R is a distinct overdrive state, not the normal output-up control.
 
-Raises active output in configurable increments.
+Burst:
 
-### H — Lower Output
+- amplifies effective output,
+- disproportionately increases Qi drain,
+- increases meridian load,
+- becomes especially inefficient when technique mastery is poor,
+- is intended for short decisive windows, travel, pursuit, escape, or forced techniques.
 
-Lowers active output in configurable increments.
-
-At very low output, the player behaves close to vanilla Minecraft and consumes little or no passive Qi.
-
-### X — Quick Menu
-
-Opens a compact menu for combat/cultivation modes.
-
-Initial categories:
-
-- Body
-- Movement
-- Weapon
-- Defense
-- Perception
-- Aura
-
-The exact UI may be radial, cross-shaped, or compact list-based.
-
-### V — Cultivator Screen
-
-Opens the complete status interface.
+The exact Burst multiplier and drain curve remain balance constants rather than hard-coded lore.
 
 ## 5. Qi Allocation
 
-Active output and allocation are separate concepts.
+Normal circulation and allocation are separate.
 
 Example:
 
 ```text
-Active Output: 60%
+Circulation: 60%
 
 Allocation:
 Body        20%
@@ -150,99 +123,140 @@ Weapon      20%
 Perception   5%
 ```
 
-The allocation total cannot exceed active output.
+The X quick menu will eventually control allocation/modes such as:
 
-This allows players to specialize dynamically without changing builds.
+- Body
+- Movement
+- Weapon
+- Defense
+- Perception
+- Aura
+- technique-specific states
 
 ## 6. Weapon Infusion
 
 Weapon infusion applies cultivated Qi to held weapons.
 
-Possible effects depend on:
+Performance can depend on:
 
-- Active output
-- Weapon allocation
-- Technique
-- Element affinity
-- Weapon material
-- Weapon Qi conductivity
-- Realm
-- Mastery
+- realm/stage
+- current reserve
+- circulation
+- Burst state
+- weapon allocation
+- technique
+- elemental affinity
+- weapon material/conductivity
+- technique mastery
+- vessel purity
+- injuries
 
-Weapon infusion should support vanilla weapons and provide extension points for modded weapons.
+A high-rank artifact can greatly empower a low-rank cultivator without granting the speed, durability, control, or raw body performance of a vastly higher realm.
 
-## 7. Meridian Load and Internal Injury
+## 7. Death and Recovery
 
-Rapid or excessive power use creates strain.
+Realm regression on death is forbidden by design.
 
-Possible results:
+On death, the persistent cultivation data is copied to the respawned player and then placed into a recovery state.
 
-- Increased Qi cost
-- Lower regeneration
-- Technique instability
-- Reduced maximum output
-- Internal injuries
-- Temporary meridian damage
-- Qi deviation under extreme conditions
+Current prototype behavior:
 
-This acts as an anti-spam mechanic and supports alchemy/healing systems later.
+- realm/stage/progress are retained,
+- affinities/alignment/skills are retained,
+- Burst is disabled,
+- normal circulation is reset,
+- current Qi is limited toward the base passive baseline,
+- body and meridian injuries are imposed,
+- recovery debt is imposed.
 
-## 8. Affinity
+The numeric injury values are tuning constants and are expected to change during balancing.
 
-Affinities are efficiency/scaling factors, not class locks.
+## 8. Qi Deviation and Internal Injury
 
-Initial primary affinities:
+Internal instability can be produced by:
+
+- interrupted cultivation sessions,
+- excessive Burst,
+- incompatible/foreign Qi,
+- hostile techniques,
+- demonic interference,
+- poor-quality breakthroughs,
+- excessive impurities.
+
+Calm uninterrupted cultivation does not randomly produce Qi deviation.
+
+Demonic methods may intentionally destabilize another cultivator, siphon released energy, and leave Demonic Qi contamination.
+
+## 9. Affinity
+
+Initial core affinities:
 
 - Wood
 - Fire
 - Earth
 - Metal
 - Water
+- Yin
+- Yang
 
-Secondary/special affinities will be added later.
+Affinity modifies efficiency and development difficulty rather than acting as a permanent class restriction.
 
-Low affinity should increase difficulty, resource cost, and training time but never make ultimate progression mathematically impossible.
+The player does not freely choose classical elemental affinity at spawn.
 
-## 9. Environmental Qi
+The exact first-spawn generator will be finalized after the body-polarity input rule is decided.
 
-Chunks/regions may eventually expose local Qi composition.
+## 10. Purity and Impurities
 
-Example:
+The data model reserves:
 
-```text
-Spiritual Qi: 120
-Water Qi:     370
-Wood Qi:       90
-Yin Qi:        40
-Demonic Qi:     5
-```
+- vessel purity
+- impurity load
+- Demonic Qi contamination
 
-This system will later feed:
+These will later affect:
 
-- Cultivation speed
-- Spirit veins
-- Arrays
-- Plants
-- Ores
-- Beasts
-- Biomes
-- Sect placement
-- Natural treasures
+- cultivation efficiency,
+- technique performance,
+- stability,
+- breakthrough quality,
+- healing,
+- realm-gap performance.
 
-## 10. Networking Rule
+## 11. Realm Model
 
-Combat and progression must be server-authoritative.
+The complete realm hierarchy is represented in code now, but the implementation ceiling is currently **Saint**.
 
-The client may request actions, but the server validates:
+The realm model also records world scale and whether the transition to that scale is:
+
+- none,
+- ascension,
+- physical/interstellar travel.
+
+Planet -> Starfield is explicitly modeled as travel, not ascension.
+
+## 12. Persistence
+
+NeoForge data attachments are used for persistent entity cultivation data. For Minecraft 1.21.2–1.21.3, NeoForge documents data attachments as the supported mechanism for attaching persistent custom data to entities.
+
+Death copying is handled manually so the respawn process can preserve permanent progression while applying recovery consequences.
+
+## 13. Networking Rule
+
+Combat and progression are server-authoritative.
+
+The client may request actions, but the server will validate:
 
 - Qi availability
-- Output changes
-- Technique prerequisites
-- Cooldowns
-- Equipment
-- Realm requirements
-- Target validity
-- Damage
-- Persistent progression
+- circulation changes
+- Burst state
+- technique prerequisites
+- cooldowns
+- equipment
+- realm requirements
+- target validity
+- damage
+- persistent progression
 
-The client is responsible for presentation, input, prediction where safe, and UI.
+Client synchronization is the next layer and will use NeoForge payload networking.
+
+The client is responsible for presentation, input, UI, and safe prediction only.
