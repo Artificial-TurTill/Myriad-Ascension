@@ -1,5 +1,6 @@
 package io.github.artificialturtill.myriadascension.cultivation.data;
 
+import io.github.artificialturtill.myriadascension.network.ModNetworking;
 import io.github.artificialturtill.myriadascension.network.OpenGenesisPayload;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
@@ -17,6 +18,8 @@ public final class PlayerCultivationEvents {
         CultivatorData data = player.getData(ModAttachments.CULTIVATOR_DATA);
         if (!data.hasCompletedInitialSetup()) {
             PacketDistributor.sendToPlayer(player, OpenGenesisPayload.INSTANCE);
+        } else {
+            ModNetworking.syncPlayer(player, data);
         }
     }
 
