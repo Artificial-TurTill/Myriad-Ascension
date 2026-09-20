@@ -28,7 +28,7 @@ public final class PrimordialisTestudoClan {
                     ResourceLocation.fromNamespaceAndPath(
                             MyriadAscension.MOD_ID,
                             "primordial_testudo_longevity_art"),
-                    "Primordial Testudo Longevity Art",
+                    "Primordialis Testudo Longevity Art",
                     CultivationRealm.TRANSCENDENT,
                     0.70D,
                     1.25D,
