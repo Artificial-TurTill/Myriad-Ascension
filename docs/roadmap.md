@@ -110,3 +110,34 @@
 - Tribulations
 - Secret realms
 - Inheritances
+
+
+## Current vertical-slice target
+
+The first playable cultivation loop is now:
+
+1. character genesis,
+2. find/receive a cultivation inheritance,
+3. learn and activate the method,
+4. enter Tempered Body Stage 1,
+5. progress through the three Tempered Body bands,
+6. reach Initial Element and unlock active Qi,
+7. continue toward the current Saint implementation ceiling.
+
+### First content anchors
+
+- [ ] Primordialis Testudo Clan village integration — Issue #19
+- [ ] manual/Master/tomb/monument inheritances — Issue #18
+- [ ] Mortal -> Saint progression runtime — Issue #17
+- [ ] Empire politics foundation/runtime — Issue #20
+
+### Completed architecture supporting this slice
+
+- [x] Martial Peak-style Stage / Order / Rank subdivision model
+- [x] innate vs current affinity persistence
+- [x] known/active cultivation-method persistence
+- [x] technique signature traits
+- [x] Qi-nature profile foundation
+- [x] method ceilings and affinity requirements
+- [x] Mortal -> Tempered Body entry validation
+- [x] Primordialis Testudo method definition
