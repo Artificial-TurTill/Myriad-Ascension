@@ -26,6 +26,17 @@ Examples that must remain possible:
 
 This distinction is essential because internal punishment and faction sanctions depend on what a member has actually become, not only their banner.
 
+## Starting Moral Disposition
+
+Character creation does not grant extreme virtue or wickedness.
+
+The player chooses one of two initial dispositions:
+
+- **Benevolent:** starts at **+1**
+- **Malicious:** starts at **-1**
+
+All meaningful movement toward the extremes must come from later actions, cultivation, quests, faction conduct, and consequences.
+
 ## Affiliations
 
 Initial top-level affiliations:
@@ -49,7 +60,7 @@ The first relation model records the currently defined world rules:
 - **Buddhist ↔ Demonic:** mortal enemies
 - **Righteous ↔ Buddhist:** compatible
 - **Righteous ↔ Imperial:** compatible
-- **Unorthodox ↔ Demonic:** compatible
+- **Unorthodox ↔ Demonic:** neutral by default; hostility develops from actions and faction relationships
 - **Buddhist ↔ Unorthodox:** hostile
 - **Righteous ↔ Demonic:** hostile
 - **Imperial ↔ Unorthodox:** hostile
@@ -83,6 +94,32 @@ Internal violence is much more normalized. Same-affiliation killing carries fewe
 
 Specific gangs, clans, brotherhoods, and leaders can still enforce their own rules.
 
+## Demonic Hierarchy and Formal Challenges
+
+Demonic society uses competitive hierarchy rather than blanket mutual protection.
+
+Hierarchy defense flows **downward**:
+
+- attacking an ordinary junior does not cause unrelated superiors to defend them,
+- attacking a master causes their own disciples/subordinates to defend the master,
+- attacking a cult leader can mobilize the entire cult beneath that leader,
+- a cult leader does not automatically defend a lower master merely because that master is being challenged,
+- if the challenger defeats a master under valid rank rules, the victor can become subject to the same rank competition and responsibilities.
+
+Protection only applies when there is an actual subject/superior relationship. Merely being lower ranked in the same cult is not sufficient.
+
+Hierarchy defense is disabled for formally recognized:
+
+- rank challenges,
+- humiliation matches,
+- deathmatches.
+
+If an NPC initiates a valid rank challenge against the player, the player's hierarchy does not automatically protect them either.
+
+### Buddhist exception
+
+Buddhist organizations do **not** permit deathmatches. Deliberately arranging a fight to the death reflects malicious attachment/grudge and conflicts with Buddhist discipline and Karma.
+
 ## Energy Exposure
 
 Affiliation is not only a menu label.
@@ -107,7 +144,34 @@ Examples:
 - Buddhist cultivation exposed in Demonic territory can provoke lethal action.
 - Calm seated cultivation in view of hostile or suspicious NPCs can reveal the cultivator and trigger an attack.
 
-Concealment techniques, treasures, formations, suppressed circulation, false identities, and low output can later interact with this detection system.
+Concealment techniques, treasures, formations, suppressed circulation, false identities, and low output can interact with this detection system.
+
+### Burst as a Qi beacon
+
+Burst is not inherently Demonic. It amplifies and broadcasts the Qi signature actually being used.
+
+A cultivator using Burst effectively announces their active cultivation nature to nearby observers unless concealment/disguise is strong enough. The same applies, at lower exposure strength, to Qi techniques, weapon infusion, active circulation, and visible seated cultivation.
+
+### Qi Concealment
+
+**Qi Concealment** is a passive skill with levels 1–10.
+
+At level 10:
+
+- observers below the cultivator's major realm are guaranteed to be fooled,
+- observers in the same major realm are guaranteed to be fooled,
+- an observer exactly one major realm higher is also fooled unless the concealed cultivator is only 1st minor stage,
+- a World Creation cultivator can never be fooled by the skill alone.
+
+Lower levels are intentionally resolved by future spiritual-sense/perception rules rather than a hidden arbitrary probability.
+
+### Concealment artifacts
+
+Artifacts can conceal or even falsify Qi nature independently of the passive skill.
+
+Their effectiveness is limited by artifact rank. For example, an Open Heaven-rank concealment ring can mask or transform a Qi signature against observers within the level the artifact can withstand, including early Open Heaven cultivators if the artifact quality is sufficient.
+
+Artifacts can therefore make the apparent affiliation/signature differ from the user's true cultivation nature.
 
 ## Demonic Cultivation
 
