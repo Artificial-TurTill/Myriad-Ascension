@@ -30,3 +30,12 @@ jobs:
 
       - name: Build
         run: ./gradlew build
+
+      - name: Upload alpha JAR
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Myriad-Ascension-0.1.0-alpha.1
+          path: build/libs/*.jar
+          if-no-files-found: error
+          retention-days: 30
