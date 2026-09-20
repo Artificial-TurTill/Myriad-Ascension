@@ -33,6 +33,11 @@ public final class CultivatorStatusScreen extends Screen {
         int yLeft = top + 24;
         yLeft = line(graphics, left, yLeft, "Realm", realmText());
         yLeft = line(graphics, left, yLeft, "Method", methodText());
+        yLeft = line(graphics, left, yLeft, "Bloodline", bloodlineText());
+        yLeft = line(graphics, left, yLeft, "Bloodline Purity", decimal(data.bloodlinePurity()) + "%");
+        if (data.bloodlineConflictDamage() > 0.0D) {
+            yLeft = line(graphics, left, yLeft, "Bloodline Conflict", decimal(data.bloodlineConflictDamage()));
+        }
         yLeft = line(graphics, left, yLeft, "Sex", pretty(data.sex().name()));
         yLeft = line(graphics, left, yLeft, "Affiliation", pretty(data.affiliation().name()));
         yLeft = line(graphics, left, yLeft, "Moral Alignment", signed(data.moralAlignment()));
@@ -106,6 +111,18 @@ public final class CultivatorStatusScreen extends Screen {
         int start = Math.max(slash, colon) + 1;
         String path = id.substring(Math.max(0, start));
         return pretty(path.toUpperCase(Locale.ROOT));
+    }
+
+    private String bloodlineText() {
+        if (data.bloodlineName() == null || data.bloodlineName().isBlank()) {
+            return "None";
+        }
+
+        if (data.bloodlineGrade() == null || data.bloodlineGrade().isBlank()) {
+            return data.bloodlineName();
+        }
+
+        return data.bloodlineName() + " — " + data.bloodlineGrade();
     }
 
     private static String level(int value) {
