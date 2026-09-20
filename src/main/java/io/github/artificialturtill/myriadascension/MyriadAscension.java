@@ -1,6 +1,7 @@
 package io.github.artificialturtill.myriadascension;
 
 import com.mojang.logging.LogUtils;
+import io.github.artificialturtill.myriadascension.alpha.AlphaCommands;
 import io.github.artificialturtill.myriadascension.cultivation.data.ModAttachments;
 import io.github.artificialturtill.myriadascension.cultivation.data.PlayerCultivationEvents;
 import io.github.artificialturtill.myriadascension.network.ModNetworking;
@@ -20,6 +21,7 @@ public final class MyriadAscension {
         modEventBus.addListener(ModNetworking::registerPayloads);
         NeoForge.EVENT_BUS.addListener(PlayerCultivationEvents::onPlayerLoggedIn);
         NeoForge.EVENT_BUS.addListener(PlayerCultivationEvents::onPlayerClone);
+        NeoForge.EVENT_BUS.addListener(AlphaCommands::register);
 
         LOGGER.info("Myriad Ascension initializing on NeoForge.");
     }
