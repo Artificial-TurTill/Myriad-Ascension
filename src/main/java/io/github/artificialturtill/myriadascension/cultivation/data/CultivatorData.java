@@ -49,6 +49,7 @@ public final class CultivatorData implements INBTSerializable<CompoundTag> {
     // Zero means unlearned. Once learned, a skill begins at level 1.
     private int passiveQiRechargingLevel;
     private int meditationLevel;
+    private int qiConcealmentLevel;
 
     // Runtime-only anti-spam state. These values intentionally do not persist to disk.
     private long lastCirculationControlTick = Long.MIN_VALUE;
@@ -109,6 +110,10 @@ public final class CultivatorData implements INBTSerializable<CompoundTag> {
         }
         if (sex == null || sex == CharacterSex.UNSET) {
             throw new IllegalArgumentException("Character sex must be Male or Female.");
+        }
+
+        if (startingMoralAlignment != -1.0D && startingMoralAlignment != 1.0D) {
+            throw new IllegalArgumentException("Starting moral alignment must be exactly -1 or +1.");
         }
 
         setCharacterSex(sex);
@@ -276,6 +281,14 @@ public final class CultivatorData implements INBTSerializable<CompoundTag> {
         meditationLevel = QiRules.clampSkillLevel(level);
     }
 
+    public int qiConcealmentLevel() {
+        return qiConcealmentLevel;
+    }
+
+    public void setQiConcealmentLevel(int level) {
+        qiConcealmentLevel = QiRules.clampSkillLevel(level);
+    }
+
     public double passiveRechargeCeiling() {
         return QiRules.passiveRechargeCeiling(passiveQiRechargingLevel);
     }
@@ -347,6 +360,7 @@ public final class CultivatorData implements INBTSerializable<CompoundTag> {
 
         passiveQiRechargingLevel = other.passiveQiRechargingLevel;
         meditationLevel = other.meditationLevel;
+        qiConcealmentLevel = other.qiConcealmentLevel;
     }
 
     @Override
@@ -384,6 +398,7 @@ public final class CultivatorData implements INBTSerializable<CompoundTag> {
 
         tag.putInt("PassiveQiRechargingLevel", passiveQiRechargingLevel);
         tag.putInt("MeditationLevel", meditationLevel);
+        tag.putInt("QiConcealmentLevel", qiConcealmentLevel);
 
         return tag;
     }
@@ -442,6 +457,7 @@ public final class CultivatorData implements INBTSerializable<CompoundTag> {
 
         passiveQiRechargingLevel = QiRules.clampSkillLevel(tag.getInt("PassiveQiRechargingLevel"));
         meditationLevel = QiRules.clampSkillLevel(tag.getInt("MeditationLevel"));
+        qiConcealmentLevel = QiRules.clampSkillLevel(tag.getInt("QiConcealmentLevel"));
     }
 
     private void migrateLegacyAlignment(String legacyAlignment) {
