@@ -22,8 +22,7 @@ public final class AffiliationRelations {
         }
 
         if (pair(first, second, CultivationAffiliation.RIGHTEOUS, CultivationAffiliation.BUDDHIST)
-                || pair(first, second, CultivationAffiliation.RIGHTEOUS, CultivationAffiliation.IMPERIAL)
-                || pair(first, second, CultivationAffiliation.UNORTHODOX, CultivationAffiliation.DEMONIC)) {
+                || pair(first, second, CultivationAffiliation.RIGHTEOUS, CultivationAffiliation.IMPERIAL)) {
             return AffiliationRelation.COMPATIBLE;
         }
 
