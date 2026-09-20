@@ -43,7 +43,7 @@ public final class ClientCultivationInput {
         }
 
         while (ClientKeyMappings.STATUS.consumeClick()) {
-            // V status screen: intentionally not opened until synchronized client data is ready.
+            ClientCultivatorScreens.openStatus();
         }
     }
 }
