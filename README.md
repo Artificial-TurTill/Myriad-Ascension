@@ -22,9 +22,9 @@ The goal is not to reproduce any one existing setting. Myriad Ascension uses ori
 
 | Key | Function |
 | --- | --- |
-| **G** | Gather / charge usable Qi |
-| **H** | Lower active Qi output |
-| **R** | Raise active Qi output |
+| **G** | Gather Qi and raise normal circulation |
+| **H** | Suppress/lower normal Qi circulation |
+| **R** | Toggle Burst overdrive |
 | **X** | Open compact cultivation quick menu |
 | **V** | Open full cultivator status screen |
 
@@ -102,7 +102,7 @@ Exceptional starting talent accelerates early development, while difficult const
 
 ## Development Status
 
-**Phase:** Foundation / design and architecture
+**Phase:** Cultivation core implementation
 
 Initial development will focus on the cultivation core before expanding into large content systems.
 
@@ -171,6 +171,14 @@ myriad_ascension
     └── screen
 ```
 
+## Design Specifications
+
+- `docs/design/gameplay-rules.md` — authoritative gameplay decisions
+- `docs/design/realm-hierarchy.md` — full realm/world progression
+- `docs/design/audio.md` — placeholder/final audio policy
+- `docs/core-systems.md` — technical core-system specification
+- `docs/roadmap.md` — implementation roadmap
+
 ## License
 
-A project license has not yet been selected.
+**All Rights Reserved.** See `LICENSE`.
