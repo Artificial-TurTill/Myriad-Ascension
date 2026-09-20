@@ -350,3 +350,22 @@ NPCs may inherit bloodlines from family lineage at birth.
 Ancient Tortoise placement is intentionally sparse, targeting roughly five candidates per 10,000 × 10,000 block area rather than normal mob density.
 
 See `docs/design/bloodlines.md`.
+
+
+## 17. Clan Library Authorization
+
+CultivatorData schema v8 persists library authorization independently from physical inventory.
+
+The initial Primordialis Testudo implementation allows exactly one authorized take-out book per player for that clan library.
+
+Rules:
+
+- physical possession does not grant usability,
+- verification is server-authoritative,
+- a newly authorized book replaces the prior authorization,
+- rank restrictions still apply,
+- technique manuals can layer additional eligibility requirements,
+- Custodian is the normal overseer; Elders and Clan Leader may also authorize,
+- unauthorized books remain unusable even if stolen/carried.
+
+This prevents inventory theft or mass manual hoarding from bypassing the clan's knowledge hierarchy.
