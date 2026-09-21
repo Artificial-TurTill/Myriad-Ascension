@@ -15,6 +15,7 @@ import io.github.artificialturtill.myriadascension.organization.OrganizationStan
 import io.github.artificialturtill.myriadascension.library.LibraryAuthorizationState;
 import io.github.artificialturtill.myriadascension.quest.QuestJournalState;
 import io.github.artificialturtill.myriadascension.stats.CultivatorStats;
+import io.github.artificialturtill.myriadascension.technique.TechniqueCategory;
 import io.github.artificialturtill.myriadascension.technique.TechniqueLoadoutState;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -538,6 +539,10 @@ public final class CultivatorData implements INBTSerializable<CompoundTag> {
 
         if (loadedSchemaVersion >= 9 && tag.contains("TechniqueLoadout")) {
             techniqueLoadout.load(tag.getCompound("TechniqueLoadout"));
+        } else if (!cultivationMethods.activeMethodId().isBlank()) {
+            techniqueLoadout.equipSerialized(
+                    TechniqueCategory.CULTIVATION,
+                    cultivationMethods.activeMethodId());
         }
 
         realm = CultivationRealm.fromSerializedName(tag.getString("Realm"));
