@@ -7,6 +7,8 @@ import io.github.artificialturtill.myriadascension.alignment.CultivationAffiliat
 import io.github.artificialturtill.myriadascension.character.CharacterSex;
 import io.github.artificialturtill.myriadascension.cultivation.data.CultivatorData;
 import io.github.artificialturtill.myriadascension.cultivation.realm.CultivationRealm;
+import io.github.artificialturtill.myriadascension.stats.CultivatorStat;
+import io.github.artificialturtill.myriadascension.technique.TechniqueCategory;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
@@ -24,6 +26,7 @@ public record CultivatorSyncPayload(
         double bloodlineConflictDamage,
         double moralAlignment,
         double karma,
+
         int wood,
         int fire,
         int earth,
@@ -31,20 +34,38 @@ public record CultivatorSyncPayload(
         int water,
         int yin,
         int yang,
+
+        double strength,
+        double vitality,
+        double agility,
+        double spiritualSense,
+        double meridianQuality,
+        double dantianQuality,
+        double soulStrength,
+
+        String cultivationTechniqueId,
+        String footworkTechniqueId,
+        String weaponTechniqueId,
+        String eyesightTechniqueId,
+
         double currentQi,
         double maximumQi,
         double circulationPercent,
         boolean burstMode,
+
         double cultivationProgress,
         double cultivationComprehension,
         double battleComprehension,
+
         double bodyInjury,
         double meridianInjury,
         double soulInjury,
         double recoveryDebt,
+
         double vesselPurity,
         double impurityLoad,
         double demonicQiContamination,
+
         int passiveQiRechargingLevel,
         int meditationLevel,
         int qiConcealmentLevel) implements CustomPacketPayload {
@@ -57,6 +78,7 @@ public record CultivatorSyncPayload(
 
     public static CultivatorSyncPayload from(CultivatorData data) {
         AffinityProfile a = data.affinities();
+
         return new CultivatorSyncPayload(
                 data.characterSex(),
                 data.affiliation(),
@@ -69,6 +91,7 @@ public record CultivatorSyncPayload(
                 data.bloodline().conflictDamage(),
                 data.moralAlignment(),
                 data.karma(),
+
                 a.get(AffinityType.WOOD),
                 a.get(AffinityType.FIRE),
                 a.get(AffinityType.EARTH),
@@ -76,20 +99,38 @@ public record CultivatorSyncPayload(
                 a.get(AffinityType.WATER),
                 a.get(AffinityType.YIN),
                 a.get(AffinityType.YANG),
+
+                data.stats().get(CultivatorStat.STRENGTH),
+                data.stats().get(CultivatorStat.VITALITY),
+                data.stats().get(CultivatorStat.AGILITY),
+                data.stats().get(CultivatorStat.SPIRITUAL_SENSE),
+                data.stats().get(CultivatorStat.MERIDIAN_QUALITY),
+                data.stats().get(CultivatorStat.DANTIAN_QUALITY),
+                data.stats().get(CultivatorStat.SOUL_STRENGTH),
+
+                data.techniqueLoadout().equippedId(TechniqueCategory.CULTIVATION),
+                data.techniqueLoadout().equippedId(TechniqueCategory.FOOTWORK),
+                data.techniqueLoadout().equippedId(TechniqueCategory.WEAPON),
+                data.techniqueLoadout().equippedId(TechniqueCategory.EYESIGHT),
+
                 data.currentQi(),
                 data.maximumQi(),
                 data.circulationPercent(),
                 data.burstMode(),
+
                 data.cultivationProgress(),
                 data.cultivationComprehension(),
                 data.battleComprehension(),
+
                 data.bodyInjury(),
                 data.meridianInjury(),
                 data.soulInjury(),
                 data.recoveryDebt(),
+
                 data.vesselPurity(),
                 data.impurityLoad(),
                 data.demonicQiContamination(),
+
                 data.passiveQiRechargingLevel(),
                 data.meditationLevel(),
                 data.qiConcealmentLevel());
@@ -120,6 +161,19 @@ public record CultivatorSyncPayload(
         buf.writeVarInt(p.water());
         buf.writeVarInt(p.yin());
         buf.writeVarInt(p.yang());
+
+        buf.writeDouble(p.strength());
+        buf.writeDouble(p.vitality());
+        buf.writeDouble(p.agility());
+        buf.writeDouble(p.spiritualSense());
+        buf.writeDouble(p.meridianQuality());
+        buf.writeDouble(p.dantianQuality());
+        buf.writeDouble(p.soulStrength());
+
+        buf.writeUtf(p.cultivationTechniqueId());
+        buf.writeUtf(p.footworkTechniqueId());
+        buf.writeUtf(p.weaponTechniqueId());
+        buf.writeUtf(p.eyesightTechniqueId());
 
         buf.writeDouble(p.currentQi());
         buf.writeDouble(p.maximumQi());
@@ -157,6 +211,7 @@ public record CultivatorSyncPayload(
                 buf.readDouble(),
                 buf.readDouble(),
                 buf.readDouble(),
+
                 buf.readVarInt(),
                 buf.readVarInt(),
                 buf.readVarInt(),
@@ -164,20 +219,38 @@ public record CultivatorSyncPayload(
                 buf.readVarInt(),
                 buf.readVarInt(),
                 buf.readVarInt(),
+
+                buf.readDouble(),
+                buf.readDouble(),
+                buf.readDouble(),
+                buf.readDouble(),
+                buf.readDouble(),
+                buf.readDouble(),
+                buf.readDouble(),
+
+                buf.readUtf(),
+                buf.readUtf(),
+                buf.readUtf(),
+                buf.readUtf(),
+
                 buf.readDouble(),
                 buf.readDouble(),
                 buf.readDouble(),
                 buf.readBoolean(),
+
+                buf.readDouble(),
+                buf.readDouble(),
+                buf.readDouble(),
+
                 buf.readDouble(),
                 buf.readDouble(),
                 buf.readDouble(),
                 buf.readDouble(),
+
                 buf.readDouble(),
                 buf.readDouble(),
                 buf.readDouble(),
-                buf.readDouble(),
-                buf.readDouble(),
-                buf.readDouble(),
+
                 buf.readVarInt(),
                 buf.readVarInt(),
                 buf.readVarInt());
