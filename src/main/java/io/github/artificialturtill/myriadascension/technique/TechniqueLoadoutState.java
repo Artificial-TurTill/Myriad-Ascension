@@ -28,6 +28,10 @@ public final class TechniqueLoadoutState {
         equipped.put(category, techniqueId == null ? "" : techniqueId.toString());
     }
 
+    public void equipSerialized(TechniqueCategory category, String techniqueId) {
+        equipped.put(category, techniqueId == null ? "" : techniqueId);
+    }
+
     public void clear(TechniqueCategory category) {
         equipped.put(category, "");
     }
