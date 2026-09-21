@@ -369,3 +369,48 @@ Rules:
 - unauthorized books remain unusable even if stolen/carried.
 
 This prevents inventory theft or mass manual hoarding from bypassing the clan's knowledge hierarchy.
+
+
+## 18. Core Stats and Technique Loadout
+
+CultivatorData schema v9 adds persistent core stats and equipped technique slots.
+
+### Core stats
+
+- Strength
+- Vitality
+- Agility
+- Spiritual Sense
+- Meridian Quality
+- Dantian Quality
+- Soul Strength
+
+All core stats have a hard minimum value of **1**.
+
+Existing pre-v9 saves migrate with every new core stat initialized to 1.
+
+### Technique loadout
+
+Initial single-slot categories:
+
+- Cultivation
+- Footwork
+- Weapon
+- Eyesight
+
+A category stores one equipped technique ID.
+
+Equipping another technique in the same category replaces the existing one.
+
+The active cultivation method is mirrored into the Cultivation technique slot. Existing saves migrate their active cultivation method into that slot automatically.
+
+### V-screen organization
+
+The V screen is divided into focused pages:
+
+1. Overview
+2. Stats & Affinities
+3. Skills
+4. Techniques
+
+The client uses synchronized server-owned values and refreshes from the latest client snapshot while the screen is open.
