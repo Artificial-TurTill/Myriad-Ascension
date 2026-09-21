@@ -177,6 +177,10 @@ myriad_ascension
     └── screen
 ```
 
+## Master Project Report
+
+- `docs/MYRIAD_ASCENSION_PROJECT_REPORT.md` — consolidated authoritative report of the agreed vision, mechanics, progression, factions, world systems, alpha scope, and open design areas.
+
 ## Design Specifications
 
 - `docs/design/gameplay-rules.md` — authoritative gameplay decisions
