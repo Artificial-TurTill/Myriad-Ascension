@@ -1168,7 +1168,53 @@ Current/future information includes:
 - constitution,
 - Spiritual Sense.
 
-The alpha contains a functional placeholder V screen.
+The alpha originally contained a single crowded placeholder V screen.
+
+## 21.1 Tabbed V-screen layout
+
+The V interface is now designed as a compact character-sheet UI inspired by the navigation structure of Dragon Block C while retaining Myriad Ascension's own Xianxia visual identity.
+
+Initial pages:
+
+- **Overview** — realm, method, bloodline, affiliation, morality, Qi, Burst, injuries/condition.
+- **Stats & Affinities** — core cultivator attributes and elemental/Yin-Yang affinities.
+- **Skills** — learned passive/active skills and their levels.
+- **Techniques** — equipped technique categories.
+
+The interface should show only one focused page at a time rather than rendering all character data simultaneously.
+
+### Core stats
+
+Initial persistent core stats:
+
+- Strength
+- Vitality
+- Agility
+- Spiritual Sense
+- Meridian Quality
+- Dantian Quality
+- Soul Strength
+
+Every core stat has a hard minimum of **1**.
+
+Save loading, migration, setters, and future penalties must never reduce a core stat below 1.
+
+Affinities remain a separate system and may have values such as 0 according to the affinity-generation/training rules.
+
+### Technique slots
+
+The initial technique loadout contains one active slot for each category:
+
+- Cultivation
+- Footwork
+- Weapon
+- Eyesight
+
+Only **one technique per category** may be active at a time.
+
+Equipping another technique in the same category replaces the currently equipped technique rather than allowing two techniques from that category to operate simultaneously.
+
+Additional technique categories may be added later when explicitly designed.
 
 ---
 
