@@ -5,6 +5,7 @@ import io.github.artificialturtill.myriadascension.alpha.AlphaCommands;
 import io.github.artificialturtill.myriadascension.cultivation.data.ModAttachments;
 import io.github.artificialturtill.myriadascension.cultivation.data.PlayerCultivationEvents;
 import io.github.artificialturtill.myriadascension.network.ModNetworking;
+import io.github.artificialturtill.myriadascension.registry.ModItems;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
@@ -18,6 +19,7 @@ public final class MyriadAscension {
 
     public MyriadAscension(IEventBus modEventBus, ModContainer modContainer) {
         ModAttachments.register(modEventBus);
+        ModItems.register(modEventBus);
         modEventBus.addListener(ModNetworking::registerPayloads);
         NeoForge.EVENT_BUS.addListener(PlayerCultivationEvents::onPlayerLoggedIn);
         NeoForge.EVENT_BUS.addListener(PlayerCultivationEvents::onPlayerClone);
