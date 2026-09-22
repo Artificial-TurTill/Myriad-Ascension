@@ -16,6 +16,7 @@ public final class MyriadAscensionClient {
         ClientPayloadBridge.installCultivatorSyncHandler(ClientCultivatorState::update);
 
         modEventBus.addListener(ClientKeyMappings::register);
+        modEventBus.addListener(ClientCultivatorHud::register);
         NeoForge.EVENT_BUS.addListener(ClientCultivationInput::onClientTick);
     }
 }
