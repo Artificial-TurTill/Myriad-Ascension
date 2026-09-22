@@ -10,7 +10,7 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 
 public final class ModNetworking {
-    public static final String NETWORK_VERSION = "5";
+    public static final String NETWORK_VERSION = "6";
 
     private ModNetworking() {
     }
@@ -26,6 +26,11 @@ public final class ModNetworking {
                 SubmitGenesisPayload.TYPE,
                 SubmitGenesisPayload.STREAM_CODEC,
                 ModNetworking::handleSubmitGenesis);
+
+        registrar.playToServer(
+                TrainingControlPayload.TYPE,
+                TrainingControlPayload.STREAM_CODEC,
+                ModNetworking::handleTrainingControl);
 
         registrar.playToClient(
                 OpenGenesisPayload.TYPE,
@@ -65,6 +70,19 @@ public final class ModNetworking {
         context.reply(CultivatorSyncPayload.from(data));
     }
 
+    private static void handleTrainingControl(TrainingControlPayload payload, IPayloadContext context) {
+        if (!(context.player() instanceof ServerPlayer player)) {
+            return;
+        }
+
+        CultivatorData data = player.getData(ModAttachments.CULTIVATOR_DATA);
+        data.setTrainingRequested(payload.training());
+
+        if (!payload.training()) {
+            syncPlayer(player, data);
+        }
+    }
+
     private static void handleQiControl(QiControlPayload payload, IPayloadContext context) {
         if (!(context.player() instanceof ServerPlayer player)) {
             return;
@@ -81,6 +99,15 @@ public final class ModNetworking {
 
     private static void handleGatherAndCirculate(ServerPlayer player, CultivatorData data) {
         if (!data.tryAcceptCirculationControl(player.level().getGameTime())) {
+            return;
+        }
+
+        // During physical Testudo training, G becomes the controlled-breathing rhythm.
+        // This does not create usable Qi before Initial Element.
+        if (data.trainingRequested()
+                && (data.realm() == CultivationRealm.MORTAL
+                        || data.realm() == CultivationRealm.TEMPERED_BODY)) {
+            data.markTrainingBreathPulse(player.level().getGameTime());
             return;
         }
 
