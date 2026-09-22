@@ -1,6 +1,6 @@
 # Myriad Ascension
 
-**Myriad Ascension** is a Minecraft **1.21.2** cultivation and martial-world mod focused on player agency, deep progression, and combat built around active Qi control rather than simple stat inflation.
+**Myriad Ascension** is a Minecraft **1.21.1** cultivation and martial-world mod focused on player agency, deep progression, and combat built around active Qi control rather than simple stat inflation.
 
 > **Ten thousand paths. One summit.**
 
@@ -127,12 +127,11 @@ Initial development will focus on the cultivation core before expanding into lar
 
 ## Technical Target
 
-- **Minecraft:** 1.21.2
+- **Minecraft:** 1.21.1
 - **Language:** Java 21
 - **Loader:** NeoForge
 - **Build tooling:** ModDevGradle
-- **NeoForge:** 21.2.1-beta
-- **Minecraft:** 1.21.2
+- **NeoForge:** 21.1.25
 - **Base package:** `io.github.artificialturtill.myriadascension`
 - **Mod ID:** `myriad_ascension`
 
