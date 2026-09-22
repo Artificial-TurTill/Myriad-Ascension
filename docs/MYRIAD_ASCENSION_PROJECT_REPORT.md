@@ -1135,6 +1135,37 @@ The quick menu will also control features such as weapon infusion.
 
 ---
 
+## 20.1 In-game cultivation HUD
+
+During normal gameplay, Myriad Ascension displays a compact top-left HUD inspired structurally by Dragon Block C.
+
+It shows:
+
+- Health
+- Qi
+- active Power percentage
+
+Active Power is the current circulation percentage. It determines the fraction of full technique/output strength being used and proportionally scales Qi consumption for systems that consume Qi.
+
+The HUD is separate from the V character sheet and remains visible during normal play.
+
+## 20.2 Technique manuals and scrolls
+
+Every registered technique must have its own physical Manual or Scroll item.
+
+A technique item contains exactly one technique identity and category.
+
+Using a manual:
+
+- is validated on the server,
+- permanently records the technique as learned,
+- does not consume the manual,
+- automatically equips it only if its technique-category slot is empty.
+
+The first implemented example is the **Primordialis Testudo Longevity Art Manual**.
+
+This item framework is also intended for clan libraries, Masters, sect rewards, tomb loot, monuments, auctions, and other inheritance sources.
+
 # 21. V Cultivator Status Screen
 
 The V screen is intended to become the full character/cultivation profile.
