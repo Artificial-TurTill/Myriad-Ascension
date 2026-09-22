@@ -24,7 +24,7 @@ import net.minecraft.util.RandomSource;
 import net.neoforged.neoforge.common.util.INBTSerializable;
 
 public final class CultivatorData implements INBTSerializable<CompoundTag> {
-    public static final int SCHEMA_VERSION = 10;
+    public static final int SCHEMA_VERSION = 11;
 
     private int schemaVersion = SCHEMA_VERSION;
 
@@ -70,6 +70,14 @@ public final class CultivatorData implements INBTSerializable<CompoundTag> {
     private int passiveQiRechargingLevel;
     private int meditationLevel;
     private int qiConcealmentLevel;
+
+    // Training fatigue persists so relogging cannot be used as instant recovery.
+    private double trainingFatigue;
+
+    // Runtime-only training state.
+    private boolean trainingRequested;
+    private int trainingSessionTicks;
+    private long lastTrainingBreathPulseTick = Long.MIN_VALUE;
 
     // Runtime-only anti-spam state. These values intentionally do not persist to disk.
     private long lastCirculationControlTick = Long.MIN_VALUE;
@@ -356,6 +364,45 @@ public final class CultivatorData implements INBTSerializable<CompoundTag> {
         return QiRules.passiveRechargeCeiling(passiveQiRechargingLevel);
     }
 
+    public double trainingFatigue() {
+        return trainingFatigue;
+    }
+
+    public void setTrainingFatigue(double trainingFatigue) {
+        this.trainingFatigue = clamp(trainingFatigue, 0.0D, 100.0D);
+    }
+
+    public boolean trainingRequested() {
+        return trainingRequested;
+    }
+
+    public void setTrainingRequested(boolean trainingRequested) {
+        this.trainingRequested = trainingRequested;
+        if (!trainingRequested) {
+            resetTrainingSession();
+        }
+    }
+
+    public int trainingSessionTicks() {
+        return trainingSessionTicks;
+    }
+
+    public void incrementTrainingSessionTicks() {
+        trainingSessionTicks++;
+    }
+
+    public void resetTrainingSession() {
+        trainingSessionTicks = 0;
+    }
+
+    public long lastTrainingBreathPulseTick() {
+        return lastTrainingBreathPulseTick;
+    }
+
+    public void markTrainingBreathPulse(long gameTime) {
+        lastTrainingBreathPulseTick = gameTime;
+    }
+
     public boolean hasCompletedInitialSetup() {
         return characterSex != CharacterSex.UNSET
                 && bodyPolarity != BodyPolarity.UNSET
@@ -434,6 +481,11 @@ public final class CultivatorData implements INBTSerializable<CompoundTag> {
         passiveQiRechargingLevel = other.passiveQiRechargingLevel;
         meditationLevel = other.meditationLevel;
         qiConcealmentLevel = other.qiConcealmentLevel;
+        trainingFatigue = other.trainingFatigue;
+
+        trainingRequested = false;
+        trainingSessionTicks = 0;
+        lastTrainingBreathPulseTick = Long.MIN_VALUE;
     }
 
     @Override
@@ -482,6 +534,7 @@ public final class CultivatorData implements INBTSerializable<CompoundTag> {
         tag.putInt("PassiveQiRechargingLevel", passiveQiRechargingLevel);
         tag.putInt("MeditationLevel", meditationLevel);
         tag.putInt("QiConcealmentLevel", qiConcealmentLevel);
+        tag.putDouble("TrainingFatigue", trainingFatigue);
 
         return tag;
     }
@@ -589,6 +642,14 @@ public final class CultivatorData implements INBTSerializable<CompoundTag> {
         passiveQiRechargingLevel = QiRules.clampSkillLevel(tag.getInt("PassiveQiRechargingLevel"));
         meditationLevel = QiRules.clampSkillLevel(tag.getInt("MeditationLevel"));
         qiConcealmentLevel = QiRules.clampSkillLevel(tag.getInt("QiConcealmentLevel"));
+
+        trainingFatigue = loadedSchemaVersion >= 11
+                ? clamp(tag.getDouble("TrainingFatigue"), 0.0D, 100.0D)
+                : 0.0D;
+
+        trainingRequested = false;
+        trainingSessionTicks = 0;
+        lastTrainingBreathPulseTick = Long.MIN_VALUE;
     }
 
     private void migrateLegacyAlignment(String legacyAlignment) {
