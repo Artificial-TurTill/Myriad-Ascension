@@ -1,4 +1,4 @@
-# Myriad Ascension — Alpha 0.1.0-alpha.5
+# Myriad Ascension — Alpha 0.1.0-alpha.6
 
 This is an early systems alpha for Minecraft 1.21.1 / NeoForge.
 
@@ -85,6 +85,22 @@ Simulates the Testudo Clan Custodian authorizing the Cultivation Fundamentals li
 - world remains sharp behind the character sheet
 - custom dark panel remains responsible for readability
 
+## Alpha.6 HUD and technique manuals
+
+- persistent in-game HUD in the top-left
+- Health bar
+- Qi bar
+- active Power percentage bar
+- Power percentage is the canonical multiplier for Qi cost/output scaling
+- technique-manual item framework
+- one distinct manual/scroll item per registered technique
+- Primordialis Testudo Longevity Art Manual added
+- right-clicking a manual learns its technique server-side
+- newly learned techniques auto-equip only when their category slot is empty
+- learned-technique knowledge persists in player data
+- save schema upgraded to version 10
+- manual item currently uses a placeholder paper texture
+
 ## Known limitations
 
 - no generated clan compound yet
@@ -104,4 +120,4 @@ Simulates the Testudo Clan Custodian authorizing the Cultivation Fundamentals li
 
 ## Save compatibility
 
-This build writes player-data schema version 9. Future alpha builds will attempt migrations, but backups are recommended because this is pre-release software.
+This build writes player-data schema version 10. Future alpha builds will attempt migrations, but backups are recommended because this is pre-release software.
