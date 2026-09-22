@@ -1,4 +1,4 @@
-# Myriad Ascension — Alpha 0.1.0-alpha.6
+# Myriad Ascension — Alpha 0.1.0-alpha.7
 
 This is an early systems alpha for Minecraft 1.21.1 / NeoForge.
 
@@ -101,6 +101,38 @@ Simulates the Testudo Clan Custodian authorizing the Cultivation Fundamentals li
 - save schema upgraded to version 10
 - manual item currently uses a placeholder paper texture
 
+## Alpha.7 authentic foundation training
+
+The first real cultivation-training loop is the **Primordialis Testudo Foundation Stance**.
+
+Controls and requirements:
+
+- **Hold B** to assume the stance.
+- **Hold G** while in the stance to maintain the controlled breathing/gathering rhythm.
+- remain grounded and nearly motionless,
+- do not sprint, swim, fly, or ride,
+- keep both hands empty.
+
+Training effects:
+
+- builds Cultivation Progress,
+- builds persistent Training Fatigue,
+- fatigue reduces training efficiency,
+- uninterrupted posture gradually improves session efficiency,
+- releasing the stance allows fatigue to recover,
+- relogging does not erase fatigue.
+
+Progression:
+
+- a Mortal with the active Primordialis Testudo Longevity Art can train into Tempered Body Stage 1,
+- the stance can continue training through Tempered Body Stages 1-9,
+- fully completing Stage 9 does **not** automatically enter Initial Element,
+- Initial Element remains a future breakthrough mechanic.
+
+During Tempered Body, G is used as a breathing/training rhythm and still does not create usable Qi.
+
+Player data schema is now version 11.
+
 ## Known limitations
 
 - no generated clan compound yet
@@ -120,4 +152,4 @@ Simulates the Testudo Clan Custodian authorizing the Cultivation Fundamentals li
 
 ## Save compatibility
 
-This build writes player-data schema version 10. Future alpha builds will attempt migrations, but backups are recommended because this is pre-release software.
+This build writes player-data schema version 11. Future alpha builds will attempt migrations, but backups are recommended because this is pre-release software.
