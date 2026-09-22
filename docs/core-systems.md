@@ -373,7 +373,7 @@ This prevents inventory theft or mass manual hoarding from bypassing the clan's 
 
 ## 18. Core Stats and Technique Loadout
 
-CultivatorData schema v10 adds persistent core stats and equipped technique slots.
+CultivatorData schema v11 adds persistent core stats and equipped technique slots.
 
 ### Core stats
 
@@ -456,6 +456,54 @@ Using a manual learns the technique server-side and synchronizes the cultivator 
 
 ### Technique knowledge
 
-Schema v10 persists a separate `TechniqueKnowledgeState` containing learned technique IDs.
+Schema v11 persists a separate `TechniqueKnowledgeState` containing learned technique IDs.
 
 Known techniques are distinct from equipped techniques. Equipment still follows the one-technique-per-category loadout rule.
+
+
+## 20. Foundation Training Runtime
+
+Schema v11 adds persistent training fatigue and runtime stance state.
+
+### Primordialis Testudo Foundation Stance
+
+The initial implemented physical training method requires:
+
+- active Primordialis Testudo Longevity Art,
+- Mortal or Tempered Body realm,
+- B held,
+- recent G breathing pulses,
+- grounded nearly-stationary posture,
+- empty hands,
+- no sprint/swim/fall-flight/riding.
+
+The server validates all progression.
+
+### Training state
+
+Persistent:
+
+- `trainingFatigue`
+
+Runtime only:
+
+- stance requested flag
+- uninterrupted session tick count
+- latest breathing-pulse tick
+
+Training progress uses:
+
+- base progress per valid server tick,
+- fatigue efficiency,
+- uninterrupted-session continuity multiplier.
+
+Fatigue recovers when the stance is released.
+
+### Progression boundary
+
+The first training implementation can advance:
+
+- Mortal -> Tempered Body Stage 1
+- Tempered Body Stage 1 -> Stage 9
+
+Stage 9 completion does not automatically enter Initial Element.
