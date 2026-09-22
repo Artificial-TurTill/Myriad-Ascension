@@ -1,4 +1,4 @@
-# Myriad Ascension — Alpha 0.1.0-alpha.2
+# Myriad Ascension — Alpha 0.1.0-alpha.3
 
 This is an early systems alpha for Minecraft 1.21.1 / NeoForge.
 
