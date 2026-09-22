@@ -6,7 +6,7 @@
 **Loader:** NeoForge  
 **Java:** 21  
 **License:** All Rights Reserved  
-**Current build phase:** Alpha 0.1.0-alpha.3  
+**Current build phase:** Alpha 0.1.0-alpha.4  
 **Current implementation ceiling:** Saint  
 **Long-term progression ceiling:** World Creation
 
@@ -1982,7 +1982,7 @@ Current save schema:
 
 ---
 
-# 41. Alpha 0.1.0-alpha.3
+# 41. Alpha 0.1.0-alpha.4
 
 The first alpha exists as a systems test build.
 
