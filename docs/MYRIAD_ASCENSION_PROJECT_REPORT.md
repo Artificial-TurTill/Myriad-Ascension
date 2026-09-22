@@ -674,6 +674,55 @@ Calm uninterrupted cultivation itself should not randomly generate Qi deviation.
 
 ---
 
+## 10.1 Primordialis Testudo Foundation Stance
+
+The first implemented training method is the **Primordialis Testudo Foundation Stance**.
+
+It is intended to feel like martial foundation conditioning rather than a generic XP button.
+
+### Input
+
+- Hold **B** to assume the training stance.
+- Hold **G** while maintaining the stance to perform the controlled breathing/gathering rhythm.
+
+### Valid posture
+
+Progress only occurs while the player:
+
+- is grounded,
+- remains nearly motionless,
+- is not sprinting,
+- is not swimming,
+- is not fall-flying,
+- is not riding another entity,
+- has both hands empty.
+
+Breaking posture suspends progress and resets uninterrupted-session continuity.
+
+### Training fatigue
+
+Training accumulates persistent fatigue.
+
+Fatigue:
+
+- lowers efficiency,
+- prevents infinite uninterrupted training,
+- recovers while the stance is released,
+- persists through logout.
+
+Long uninterrupted valid sessions gain a modest continuity efficiency bonus, rewarding discipline without turning the mechanic into pure AFK progression.
+
+### Early progression
+
+With the Primordialis Testudo Longevity Art active:
+
+- a Mortal can use the stance to prepare the vessel and enter Tempered Body Stage 1,
+- Tempered Body Stages 1-9 can be trained with the foundation stance,
+- Stage 9 stops at full consolidation,
+- entering Initial Element requires a separate breakthrough and is not automatically granted.
+
+During Mortal/Tempered Body training, G represents controlled breathing and pre-Qi gathering rather than usable Qi circulation.
+
 # 11. Death and Recovery
 
 Death does not erase permanent cultivation progression.
