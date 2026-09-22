@@ -1,6 +1,6 @@
 # Myriad Ascension — Alpha 0.1.0-alpha.2
 
-This is an early systems alpha for Minecraft 1.21.2 / NeoForge.
+This is an early systems alpha for Minecraft 1.21.1 / NeoForge.
 
 It is not content-complete. The purpose of this build is to make the implemented cultivation architecture directly testable before full NPC, world-generation, structure, art, audio, and balance content is added.
 
