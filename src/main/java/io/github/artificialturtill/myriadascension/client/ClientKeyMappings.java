@@ -38,6 +38,13 @@ public final class ClientKeyMappings {
             GLFW.GLFW_KEY_X,
             CATEGORY);
 
+    public static final KeyMapping TRAIN = new KeyMapping(
+            "key." + MyriadAscension.MOD_ID + ".train",
+            KeyConflictContext.IN_GAME,
+            InputConstants.Type.KEYSYM,
+            GLFW.GLFW_KEY_B,
+            CATEGORY);
+
     public static final KeyMapping STATUS = new KeyMapping(
             "key." + MyriadAscension.MOD_ID + ".status",
             KeyConflictContext.IN_GAME,
@@ -53,6 +60,7 @@ public final class ClientKeyMappings {
         event.register(SUPPRESS);
         event.register(BURST);
         event.register(QUICK_MENU);
+        event.register(TRAIN);
         event.register(STATUS);
     }
 }
