@@ -1,4 +1,4 @@
-# Myriad Ascension — Alpha 0.1.0-alpha.4
+# Myriad Ascension — Alpha 0.1.0-alpha.5
 
 This is an early systems alpha for Minecraft 1.21.1 / NeoForge.
 
@@ -78,6 +78,12 @@ Simulates the Testudo Clan Custodian authorizing the Cultivation Fundamentals li
 - technique loadout enforces one active technique per category
 - initial categories: Cultivation, Footwork, Weapon, Eyesight
 - older saves migrate the active cultivation method into the Cultivation slot
+
+## Alpha.5 UI fix
+
+- V screen no longer uses vanilla menu blur
+- world remains sharp behind the character sheet
+- custom dark panel remains responsible for readability
 
 ## Known limitations
 
