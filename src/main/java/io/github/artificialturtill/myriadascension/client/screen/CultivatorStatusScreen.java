@@ -72,6 +72,25 @@ public final class CultivatorStatusScreen extends Screen {
         return false;
     }
 
+    /**
+     * The cultivator status screen is an in-world character sheet, not a menu.
+     *
+     * <p>Vanilla Screen#render invokes renderBackground before rendering widgets.
+     * On 1.21.1 that background path applies the menu blur. Because this screen
+     * draws its custom panel before delegating to Screen#render for buttons,
+     * the vanilla blur would otherwise blur the panel and text we just drew.
+     *
+     * <p>Keep the world sharp and let the custom panel provide its own backdrop.
+     */
+    @Override
+    public void renderBackground(
+            GuiGraphics graphics,
+            int mouseX,
+            int mouseY,
+            float partialTick) {
+        // Intentionally empty: no vanilla blur, panorama, or menu darkening.
+    }
+
     @Override
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         drawFrame(graphics);
