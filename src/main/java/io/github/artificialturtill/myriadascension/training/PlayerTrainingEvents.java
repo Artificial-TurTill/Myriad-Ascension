@@ -25,7 +25,8 @@ public final class PlayerTrainingEvents {
         }
 
         if (!TestudoTrainingRules.supports(data)) {
-            data.resetTrainingSession();
+            data.setTrainingRequested(false);
+            recover(data);
             return;
         }
 
