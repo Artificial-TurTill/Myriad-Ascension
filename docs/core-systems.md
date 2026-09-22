@@ -373,7 +373,7 @@ This prevents inventory theft or mass manual hoarding from bypassing the clan's 
 
 ## 18. Core Stats and Technique Loadout
 
-CultivatorData schema v9 adds persistent core stats and equipped technique slots.
+CultivatorData schema v10 adds persistent core stats and equipped technique slots.
 
 ### Core stats
 
@@ -414,3 +414,48 @@ The V screen is divided into focused pages:
 4. Techniques
 
 The client uses synchronized server-owned values and refreshes from the latest client snapshot while the screen is open.
+
+
+## 19. In-game HUD and Technique Manuals
+
+### HUD
+
+A NeoForge GUI layer renders the cultivation HUD during normal gameplay.
+
+Top-left bars:
+
+- Health
+- Qi
+- Power
+
+Power maps to `CultivatorData.circulationPercent`.
+
+`QiUsageRules` defines the canonical linear scaling:
+
+- 100% Power -> 100% authored Qi cost/output
+- 50% Power -> 50% authored Qi cost/output
+- 10% Power -> 10% authored Qi cost/output
+
+A system that requires active Qi should reject use at 0%.
+
+### Technique manuals
+
+`TechniqueManualItem` binds a physical item to:
+
+- one technique resource ID
+- one technique category
+- one display identity
+
+`ModItems` keeps a one-to-one map between technique IDs and registered manual items.
+
+The first manual is:
+
+- `myriad_ascension:primordialis_testudo_longevity_art_manual`
+
+Using a manual learns the technique server-side and synchronizes the cultivator afterward.
+
+### Technique knowledge
+
+Schema v10 persists a separate `TechniqueKnowledgeState` containing learned technique IDs.
+
+Known techniques are distinct from equipped techniques. Equipment still follows the one-technique-per-category loadout rule.
