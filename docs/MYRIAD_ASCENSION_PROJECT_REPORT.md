@@ -2,7 +2,7 @@
 
 **Project:** Myriad Ascension  
 **Tagline:** Ten thousand paths. One summit.  
-**Minecraft:** 1.21.2  
+**Minecraft:** 1.21.1  
 **Loader:** NeoForge  
 **Java:** 21  
 **License:** All Rights Reserved  
@@ -14,7 +14,7 @@
 
 # 1. Executive Summary
 
-Myriad Ascension is intended to become a large-scale Xianxia / Wuxia / Murim cultivation overhaul for Minecraft 1.21.2.
+Myriad Ascension is intended to become a large-scale Xianxia / Wuxia / Murim cultivation overhaul for Minecraft 1.21.1.
 
 The mod is not designed as a simple RPG-stat layer placed on top of vanilla Minecraft. The goal is to make cultivation fundamentally change how the player survives, fights, travels, trains, interacts with factions, uses the world, and eventually leaves one world tier for another.
 
@@ -1906,7 +1906,7 @@ Placeholder audio can use the owner-provided OGG noise file duplicated/renamed i
 
 The project targets:
 
-- Minecraft 1.21.2
+- Minecraft 1.21.1
 - NeoForge
 - Java 21
 - server-authoritative gameplay
