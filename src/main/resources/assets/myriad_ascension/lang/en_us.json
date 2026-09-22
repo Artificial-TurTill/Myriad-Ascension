@@ -23,5 +23,9 @@
   "screen.myriad_ascension.genesis.result_benevolent": "Initial disposition: Benevolent (+1) — Unaffiliated",
   "screen.myriad_ascension.genesis.result_malicious": "Initial disposition: Malicious (-1) — Unaffiliated",
   "screen.myriad_ascension.genesis.enter_world": "Enter the Mortal World",
-  "screen.myriad_ascension.status.title": "Cultivator Status"
+  "screen.myriad_ascension.status.title": "Cultivator Status",
+  "item.myriad_ascension.primordialis_testudo_longevity_art_manual": "Primordialis Testudo Longevity Art Manual",
+  "hud.myriad_ascension.health": "Health",
+  "hud.myriad_ascension.qi": "Qi",
+  "hud.myriad_ascension.power": "Power"
 }
