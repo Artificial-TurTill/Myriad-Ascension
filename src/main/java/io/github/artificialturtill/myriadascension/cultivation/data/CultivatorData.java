@@ -16,6 +16,7 @@ import io.github.artificialturtill.myriadascension.library.LibraryAuthorizationS
 import io.github.artificialturtill.myriadascension.quest.QuestJournalState;
 import io.github.artificialturtill.myriadascension.stats.CultivatorStats;
 import io.github.artificialturtill.myriadascension.technique.TechniqueCategory;
+import io.github.artificialturtill.myriadascension.technique.TechniqueKnowledgeState;
 import io.github.artificialturtill.myriadascension.technique.TechniqueLoadoutState;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -23,7 +24,7 @@ import net.minecraft.util.RandomSource;
 import net.neoforged.neoforge.common.util.INBTSerializable;
 
 public final class CultivatorData implements INBTSerializable<CompoundTag> {
-    public static final int SCHEMA_VERSION = 9;
+    public static final int SCHEMA_VERSION = 10;
 
     private int schemaVersion = SCHEMA_VERSION;
 
@@ -42,6 +43,7 @@ public final class CultivatorData implements INBTSerializable<CompoundTag> {
     private final LibraryAuthorizationState libraryAuthorizations = new LibraryAuthorizationState();
     private final CultivatorStats stats = new CultivatorStats();
     private final TechniqueLoadoutState techniqueLoadout = new TechniqueLoadoutState();
+    private final TechniqueKnowledgeState techniqueKnowledge = new TechniqueKnowledgeState();
 
     private CultivationRealm realm = CultivationRealm.MORTAL;
     private int minorStage;
@@ -156,6 +158,10 @@ public final class CultivatorData implements INBTSerializable<CompoundTag> {
 
     public TechniqueLoadoutState techniqueLoadout() {
         return techniqueLoadout;
+    }
+
+    public TechniqueKnowledgeState techniqueKnowledge() {
+        return techniqueKnowledge;
     }
 
     public void completeInitialSetup(CharacterSex sex, double startingMoralAlignment, RandomSource random) {
@@ -402,6 +408,7 @@ public final class CultivatorData implements INBTSerializable<CompoundTag> {
         libraryAuthorizations.copyFrom(other.libraryAuthorizations);
         stats.copyFrom(other.stats);
         techniqueLoadout.copyFrom(other.techniqueLoadout);
+        techniqueKnowledge.copyFrom(other.techniqueKnowledge);
 
         realm = other.realm;
         minorStage = other.minorStage;
@@ -449,6 +456,7 @@ public final class CultivatorData implements INBTSerializable<CompoundTag> {
         tag.put("LibraryAuthorizations", libraryAuthorizations.save());
         tag.put("Stats", stats.save());
         tag.put("TechniqueLoadout", techniqueLoadout.save());
+        tag.put("TechniqueKnowledge", techniqueKnowledge.save());
 
         tag.putString("Realm", realm.name());
         tag.putInt("MinorStage", minorStage);
@@ -543,6 +551,10 @@ public final class CultivatorData implements INBTSerializable<CompoundTag> {
             techniqueLoadout.equipSerialized(
                     TechniqueCategory.CULTIVATION,
                     cultivationMethods.activeMethodId());
+        }
+
+        if (loadedSchemaVersion >= 10 && tag.contains("TechniqueKnowledge")) {
+            techniqueKnowledge.load(tag.getCompound("TechniqueKnowledge"));
         }
 
         realm = CultivationRealm.fromSerializedName(tag.getString("Realm"));
