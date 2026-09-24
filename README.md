@@ -102,13 +102,13 @@ Exceptional starting talent accelerates early development, while difficult const
 
 ## Alpha Build
 
-Current test version: **0.1.0-alpha.9**
+Current test version: **0.1.0-alpha.10**
 
 Successful GitHub Actions builds publish an installable JAR artifact. See `docs/ALPHA.md` for the implemented systems, alpha-only commands, controls, and known limitations.
 
 ## Development Status
 
-**Phase:** Alpha 0.1.0-alpha.9
+**Phase:** Alpha 0.1.0-alpha.10
 
 Initial development will focus on the cultivation core before expanding into large content systems.
 
@@ -192,7 +192,8 @@ myriad_ascension
 - `docs/design/bloodlines.md` — bloodline acquisition, purity, conflict, and Primordial Tortoise lineage
 - `docs/design/minor-realm-power-and-capabilities.md` — explicit Stage/Order/Rank power scale and capability gates
 - `docs/design/martial-tools-consumables.md` — medicines, poisons, artifacts, storage, and in-game guide
-- `docs/ASSET_GUIDE.md` — exact editable PNG paths, sizes, GUI atlases, item icons, and armor layers
+- `docs/ASSET_GUIDE.md` — exact editable PNG paths, sizes, GUI atlases, item icons, armor layers, and 3D shield texture
+- `docs/research/vanilla-1.21.1-shields.md` — vanilla 1.21.1 shield model/rendering reference and implementation rule
 - `docs/core-systems.md` — technical core-system specification
 - `docs/roadmap.md` — implementation roadmap
 
