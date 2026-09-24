@@ -3,6 +3,8 @@ package io.github.artificialturtill.myriadascension.training;
 import io.github.artificialturtill.myriadascension.clan.PrimordialisTestudoClan;
 import io.github.artificialturtill.myriadascension.cultivation.data.CultivatorData;
 import io.github.artificialturtill.myriadascension.cultivation.realm.CultivationRealm;
+import io.github.artificialturtill.myriadascension.cultivation.realm.TemperedBodyBand;
+import io.github.artificialturtill.myriadascension.cultivation.realm.TemperedBodyRules;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.phys.Vec3;
 
@@ -12,7 +14,17 @@ public final class TestudoTrainingRules {
     public static final double FATIGUE_PER_TICK = 0.020D;
     public static final double REST_RECOVERY_PER_TICK = 0.020D;
     public static final double MAX_FATIGUE = 100.0D;
-    public static final int BREATH_PULSE_GRACE_TICKS = 8;
+    public static final int FOCUS_PULSE_GRACE_TICKS = 8;
+
+    // Provisional alpha values for the naturally forming Yuan Qi reserve.
+    // The reserve exists at Tempered Body 7-9 but remains sealed from active use.
+    public static final double STAGE_7_YUAN_QI_CAPACITY = 25.0D;
+    public static final double STAGE_8_YUAN_QI_CAPACITY = 50.0D;
+    public static final double STAGE_9_YUAN_QI_CAPACITY = 75.0D;
+
+    private static final double STAGE_7_NATURAL_YUAN_QI_PER_TICK = 0.0015D;
+    private static final double STAGE_8_NATURAL_YUAN_QI_PER_TICK = 0.0020D;
+    private static final double STAGE_9_NATURAL_YUAN_QI_PER_TICK = 0.0025D;
 
     private static final double MAX_HORIZONTAL_SPEED_SQUARED = 0.0009D;
 
@@ -45,11 +57,47 @@ public final class TestudoTrainingRules {
                 && player.getOffhandItem().isEmpty();
     }
 
-    public static boolean hasRecentBreathPulse(CultivatorData data, long gameTime) {
+    public static boolean requiresFocusPulse(CultivatorData data) {
+        return data.realm() == CultivationRealm.TEMPERED_BODY
+                && TemperedBodyRules.bandForStage(data.minorStage())
+                        == TemperedBodyBand.ENERGY_SENSING;
+    }
+
+    public static boolean hasRecentFocusPulse(CultivatorData data, long gameTime) {
         long pulse = data.lastTrainingBreathPulseTick();
         return pulse != Long.MIN_VALUE
                 && gameTime >= pulse
-                && gameTime - pulse <= BREATH_PULSE_GRACE_TICKS;
+                && gameTime - pulse <= FOCUS_PULSE_GRACE_TICKS;
+    }
+
+    public static double naturalYuanQiCapacity(int stage) {
+        return switch (Math.max(1, Math.min(9, stage))) {
+            case 7 -> STAGE_7_YUAN_QI_CAPACITY;
+            case 8 -> STAGE_8_YUAN_QI_CAPACITY;
+            case 9 -> STAGE_9_YUAN_QI_CAPACITY;
+            default -> 0.0D;
+        };
+    }
+
+    public static double naturalYuanQiPerTick(int stage) {
+        return switch (Math.max(1, Math.min(9, stage))) {
+            case 7 -> STAGE_7_NATURAL_YUAN_QI_PER_TICK;
+            case 8 -> STAGE_8_NATURAL_YUAN_QI_PER_TICK;
+            case 9 -> STAGE_9_NATURAL_YUAN_QI_PER_TICK;
+            default -> 0.0D;
+        };
+    }
+
+    public static String modeName(CultivatorData data) {
+        if (data.realm() == CultivationRealm.MORTAL) {
+            return "Physical Foundation";
+        }
+
+        return switch (TemperedBodyRules.bandForStage(data.minorStage())) {
+            case BODY_STRENGTHENING -> "Physical Foundation";
+            case ENERGY_SENSING -> "World-Energy Perception";
+            case NATURAL_GATHERING -> "Natural-Gathering Consolidation";
+        };
     }
 
     public static double fatigueEfficiency(CultivatorData data) {
