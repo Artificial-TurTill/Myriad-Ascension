@@ -10,7 +10,7 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 
 public final class ModNetworking {
-    public static final String NETWORK_VERSION = "6";
+    public static final String NETWORK_VERSION = "7";
 
     private ModNetworking() {
     }
@@ -46,6 +46,11 @@ public final class ModNetworking {
                 CultivatorSyncPayload.TYPE,
                 CultivatorSyncPayload.STREAM_CODEC,
                 ClientPayloadBridge::handleCultivatorSync);
+
+        registrar.playToClient(
+                OpenMartialGuidePayload.TYPE,
+                OpenMartialGuidePayload.STREAM_CODEC,
+                ClientPayloadBridge::handleOpenMartialGuide);
     }
 
     private static void handleSubmitGenesis(SubmitGenesisPayload payload, IPayloadContext context) {
