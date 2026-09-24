@@ -15,15 +15,18 @@ public final class ClientCultivatorHud {
                     MyriadAscension.MOD_ID,
                     "cultivator_hud");
 
+    private static final ResourceLocation HUD_TEXTURE =
+            ResourceLocation.fromNamespaceAndPath(
+                    MyriadAscension.MOD_ID,
+                    "textures/gui/cultivator_hud.png");
+
     private static final int X = 8;
     private static final int Y = 8;
     private static final int WIDTH = 142;
     private static final int BAR_HEIGHT = 11;
     private static final int GAP = 3;
 
-    private static final int PANEL = 0xB0100E0B;
-    private static final int BORDER = 0xCC7B5A24;
-    private static final int BAR_BACKGROUND = 0xCC25211C;
+    private static final int BAR_BACKGROUND = 0x00000000;
     private static final int HEALTH_FILL = 0xD8B12D2D;
     private static final int QI_FILL = 0xD8387CC6;
     private static final int POWER_FILL = 0xD8D49A38;
@@ -53,10 +56,18 @@ public final class ClientCultivatorHud {
                 ? 0.0D
                 : Math.max(0.0D, Math.min(100.0D, data.circulationPercent()));
 
-        int totalHeight = 6 + (BAR_HEIGHT * 3) + (GAP * 2);
-        graphics.fill(X - 3, Y - 3, X + WIDTH + 3, Y + totalHeight + 3, PANEL);
-        graphics.fill(X - 3, Y - 3, X + WIDTH + 3, Y - 2, BORDER);
-        graphics.fill(X - 3, Y + totalHeight + 2, X + WIDTH + 3, Y + totalHeight + 3, BORDER);
+        graphics.blit(
+                HUD_TEXTURE,
+                X - 3,
+                Y - 3,
+                148,
+                45,
+                0.0F,
+                0.0F,
+                148,
+                45,
+                148,
+                45);
 
         int y = Y;
         drawBar(
@@ -99,7 +110,9 @@ public final class ClientCultivatorHud {
             int fillColor,
             String valueText) {
 
-        graphics.fill(X, y, X + WIDTH, y + BAR_HEIGHT, BAR_BACKGROUND);
+        if ((BAR_BACKGROUND >>> 24) != 0) {
+            graphics.fill(X, y, X + WIDTH, y + BAR_HEIGHT, BAR_BACKGROUND);
+        }
 
         double fraction = maximum <= 0.0D
                 ? 0.0D
@@ -107,7 +120,7 @@ public final class ClientCultivatorHud {
 
         int fillWidth = (int) Math.round(WIDTH * fraction);
         if (fillWidth > 0) {
-            graphics.fill(X, y, X + fillWidth, y + BAR_HEIGHT, fillColor);
+            graphics.fill(X + 1, y + 1, X + Math.max(1, fillWidth - 1), y + BAR_HEIGHT - 1, fillColor);
         }
 
         String text = label + "  " + valueText;
