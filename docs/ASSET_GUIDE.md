@@ -120,7 +120,6 @@ Current files:
 - `basic_antidote_pill.png`
 - `crude_meridian_poison.png`
 - `tempered_body_artifact_sword.png`
-- `tempered_body_artifact_shield.png`
 - `tempered_body_artifact_helmet.png`
 - `tempered_body_artifact_chestplate.png`
 - `tempered_body_artifact_leggings.png`
@@ -136,7 +135,38 @@ The Tempered Body Artifact Shield now has its own shield-shaped local texture. I
 
 ---
 
-## 6. Equipped Armor Textures
+## 6. 3D Shield Texture
+
+The Tempered Body Artifact Shield deliberately does **not** use a normal `textures/item/*.png` icon.
+
+Minecraft 1.21.1 shields use the built-in entity item renderer and the vanilla `ShieldModel` geometry.
+
+Editable shield surface:
+
+`src/main/resources/assets/myriad_ascension/textures/entity/tempered_body_artifact_shield.png`
+
+Source size:
+
+- 64 × 64 px
+
+The initial placeholder is copied from vanilla 1.21.1's `shield_base_nopattern.png` so the UV layout is guaranteed to match `ShieldModel`.
+
+Associated models:
+
+- `models/item/tempered_body_artifact_shield.json`
+- `models/item/tempered_body_artifact_shield_blocking.json`
+
+Both use:
+
+```json
+"parent": "builtin/entity"
+```
+
+The normal and blocking transform values intentionally mirror vanilla 1.21.1 shield models.
+
+Do not replace this with `minecraft:item/generated`; doing so collapses the shield back into a flat 2D item.
+
+## 7. Equipped Armor Textures
 
 The artifact armor no longer uses `ArmorMaterials.IRON` for its visual layer.
 
@@ -158,7 +188,7 @@ These are deliberately simple original placeholders. Replace them with final art
 
 ---
 
-## 7. Item Model Files
+## 8. Item Model Files
 
 Model JSONs are located under:
 
@@ -187,7 +217,7 @@ The important part is that `layer0` points to `myriad_ascension:item/...`.
 
 ---
 
-## 8. UI Text Containment Rules
+## 9. UI Text Containment Rules
 
 The V screen now enforces:
 
@@ -203,7 +233,7 @@ Future UI text should use the same wrapped rendering helpers instead of direct u
 
 ---
 
-## 9. Editing Workflow
+## 10. Editing Workflow
 
 Recommended workflow:
 
