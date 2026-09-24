@@ -4,6 +4,8 @@ import io.github.artificialturtill.myriadascension.cultivation.data.CultivatorDa
 import io.github.artificialturtill.myriadascension.cultivation.data.ModAttachments;
 import io.github.artificialturtill.myriadascension.cultivation.qi.QiRules;
 import io.github.artificialturtill.myriadascension.cultivation.realm.CultivationRealm;
+import io.github.artificialturtill.myriadascension.registry.ModItems;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
@@ -71,6 +73,12 @@ public final class ModNetworking {
 
         double startingAlignment = payload.benevolent() ? 1.0D : -1.0D;
         data.completeInitialSetup(payload.sex(), startingAlignment, player.getRandom());
+
+        ItemStack guide = new ItemStack(ModItems.INSTRUCTION_TO_THE_MARTIAL_WORLD.get());
+        if (!player.getInventory().add(guide)) {
+            player.drop(guide, false);
+        }
+
         context.reply(GenesisResultPayload.from(data));
         context.reply(CultivatorSyncPayload.from(data));
     }
