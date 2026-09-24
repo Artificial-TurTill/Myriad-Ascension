@@ -5,6 +5,7 @@ import io.github.artificialturtill.myriadascension.alpha.AlphaCommands;
 import io.github.artificialturtill.myriadascension.cultivation.data.ModAttachments;
 import io.github.artificialturtill.myriadascension.cultivation.data.PlayerCultivationEvents;
 import io.github.artificialturtill.myriadascension.network.ModNetworking;
+import io.github.artificialturtill.myriadascension.registry.ModArmorMaterials;
 import io.github.artificialturtill.myriadascension.registry.ModItems;
 import io.github.artificialturtill.myriadascension.registry.ModMenus;
 import io.github.artificialturtill.myriadascension.training.PlayerTrainingEvents;
@@ -21,6 +22,7 @@ public final class MyriadAscension {
 
     public MyriadAscension(IEventBus modEventBus, ModContainer modContainer) {
         ModAttachments.register(modEventBus);
+        ModArmorMaterials.register(modEventBus);
         ModItems.register(modEventBus);
         ModMenus.register(modEventBus);
         modEventBus.addListener(ModNetworking::registerPayloads);
