@@ -20,7 +20,6 @@ import java.util.function.Supplier;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ArmorItem;
-import net.minecraft.world.item.ArmorMaterials;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.SwordItem;
@@ -164,7 +163,7 @@ public final class ModItems {
         return ITEMS.registerItem(
                 itemPath,
                 properties -> new ArtifactArmorItem(
-                        ArmorMaterials.IRON,
+                        ModArmorMaterials.TEMPERED_BODY_ARTIFACT,
                         type,
                         ArtifactGrade.TEMPERED_BODY,
                         properties),
