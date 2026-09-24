@@ -3,7 +3,6 @@ package io.github.artificialturtill.myriadascension.client.screen;
 import io.github.artificialturtill.myriadascension.MyriadAscension;
 import java.util.List;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -116,17 +115,21 @@ public final class MartialWorldGuideScreen extends Screen {
     protected void init() {
         int bottom = panelTop() + panelHeight() - 28;
 
-        addRenderableWidget(Button.builder(
+        addRenderableWidget(new MartialButton(
+                panelLeft() + 12,
+                bottom,
+                28,
+                20,
                 Component.literal("<"),
-                button -> changePage(-1))
-                .bounds(panelLeft() + 12, bottom, 28, 20)
-                .build());
+                button -> changePage(-1)));
 
-        addRenderableWidget(Button.builder(
+        addRenderableWidget(new MartialButton(
+                panelLeft() + panelWidth() - 40,
+                bottom,
+                28,
+                20,
                 Component.literal(">"),
-                button -> changePage(1))
-                .bounds(panelLeft() + panelWidth() - 40, bottom, 28, 20)
-                .build());
+                button -> changePage(1)));
     }
 
     private void changePage(int direction) {
