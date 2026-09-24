@@ -14,6 +14,7 @@ import io.github.artificialturtill.myriadascension.clan.PrimordialisTestudoQuest
 import io.github.artificialturtill.myriadascension.clan.PrimordialisTestudoRank;
 import io.github.artificialturtill.myriadascension.cultivation.data.CultivatorData;
 import io.github.artificialturtill.myriadascension.cultivation.data.ModAttachments;
+import io.github.artificialturtill.myriadascension.cultivation.qi.QiRules;
 import io.github.artificialturtill.myriadascension.cultivation.realm.CultivationRealm;
 import io.github.artificialturtill.myriadascension.inheritance.CultivationEntryRules;
 import io.github.artificialturtill.myriadascension.inheritance.InheritanceAcquisitionRules;
@@ -57,6 +58,11 @@ public final class AlphaCommands {
         ServerPlayer player = source.getPlayerOrException();
         CultivatorData data = player.getData(ModAttachments.CULTIVATOR_DATA);
 
+        String sealed = data.realm() == CultivationRealm.TEMPERED_BODY
+                        && data.minorStage() >= 7
+                ? " (sealed/passive)"
+                : "";
+
         source.sendSuccess(() -> Component.literal(
                 "[Myriad Ascension Alpha] "
                         + data.realm().displayName()
@@ -65,7 +71,7 @@ public final class AlphaCommands {
                                         + " " + data.minorStage()
                                 : "")
                         + " | Qi " + oneDecimal(data.currentQi())
-                        + "/" + oneDecimal(data.maximumQi())
+                        + "/" + oneDecimal(data.maximumQi()) + sealed
                         + " | Method "
                         + (data.cultivationMethods().activeMethodId().isBlank()
                                 ? "None"
@@ -101,6 +107,11 @@ public final class AlphaCommands {
                     PrimordialisTestudoClan.PRIMORDIAL_TESTUDO_LONGEVITY_ART);
         }
 
+        data.setMaximumQi(QiRules.temperedBodyPassiveCapacity(data.minorStage()));
+        data.setCurrentQi(Math.min(data.currentQi(), data.maximumQi()));
+        data.setCirculationPercent(0.0D);
+        data.setBurstMode(false);
+
         ModNetworking.syncPlayer(player, data);
         source.sendSuccess(() -> Component.literal(
                 "[Alpha] Joined the Primordialis Testudo Clan as a Junior Disciple "
@@ -123,14 +134,21 @@ public final class AlphaCommands {
 
         data.setRealm(CultivationRealm.TEMPERED_BODY);
         data.setMinorStage(stage);
-        data.setMaximumQi(0.0D);
+        data.setMaximumQi(QiRules.temperedBodyPassiveCapacity(stage));
         data.setCurrentQi(0.0D);
         data.setCirculationPercent(0.0D);
         data.setBurstMode(false);
 
         ModNetworking.syncPlayer(player, data);
+
+        String note = stage >= 7
+                ? " A sealed Yuan Qi reserve is now visible and will refill naturally."
+                : stage >= 4
+                        ? " G acts only as World Energy focus while training."
+                        : " This is physical tempering; G is not required.";
+
         source.sendSuccess(() -> Component.literal(
-                "[Alpha] Tempered Body Stage " + stage + " selected for testing."),
+                "[Alpha] Tempered Body Stage " + stage + " selected for testing." + note),
                 false);
         return Command.SINGLE_SUCCESS;
     }
@@ -157,7 +175,7 @@ public final class AlphaCommands {
         ModNetworking.syncPlayer(player, data);
         source.sendSuccess(() -> Component.literal(
                 "[Alpha] Entered Initial Element Stage 1 with a temporary 100 Qi test reserve. "
-                        + "G/H/R can now be exercised."),
+                        + "Conscious G/H/R circulation controls are now available."),
                 false);
         return Command.SINGLE_SUCCESS;
     }
