@@ -4,6 +4,7 @@ import io.github.artificialturtill.myriadascension.cultivation.data.CultivatorDa
 import io.github.artificialturtill.myriadascension.cultivation.data.ModAttachments;
 import io.github.artificialturtill.myriadascension.cultivation.qi.QiRules;
 import io.github.artificialturtill.myriadascension.cultivation.realm.CultivationRealm;
+import io.github.artificialturtill.myriadascension.cultivation.realm.RealmMilestoneRules;
 import io.github.artificialturtill.myriadascension.registry.ModItems;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.server.level.ServerPlayer;
@@ -115,17 +116,21 @@ public final class ModNetworking {
             return;
         }
 
-        // During physical Testudo training, G becomes the controlled-breathing rhythm.
-        // This does not create usable Qi before Initial Element.
+        // Tempered Body 4-6 uses G only as a short focus/sense pulse while the
+        // Testudo stance is held. It is not an absorption or Qi-control action.
         if (data.trainingRequested()
-                && (data.realm() == CultivationRealm.MORTAL
-                        || data.realm() == CultivationRealm.TEMPERED_BODY)) {
+                && data.realm() == CultivationRealm.TEMPERED_BODY
+                && data.minorStage() >= 4
+                && data.minorStage() <= 6) {
             data.markTrainingBreathPulse(player.level().getGameTime());
             return;
         }
 
-        // A Mortal with no cultivation capacity cannot manufacture usable Qi through input alone.
-        if (data.realm() == CultivationRealm.MORTAL || data.maximumQi() <= 0.0D || data.currentQi() <= 0.0D) {
+        // Conscious Qi circulation begins at Initial Element. Tempered Body 7-9
+        // may contain naturally formed Yuan Qi, but the player cannot mobilize it.
+        if (!RealmMilestoneRules.canActivelyUseQi(data.realm())
+                || data.maximumQi() <= 0.0D
+                || data.currentQi() <= 0.0D) {
             return;
         }
 
@@ -135,6 +140,12 @@ public final class ModNetworking {
 
     private static void handleSuppress(ServerPlayer player, CultivatorData data) {
         if (!data.tryAcceptCirculationControl(player.level().getGameTime())) {
+            return;
+        }
+
+        if (!RealmMilestoneRules.canActivelyUseQi(data.realm())) {
+            data.setCirculationPercent(0.0D);
+            data.setBurstMode(false);
             return;
         }
 
@@ -158,7 +169,7 @@ public final class ModNetworking {
             return;
         }
 
-        boolean canBurst = data.realm() != CultivationRealm.MORTAL
+        boolean canBurst = RealmMilestoneRules.canActivelyUseQi(data.realm())
                 && data.maximumQi() > 0.0D
                 && data.currentQi() > 0.0D
                 && data.circulationPercent() > 0.0D;
