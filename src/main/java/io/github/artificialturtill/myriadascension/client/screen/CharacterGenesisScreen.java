@@ -1,26 +1,32 @@
 package io.github.artificialturtill.myriadascension.client.screen;
 
+import io.github.artificialturtill.myriadascension.MyriadAscension;
 import io.github.artificialturtill.myriadascension.character.CharacterSex;
 import io.github.artificialturtill.myriadascension.network.GenesisResultPayload;
 import io.github.artificialturtill.myriadascension.network.SubmitGenesisPayload;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 public final class CharacterGenesisScreen extends Screen {
+    private static final ResourceLocation PANEL_TEXTURE =
+            ResourceLocation.fromNamespaceAndPath(
+                    MyriadAscension.MOD_ID,
+                    "textures/gui/character_genesis.png");
+
     private CharacterSex selectedSex = CharacterSex.UNSET;
     private Boolean benevolent;
     private boolean awaitingServer;
     private GenesisResultPayload result;
 
-    private Button maleButton;
-    private Button femaleButton;
-    private Button benevolentButton;
-    private Button maliciousButton;
-    private Button submitButton;
-    private Button finishButton;
+    private MartialButton maleButton;
+    private MartialButton femaleButton;
+    private MartialButton benevolentButton;
+    private MartialButton maliciousButton;
+    private MartialButton submitButton;
+    private MartialButton finishButton;
 
     public CharacterGenesisScreen() {
         super(Component.translatable("screen.myriad_ascension.genesis.title"));
@@ -30,48 +36,72 @@ public final class CharacterGenesisScreen extends Screen {
     protected void init() {
         super.init();
 
-        int centerX = this.width / 2;
-        int top = Math.max(35, this.height / 2 - 95);
+        int centerX = width / 2;
+        int top = panelTop();
 
-        maleButton = addRenderableWidget(Button.builder(
+        maleButton = addRenderableWidget(new MartialButton(
+                centerX - 155,
+                top + 66,
+                150,
+                20,
                 Component.translatable("screen.myriad_ascension.genesis.male"),
                 button -> {
                     selectedSex = CharacterSex.MALE;
                     updateSelectionState();
-                }).bounds(centerX - 155, top + 35, 150, 20).build());
+                }));
 
-        femaleButton = addRenderableWidget(Button.builder(
+        femaleButton = addRenderableWidget(new MartialButton(
+                centerX + 5,
+                top + 66,
+                150,
+                20,
                 Component.translatable("screen.myriad_ascension.genesis.female"),
                 button -> {
                     selectedSex = CharacterSex.FEMALE;
                     updateSelectionState();
-                }).bounds(centerX + 5, top + 35, 150, 20).build());
+                }));
 
-        benevolentButton = addRenderableWidget(Button.builder(
+        benevolentButton = addRenderableWidget(new MartialButton(
+                centerX - 155,
+                top + 116,
+                150,
+                20,
                 Component.translatable("screen.myriad_ascension.genesis.benevolent"),
                 button -> {
                     benevolent = true;
                     updateSelectionState();
-                }).bounds(centerX - 155, top + 80, 150, 20).build());
+                }));
 
-        maliciousButton = addRenderableWidget(Button.builder(
+        maliciousButton = addRenderableWidget(new MartialButton(
+                centerX + 5,
+                top + 116,
+                150,
+                20,
                 Component.translatable("screen.myriad_ascension.genesis.malicious"),
                 button -> {
                     benevolent = false;
                     updateSelectionState();
-                }).bounds(centerX + 5, top + 80, 150, 20).build());
+                }));
 
-        submitButton = addRenderableWidget(Button.builder(
+        submitButton = addRenderableWidget(new MartialButton(
+                centerX - 75,
+                top + 164,
+                150,
+                20,
                 Component.translatable("screen.myriad_ascension.genesis.submit"),
-                button -> submit()).bounds(centerX - 75, top + 125, 150, 20).build());
+                button -> submit()));
 
-        finishButton = addRenderableWidget(Button.builder(
+        finishButton = addRenderableWidget(new MartialButton(
+                centerX - 75,
+                top + 190,
+                150,
+                20,
                 Component.translatable("screen.myriad_ascension.genesis.enter_world"),
                 button -> {
                     if (result != null) {
-                        this.minecraft.setScreen(null);
+                        minecraft.setScreen(null);
                     }
-                }).bounds(centerX - 75, top + 150, 150, 20).build());
+                }));
 
         updateSelectionState();
     }
@@ -81,25 +111,10 @@ public final class CharacterGenesisScreen extends Screen {
             return;
         }
 
-        maleButton.setMessage(Component.translatable(
-                selectedSex == CharacterSex.MALE
-                        ? "screen.myriad_ascension.genesis.male_selected"
-                        : "screen.myriad_ascension.genesis.male"));
-
-        femaleButton.setMessage(Component.translatable(
-                selectedSex == CharacterSex.FEMALE
-                        ? "screen.myriad_ascension.genesis.female_selected"
-                        : "screen.myriad_ascension.genesis.female"));
-
-        benevolentButton.setMessage(Component.translatable(
-                Boolean.TRUE.equals(benevolent)
-                        ? "screen.myriad_ascension.genesis.benevolent_selected"
-                        : "screen.myriad_ascension.genesis.benevolent"));
-
-        maliciousButton.setMessage(Component.translatable(
-                Boolean.FALSE.equals(benevolent)
-                        ? "screen.myriad_ascension.genesis.malicious_selected"
-                        : "screen.myriad_ascension.genesis.malicious"));
+        maleButton.setSelected(selectedSex == CharacterSex.MALE);
+        femaleButton.setSelected(selectedSex == CharacterSex.FEMALE);
+        benevolentButton.setSelected(Boolean.TRUE.equals(benevolent));
+        maliciousButton.setSelected(Boolean.FALSE.equals(benevolent));
 
         boolean completeChoice = selectedSex != CharacterSex.UNSET && benevolent != null;
         submitButton.active = completeChoice && !awaitingServer && result == null;
@@ -114,7 +129,10 @@ public final class CharacterGenesisScreen extends Screen {
     }
 
     private void submit() {
-        if (awaitingServer || result != null || selectedSex == CharacterSex.UNSET || benevolent == null) {
+        if (awaitingServer
+                || result != null
+                || selectedSex == CharacterSex.UNSET
+                || benevolent == null) {
             return;
         }
 
@@ -125,9 +143,9 @@ public final class CharacterGenesisScreen extends Screen {
 
     public void applyResult(GenesisResultPayload result) {
         this.result = result;
-        this.awaitingServer = false;
-        this.selectedSex = result.sex();
-        this.benevolent = result.moralAlignment() > 0;
+        awaitingServer = false;
+        selectedSex = result.sex();
+        benevolent = result.moralAlignment() > 0;
 
         if (maleButton != null) {
             updateSelectionState();
@@ -137,82 +155,134 @@ public final class CharacterGenesisScreen extends Screen {
     @Override
     public void onClose() {
         if (result != null) {
-            this.minecraft.setScreen(null);
+            minecraft.setScreen(null);
         }
     }
 
     @Override
+    public boolean isPauseScreen() {
+        return false;
+    }
+
+    @Override
+    public void renderBackground(
+            GuiGraphics graphics,
+            int mouseX,
+            int mouseY,
+            float partialTick) {
+        // In-world/profile overlay; the custom PNG provides the visual shell.
+    }
+
+    @Override
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-        super.render(graphics, mouseX, mouseY, partialTick);
+        int left = panelLeft();
+        int top = panelTop();
 
-        int centerX = this.width / 2;
-        int top = Math.max(35, this.height / 2 - 95);
+        graphics.blit(
+                PANEL_TEXTURE,
+                left,
+                top,
+                panelWidth(),
+                panelHeight(),
+                0.0F,
+                0.0F,
+                512,
+                256,
+                512,
+                256);
 
-        graphics.drawCenteredString(this.font, this.title, centerX, top, 0xFFFFFFFF);
+        graphics.drawCenteredString(
+                font,
+                title,
+                width / 2,
+                top + 14,
+                0xFFFFD978);
 
         if (result == null) {
             graphics.drawCenteredString(
-                    this.font,
+                    font,
                     Component.translatable("screen.myriad_ascension.genesis.sex_prompt"),
-                    centerX,
-                    top + 20,
+                    width / 2,
+                    top + 49,
                     0xFFD8C690);
 
             graphics.drawCenteredString(
-                    this.font,
+                    font,
                     Component.translatable("screen.myriad_ascension.genesis.morality_prompt"),
-                    centerX,
-                    top + 65,
+                    width / 2,
+                    top + 99,
                     0xFFD8C690);
 
             Component status = awaitingServer
                     ? Component.translatable("screen.myriad_ascension.genesis.awaiting")
                     : Component.translatable("screen.myriad_ascension.genesis.fate_note");
 
-            graphics.drawCenteredString(this.font, status, centerX, top + 110, 0xFFAAAAAA);
-            return;
+            graphics.drawCenteredString(
+                    font,
+                    status,
+                    width / 2,
+                    top + 148,
+                    0xFFAAA79F);
+        } else {
+            graphics.drawCenteredString(
+                    font,
+                    Component.translatable("screen.myriad_ascension.genesis.result_title"),
+                    width / 2,
+                    top + 48,
+                    0xFFFFD978);
+
+            graphics.drawCenteredString(
+                    font,
+                    Component.literal("Wood " + result.wood()
+                            + "   Fire " + result.fire()
+                            + "   Earth " + result.earth()),
+                    width / 2,
+                    top + 78,
+                    0xFFF2EEE2);
+
+            graphics.drawCenteredString(
+                    font,
+                    Component.literal("Metal " + result.metal()
+                            + "   Water " + result.water()),
+                    width / 2,
+                    top + 94,
+                    0xFFF2EEE2);
+
+            graphics.drawCenteredString(
+                    font,
+                    Component.literal("Yin " + result.yin()
+                            + "   Yang " + result.yang()),
+                    width / 2,
+                    top + 110,
+                    0xFFF2EEE2);
+
+            graphics.drawCenteredString(
+                    font,
+                    Component.translatable(
+                            result.moralAlignment() > 0
+                                    ? "screen.myriad_ascension.genesis.result_benevolent"
+                                    : "screen.myriad_ascension.genesis.result_malicious"),
+                    width / 2,
+                    top + 134,
+                    0xFFD8C690);
         }
 
-        graphics.drawCenteredString(
-                this.font,
-                Component.translatable("screen.myriad_ascension.genesis.result_title"),
-                centerX,
-                top + 20,
-                0xFFFFD978);
+        super.render(graphics, mouseX, mouseY, partialTick);
+    }
 
-        graphics.drawCenteredString(
-                this.font,
-                Component.literal("Wood " + result.wood()
-                        + "   Fire " + result.fire()
-                        + "   Earth " + result.earth()),
-                centerX,
-                top + 52,
-                0xFFFFFFFF);
+    private int panelWidth() {
+        return Math.min(420, Math.max(350, width - 30));
+    }
 
-        graphics.drawCenteredString(
-                this.font,
-                Component.literal("Metal " + result.metal()
-                        + "   Water " + result.water()),
-                centerX,
-                top + 68,
-                0xFFFFFFFF);
+    private int panelHeight() {
+        return Math.min(230, Math.max(215, height - 30));
+    }
 
-        graphics.drawCenteredString(
-                this.font,
-                Component.literal("Yin " + result.yin()
-                        + "   Yang " + result.yang()),
-                centerX,
-                top + 84,
-                0xFFFFFFFF);
+    private int panelLeft() {
+        return (width - panelWidth()) / 2;
+    }
 
-        graphics.drawCenteredString(
-                this.font,
-                Component.translatable(
-                        result.moralAlignment() > 0
-                                ? "screen.myriad_ascension.genesis.result_benevolent"
-                                : "screen.myriad_ascension.genesis.result_malicious"),
-                centerX,
-                top + 105,
-                0xFFD8C690);
+    private int panelTop() {
+        return Math.max(12, (height - panelHeight()) / 2);
     }
 }
