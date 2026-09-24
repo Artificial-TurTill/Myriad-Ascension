@@ -1,6 +1,7 @@
 package io.github.artificialturtill.myriadascension.client;
 
 import io.github.artificialturtill.myriadascension.MyriadAscension;
+import io.github.artificialturtill.myriadascension.cultivation.realm.CultivationRealm;
 import io.github.artificialturtill.myriadascension.network.CultivatorSyncPayload;
 import java.util.Locale;
 import net.minecraft.client.DeltaTracker;
@@ -56,16 +57,23 @@ public final class ClientCultivatorHud {
                 ? 0.0D
                 : Math.max(0.0D, Math.min(100.0D, data.circulationPercent()));
 
+        int visibleBars = visibleBars(data);
+        int textureHeight = switch (visibleBars) {
+            case 1 -> 15;
+            case 2 -> 30;
+            default -> 45;
+        };
+
         graphics.blit(
                 HUD_TEXTURE,
                 X - 3,
                 Y - 3,
                 148,
-                45,
+                textureHeight,
                 0.0F,
                 0.0F,
                 148,
-                45,
+                textureHeight,
                 148,
                 45);
 
@@ -79,26 +87,71 @@ public final class ClientCultivatorHud {
                 HEALTH_FILL,
                 decimal(health) + " / " + decimal(maxHealth));
 
-        y += BAR_HEIGHT + GAP;
-        drawBar(
-                graphics,
-                y,
-                "Qi",
-                qi,
-                maxQi,
-                QI_FILL,
-                decimal(qi) + " / " + decimal(maxQi));
+        if (visibleBars >= 2) {
+            y += BAR_HEIGHT + GAP;
+            boolean sealed = data != null
+                    && data.realm() == CultivationRealm.TEMPERED_BODY;
+            drawBar(
+                    graphics,
+                    y,
+                    sealed ? "Yuan Qi [Sealed]" : energyName(data),
+                    qi,
+                    maxQi,
+                    QI_FILL,
+                    decimal(qi) + " / " + decimal(maxQi));
+        }
 
-        y += BAR_HEIGHT + GAP;
-        String burstSuffix = data != null && data.burstMode() ? "  BURST" : "";
-        drawBar(
-                graphics,
-                y,
-                "Power",
-                power,
-                100.0D,
-                POWER_FILL,
-                Integer.toString((int) Math.round(power)) + "%" + burstSuffix);
+        if (visibleBars >= 3) {
+            y += BAR_HEIGHT + GAP;
+            String burstSuffix = data != null && data.burstMode() ? "  BURST" : "";
+            drawBar(
+                    graphics,
+                    y,
+                    "Power",
+                    power,
+                    100.0D,
+                    POWER_FILL,
+                    Integer.toString((int) Math.round(power)) + "%" + burstSuffix);
+        }
+    }
+
+    private static int visibleBars(CultivatorSyncPayload data) {
+        if (data == null || data.realm() == CultivationRealm.MORTAL) {
+            return 1;
+        }
+
+        if (data.realm() == CultivationRealm.TEMPERED_BODY) {
+            return data.minorStage() >= 7 ? 2 : 1;
+        }
+
+        return 3;
+    }
+
+    private static String energyName(CultivatorSyncPayload data) {
+        if (data == null) {
+            return "Qi";
+        }
+
+        CultivationRealm realm = data.realm();
+        if (realm.ordinal() <= CultivationRealm.SEPARATION_AND_REUNION.ordinal()) {
+            return "Yuan Qi";
+        }
+        if (realm.ordinal() <= CultivationRealm.TRANSCENDENT.ordinal()) {
+            return "True Qi";
+        }
+        if (realm.ordinal() <= CultivationRealm.ORIGIN_KING.ordinal()) {
+            return "Saint Qi";
+        }
+        if (realm == CultivationRealm.DAO_SOURCE) {
+            return "Source Qi";
+        }
+        if (realm.ordinal() <= CultivationRealm.HALF_STEP_OPEN_HEAVEN.ordinal()) {
+            return "Emperor Qi";
+        }
+        if (realm == CultivationRealm.OPEN_HEAVEN) {
+            return "World Force";
+        }
+        return "Creation Power";
     }
 
     private static void drawBar(
@@ -120,7 +173,12 @@ public final class ClientCultivatorHud {
 
         int fillWidth = (int) Math.round(WIDTH * fraction);
         if (fillWidth > 0) {
-            graphics.fill(X + 1, y + 1, X + Math.max(1, fillWidth - 1), y + BAR_HEIGHT - 1, fillColor);
+            graphics.fill(
+                    X + 1,
+                    y + 1,
+                    X + Math.max(1, fillWidth - 1),
+                    y + BAR_HEIGHT - 1,
+                    fillColor);
         }
 
         String text = label + "  " + valueText;
