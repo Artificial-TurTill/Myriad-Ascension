@@ -197,11 +197,24 @@ public final class CultivatorStatusScreen extends Screen {
                 graphics,
                 right,
                 ry,
-                energyName(data.realm()),
+                energyName(data.realm(), data.minorStage()),
                 decimal(data.currentQi()) + " / " + decimal(data.maximumQi()),
                 columnWidth);
-        ry = wrappedLine(graphics, right, ry, "Power", decimal(data.circulationPercent()) + "%", columnWidth);
-        ry = wrappedLine(graphics, right, ry, "Burst", data.burstMode() ? "ACTIVE" : "Inactive", columnWidth);
+        boolean qiControlLocked = data.realm().ordinal() < CultivationRealm.INITIAL_ELEMENT.ordinal();
+        ry = wrappedLine(
+                graphics,
+                right,
+                ry,
+                "Power",
+                qiControlLocked ? "Locked until Initial Element" : decimal(data.circulationPercent()) + "%",
+                columnWidth);
+        ry = wrappedLine(
+                graphics,
+                right,
+                ry,
+                "Burst",
+                qiControlLocked ? "Locked" : (data.burstMode() ? "ACTIVE" : "Inactive"),
+                columnWidth);
         ry = wrappedLine(graphics, right, ry, "Combat Index", formatPower(data.currentCombatIndex()), columnWidth);
 
         ry += 7;
@@ -544,7 +557,10 @@ public final class CultivatorStatusScreen extends Screen {
         return data.bloodlineName() + " — " + data.bloodlineGrade();
     }
 
-    private static String energyName(CultivationRealm realm) {
+    private static String energyName(CultivationRealm realm, int stage) {
+        if (realm == CultivationRealm.TEMPERED_BODY && stage >= 7) {
+            return "Yuan Qi (Sealed)";
+        }
         if (realm.ordinal() <= CultivationRealm.SEPARATION_AND_REUNION.ordinal()) {
             return realm == CultivationRealm.MORTAL ? "Qi" : "Yuan Qi";
         }
