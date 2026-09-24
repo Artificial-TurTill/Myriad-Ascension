@@ -22,6 +22,7 @@ public final class MyriadAscensionClient {
         modEventBus.addListener(ClientKeyMappings::register);
         modEventBus.addListener(ClientCultivatorHud::register);
         modEventBus.addListener(ClientMenuScreens::register);
+        modEventBus.addListener(ClientItemExtensions::register);
         NeoForge.EVENT_BUS.addListener(ClientCultivationInput::onClientTick);
     }
 }
