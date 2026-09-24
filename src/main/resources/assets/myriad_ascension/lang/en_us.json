@@ -28,5 +28,18 @@
   "hud.myriad_ascension.health": "Health",
   "hud.myriad_ascension.qi": "Qi",
   "hud.myriad_ascension.power": "Power",
-  "key.myriad_ascension.train": "Hold Foundation Training Stance"
+  "key.myriad_ascension.train": "Hold Foundation Training Stance",
+  "item.myriad_ascension.minor_body_mending_pill": "Minor Body-Mending Pill",
+  "item.myriad_ascension.meridian_soothing_pill": "Meridian-Soothing Pill",
+  "item.myriad_ascension.basic_antidote_pill": "Basic Antidote Pill",
+  "item.myriad_ascension.crude_meridian_poison": "Crude Meridian Poison",
+  "item.myriad_ascension.tempered_body_artifact_sword": "Tempered Body Artifact Sword",
+  "item.myriad_ascension.tempered_body_artifact_shield": "Tempered Body Artifact Shield",
+  "item.myriad_ascension.tempered_body_artifact_helmet": "Tempered Body Artifact Helmet",
+  "item.myriad_ascension.tempered_body_artifact_chestplate": "Tempered Body Artifact Chestplate",
+  "item.myriad_ascension.tempered_body_artifact_leggings": "Tempered Body Artifact Leggings",
+  "item.myriad_ascension.tempered_body_artifact_boots": "Tempered Body Artifact Boots",
+  "item.myriad_ascension.minor_storage_bag": "Minor Storage Bag",
+  "item.myriad_ascension.instruction_to_the_martial_world": "Instruction to the Martial World",
+  "container.myriad_ascension.minor_storage_bag": "Minor Storage Bag"
 }
