@@ -300,16 +300,32 @@ public final class CultivatorData implements INBTSerializable<CompoundTag> {
         return bodyInjury;
     }
 
+    public void setBodyInjury(double bodyInjury) {
+        this.bodyInjury = Math.max(0.0D, bodyInjury);
+    }
+
     public double meridianInjury() {
         return meridianInjury;
+    }
+
+    public void setMeridianInjury(double meridianInjury) {
+        this.meridianInjury = Math.max(0.0D, meridianInjury);
     }
 
     public double soulInjury() {
         return soulInjury;
     }
 
+    public void setSoulInjury(double soulInjury) {
+        this.soulInjury = Math.max(0.0D, soulInjury);
+    }
+
     public double recoveryDebt() {
         return recoveryDebt;
+    }
+
+    public void setRecoveryDebt(double recoveryDebt) {
+        this.recoveryDebt = Math.max(0.0D, recoveryDebt);
     }
 
     public double vesselPurity() {
