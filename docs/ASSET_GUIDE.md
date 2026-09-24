@@ -106,7 +106,43 @@ Text remains dynamic and is width-wrapped by Java.
 
 ---
 
-## 5. Editable Item Textures
+## 5. Character Genesis
+
+Main panel:
+
+`src/main/resources/assets/myriad_ascension/textures/gui/character_genesis.png`
+
+Current source size:
+
+- 512 × 256 px
+
+This texture controls the ornamental/background shell of the first-login character profile screen.
+
+Genesis no longer relies on an invisible/hard-coded panel.
+
+### Shared martial button atlas
+
+`src/main/resources/assets/myriad_ascension/textures/gui/martial_button.png`
+
+Current source size:
+
+- 256 × 64 px
+
+Atlas layout:
+
+- Y 0–19: normal
+- Y 20–39: hover/focus
+- Y 40–59: selected
+- Y 60–63: padding
+
+This atlas is currently used by:
+
+- Character Genesis choices/actions
+- Instruction to the Martial World previous/next arrows
+
+It exists specifically to avoid falling back to Minecraft's default grey button texture.
+
+## 6. Editable Item Textures
 
 All current custom item icons are under:
 
@@ -135,7 +171,7 @@ The Tempered Body Artifact Shield now has its own shield-shaped local texture. I
 
 ---
 
-## 6. 3D Shield Texture
+## 7. 3D Shield Texture
 
 The Tempered Body Artifact Shield deliberately does **not** use a normal `textures/item/*.png` icon.
 
@@ -166,7 +202,7 @@ The normal and blocking transform values intentionally mirror vanilla 1.21.1 shi
 
 Do not replace this with `minecraft:item/generated`; doing so collapses the shield back into a flat 2D item.
 
-## 7. Equipped Armor Textures
+## 8. Equipped Armor Textures
 
 The artifact armor no longer uses `ArmorMaterials.IRON` for its visual layer.
 
@@ -188,7 +224,7 @@ These are deliberately simple original placeholders. Replace them with final art
 
 ---
 
-## 8. Item Model Files
+## 9. Item Model Files
 
 Model JSONs are located under:
 
@@ -217,7 +253,7 @@ The important part is that `layer0` points to `myriad_ascension:item/...`.
 
 ---
 
-## 9. UI Text Containment Rules
+## 10. UI Text Containment Rules
 
 The V screen now enforces:
 
@@ -233,7 +269,7 @@ Future UI text should use the same wrapped rendering helpers instead of direct u
 
 ---
 
-## 10. Editing Workflow
+## 11. Editing Workflow
 
 Recommended workflow:
 
@@ -244,3 +280,20 @@ Recommended workflow:
 5. No Java change is required when only replacing pixels at the same path.
 
 The placeholders are intentionally simple. They exist so every custom visual has a concrete, editable file from the beginning rather than silently inheriting a vanilla texture.
+
+
+## UI resource inventory
+
+As of alpha.11 development, the custom UI texture inventory is:
+
+| UI | Editable PNG | Rendering status |
+| --- | --- | --- |
+| Cultivation HUD | `textures/gui/cultivator_hud.png` | active |
+| Minor Storage Bag | `textures/gui/minor_storage_bag.png` | active |
+| Cultivator V Screen | `textures/gui/cultivator_status_panel.png` | active |
+| V Screen tabs | `textures/gui/cultivator_status_tabs.png` | active |
+| Martial World Guide | `textures/gui/martial_world_guide.png` | active |
+| Character Genesis | `textures/gui/character_genesis.png` | active |
+| Shared martial buttons | `textures/gui/martial_button.png` | active |
+
+Dynamic text, numeric values, progress bars, item slots, and interaction logic remain code-driven because they must change at runtime. Their ornamental/static visual shells are asset-backed.
