@@ -5,7 +5,6 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import io.github.artificialturtill.myriadascension.MyriadAscension;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ShieldModel;
-import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -30,9 +29,7 @@ public final class TemperedBodyArtifactShieldRenderer
                 Minecraft.getInstance().getEntityModels());
 
         this.shieldModel = new ShieldModel(
-                Minecraft.getInstance()
-                        .getEntityModels()
-                        .bakeLayer(ModelLayers.SHIELD));
+                ShieldModel.createLayer().bakeRoot());
     }
 
     @Override
