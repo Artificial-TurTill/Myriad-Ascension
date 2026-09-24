@@ -1,4 +1,4 @@
-# Myriad Ascension — Alpha 0.1.0-alpha.11
+# Myriad Ascension — Alpha 0.1.0-alpha.12
 
 This is an early systems alpha for Minecraft 1.21.1 / NeoForge.
 
@@ -45,7 +45,7 @@ After Mortal Genesis, this:
 ### /myriadalpha tempered stage7
 ### /myriadalpha tempered stage9
 
-Moves between representative Tempered Body milestones. Tempered Body deliberately keeps usable Qi at zero.
+Moves between representative Tempered Body milestones. Stages 7-9 now form a stored Yuan Qi reserve naturally, but that reserve remains unusable until Initial Element.
 
 ### /myriadalpha initial_element
 
@@ -61,9 +61,10 @@ Simulates the Testudo Clan Custodian authorizing the Cultivation Fundamentals li
 
 ## Controls
 
-- G — gather/raise normal Qi circulation
-- H — suppress/lower normal Qi circulation
-- R — toggle Burst
+- B — hold the Primordialis Testudo Foundation Stance
+- G — Tempered Body 4-6: focus World Energy perception; Initial Element+: raise conscious Qi circulation
+- H — suppress/lower conscious Qi circulation after Initial Element
+- R — toggle Burst after active Qi is available
 - V — Cultivator Status
 - X — reserved for the future quick menu
 
@@ -129,7 +130,7 @@ Progression:
 - fully completing Stage 9 does **not** automatically enter Initial Element,
 - Initial Element remains a future breakthrough mechanic.
 
-During Tempered Body, G is used as a breathing/training rhythm and still does not create usable Qi.
+Historical alpha.7 note: this original all-stage B+G breathing loop is superseded by alpha.12. Tempered Body is now stage-aware: Stages 1-3 are physical, Stages 4-6 use G only as a perception/focus aid, and Stages 7-9 gather Yuan Qi passively.
 
 Player data schema is now version 11.
 
@@ -347,6 +348,63 @@ The Martial World Guide navigation arrows no longer use vanilla buttons.
 
 See `docs/ASSET_GUIDE.md` for the full editable UI inventory.
 
+## Alpha.12 cultivation correction, guide expansion, and release-asset consolidation
+
+Alpha.12 incorporates the corrected project history and fixes the mismatch between the early Testudo prototype and the established Tempered Body design.
+
+### Stage-aware Testudo training
+
+- Mortal / Tempered Body 1-3: B is physical foundation training; G is not required.
+- Tempered Body 4-6: B remains the stance and G acts only as a short World Energy perception/focus pulse.
+- Tempered Body 7-9: the stance can continue physical consolidation, while Yuan Qi forms naturally without G.
+- Initial Element+: G resumes its long-term role as conscious Qi circulation/mobilization.
+- Burst and conscious circulation are explicitly blocked before Initial Element.
+
+### Tempered Body Yuan Qi
+
+Tempered Body Stages 7-9 now possess a real stored Yuan Qi reserve.
+
+Current provisional alpha test capacities:
+
+- Stage 7: 25
+- Stage 8: 50
+- Stage 9: 75
+
+The reserve fills passively and is forced to 0% active circulation during Tempered Body. The values are test-balance constants, not final lore values.
+
+### Instruction to the Martial World
+
+The in-game guide now documents:
+
+- corrected Tempered Body stage behavior,
+- Testudo stage-specific training,
+- repeated-use and combat training,
+- correct-environment training,
+- elemental-damage training,
+- hostile-environment training,
+- rare Wood/Water healing-based training,
+- Innate Affinity versus Current Attunement,
+- aligned training, elemental resources, techniques, environment and spirit veins as attunement routes.
+
+### Corrected user textures
+
+The user-supplied corrected files are now the packaged sources for:
+
+- `textures/gui/cultivator_hud.png`
+- `textures/gui/minor_storage_bag.png`
+
+### UI release consolidation
+
+Alpha.11's version commit occurred before several later UI-asset commits on main. Alpha.12 deliberately packages the complete post-alpha.11 UI state under one new version/artifact so the V-screen panel, V-screen tabs, Martial World Guide shell, Character Genesis shell, shared martial buttons, HUD and storage bag are all built from the same release head.
+
+The following remain explicitly wired to local editable assets:
+
+- `textures/gui/cultivator_status_panel.png`
+- `textures/gui/cultivator_status_tabs.png`
+- `textures/gui/martial_world_guide.png`
+
+These three require runtime visual verification in the alpha.12 artifact because compile-time asset references alone do not prove the client's final rendered appearance.
+
 ## Known limitations
 
 - no generated clan compound yet
@@ -354,7 +412,8 @@ See `docs/ASSET_GUIDE.md` for the full editable UI inventory.
 - service quests exist as data/state but not full NPC interactions
 - no physical manual/library items yet
 - no seated calm-cultivation runtime yet
-- no final Tempered Body stat/progression tuning
+- environmental Current Attunement growth is designed and documented but still lacks a full runtime loop
+- no final Tempered Body stat/progression tuning; Stage 7-9 Yuan Qi capacities/rates are provisional alpha values
 - no passive Qi-regeneration runtime yet
 - no final Qi-drain/Burst curves
 - no weapon-infusion runtime yet

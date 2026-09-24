@@ -22,7 +22,7 @@ The goal is not to reproduce any one existing setting. Myriad Ascension uses ori
 
 | Key | Function |
 | --- | --- |
-| **G** | Gather Qi and raise normal circulation |
+| **G** | Tempered Body 4-6: focus perception; Initial Element+: raise conscious circulation |
 | **H** | Suppress/lower normal Qi circulation |
 | **R** | Toggle Burst overdrive |
 | **X** | Open compact cultivation quick menu |
@@ -32,7 +32,7 @@ Keybinds will be configurable.
 
 ## Core Combat Concept
 
-A cultivator has a stored Qi reserve and an **active output level**. Higher output increases physical enhancement, movement, technique performance, spiritual pressure, weapon infusion, and other effects, but drains Qi faster and increases strain.
+A cultivator can eventually develop a stored Qi reserve and an **active output level**. Tempered Body Stages 7-9 may already contain naturally formed Yuan Qi, but conscious circulation and active output remain locked until Initial Element. Higher active output then increases physical enhancement, movement, technique performance, spiritual pressure, weapon infusion, and other effects, but drains Qi faster and increases strain.
 
 The **X quick menu** will control how active Qi is applied, such as:
 
@@ -102,13 +102,13 @@ Exceptional starting talent accelerates early development, while difficult const
 
 ## Alpha Build
 
-Current test version: **0.1.0-alpha.11**
+Current test version: **0.1.0-alpha.12**
 
 Successful GitHub Actions builds publish an installable JAR artifact. See `docs/ALPHA.md` for the implemented systems, alpha-only commands, controls, and known limitations.
 
 ## Development Status
 
-**Phase:** Alpha 0.1.0-alpha.11
+**Phase:** Alpha 0.1.0-alpha.12
 
 Initial development will focus on the cultivation core before expanding into large content systems.
 

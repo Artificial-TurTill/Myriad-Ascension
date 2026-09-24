@@ -284,16 +284,23 @@ The placeholders are intentionally simple. They exist so every custom visual has
 
 ## UI resource inventory
 
-As of alpha.11 development, the custom UI texture inventory is:
+As of alpha.12 development, the custom UI texture inventory is:
 
 | UI | Editable PNG | Rendering status |
 | --- | --- | --- |
 | Cultivation HUD | `textures/gui/cultivator_hud.png` | active |
 | Minor Storage Bag | `textures/gui/minor_storage_bag.png` | active |
-| Cultivator V Screen | `textures/gui/cultivator_status_panel.png` | active |
-| V Screen tabs | `textures/gui/cultivator_status_tabs.png` | active |
-| Martial World Guide | `textures/gui/martial_world_guide.png` | active |
+| Cultivator V Screen | `textures/gui/cultivator_status_panel.png` | wired; runtime visual verification required in alpha.12 |
+| V Screen tabs | `textures/gui/cultivator_status_tabs.png` | wired; runtime visual verification required in alpha.12 |
+| Martial World Guide | `textures/gui/martial_world_guide.png` | wired; runtime visual verification required in alpha.12 |
 | Character Genesis | `textures/gui/character_genesis.png` | active |
 | Shared martial buttons | `textures/gui/martial_button.png` | active |
 
 Dynamic text, numeric values, progress bars, item slots, and interaction logic remain code-driven because they must change at runtime. Their ornamental/static visual shells are asset-backed.
+
+
+## 12. Alpha.12 release-asset rule
+
+The alpha.12 artifact is intentionally built only after the post-alpha.11 UI commits, cultivation corrections, and corrected HUD/storage-bag textures are present on the same release head.
+
+For future alphas, bump the mod version and artifact name only after the intended release changes are already committed. This prevents a versioned artifact from being generated before later same-version UI fixes.

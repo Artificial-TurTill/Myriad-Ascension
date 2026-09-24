@@ -3,6 +3,7 @@ package io.github.artificialturtill.myriadascension.training;
 import io.github.artificialturtill.myriadascension.cultivation.data.CultivatorData;
 import io.github.artificialturtill.myriadascension.cultivation.data.ModAttachments;
 import io.github.artificialturtill.myriadascension.cultivation.realm.CultivationRealm;
+import io.github.artificialturtill.myriadascension.cultivation.realm.TemperedBodyRules;
 import io.github.artificialturtill.myriadascension.network.ModNetworking;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -18,6 +19,12 @@ public final class PlayerTrainingEvents {
         }
 
         CultivatorData data = player.getData(ModAttachments.CULTIVATOR_DATA);
+        long gameTime = player.level().getGameTime();
+
+        boolean energyChanged = updateTemperedBodyEnergyState(data);
+        if (energyChanged && gameTime % 20L == 0L) {
+            ModNetworking.syncPlayer(player, data);
+        }
 
         if (!data.trainingRequested()) {
             recover(data);
@@ -30,12 +37,13 @@ public final class PlayerTrainingEvents {
             return;
         }
 
-        long gameTime = player.level().getGameTime();
         boolean postureValid = TestudoTrainingRules.postureIsValid(player);
-        boolean breathing = TestudoTrainingRules.hasRecentBreathPulse(data, gameTime);
+        boolean focusRequired = TestudoTrainingRules.requiresFocusPulse(data);
+        boolean focusValid = !focusRequired
+                || TestudoTrainingRules.hasRecentFocusPulse(data, gameTime);
         boolean exhausted = data.trainingFatigue() >= TestudoTrainingRules.MAX_FATIGUE;
 
-        if (!postureValid || !breathing || exhausted) {
+        if (!postureValid || !focusValid || exhausted) {
             data.resetTrainingSession();
 
             if (gameTime % 20L == 0L) {
@@ -43,7 +51,7 @@ public final class PlayerTrainingEvents {
                         ? "Too fatigued — release the stance and recover."
                         : !postureValid
                                 ? "Foundation Stance broken — stand still, grounded, with empty hands."
-                                : "Control your breathing with G while holding the stance.";
+                                : "Focus on the World Energy with G while holding the stance.";
                 player.displayClientMessage(Component.literal(reason), true);
             }
             return;
@@ -63,15 +71,62 @@ public final class PlayerTrainingEvents {
         }
 
         if (gameTime % 20L == 0L) {
+            String energySuffix = "";
+            if (data.realm() == CultivationRealm.TEMPERED_BODY
+                    && TemperedBodyRules.naturallyGathersPreQiEnergy(data.minorStage())) {
+                energySuffix = "  |  Yuan Qi "
+                        + oneDecimal(data.currentQi())
+                        + "/"
+                        + oneDecimal(data.maximumQi());
+            }
+
             player.displayClientMessage(
                     Component.literal(
-                            "Testudo Foundation Stance  |  "
+                            "Testudo " + TestudoTrainingRules.modeName(data) + "  |  "
                                     + "Progress " + percent(data.cultivationProgress()) + "%  |  "
                                     + "Fatigue " + percent(data.trainingFatigue()) + "%  |  "
-                                    + "Session " + (data.trainingSessionTicks() / 20) + "s"),
+                                    + "Session " + (data.trainingSessionTicks() / 20) + "s"
+                                    + energySuffix),
                     true);
             ModNetworking.syncPlayer(player, data);
         }
+    }
+
+    private static boolean updateTemperedBodyEnergyState(CultivatorData data) {
+        if (data.realm() != CultivationRealm.TEMPERED_BODY) {
+            return false;
+        }
+
+        int stage = data.minorStage();
+
+        // Stages 1-6 have no Yuan Qi reserve.
+        if (!TemperedBodyRules.naturallyGathersPreQiEnergy(stage)) {
+            boolean changed = data.maximumQi() != 0.0D
+                    || data.currentQi() != 0.0D
+                    || data.circulationPercent() != 0.0D
+                    || data.burstMode();
+            data.setMaximumQi(0.0D);
+            data.setCurrentQi(0.0D);
+            data.setCirculationPercent(0.0D);
+            data.setBurstMode(false);
+            return changed;
+        }
+
+        // Stages 7-9 naturally form Yuan Qi. It exists, but cannot be consciously
+        // circulated or spent until Initial Element.
+        double baselineCapacity = TestudoTrainingRules.naturalYuanQiCapacity(stage);
+        if (data.maximumQi() < baselineCapacity) {
+            data.setMaximumQi(baselineCapacity);
+        }
+
+        double before = data.currentQi();
+        data.setCurrentQi(Math.min(
+                data.maximumQi(),
+                data.currentQi() + TestudoTrainingRules.naturalYuanQiPerTick(stage)));
+        data.setCirculationPercent(0.0D);
+        data.setBurstMode(false);
+
+        return data.currentQi() != before;
     }
 
     private static void recover(CultivatorData data) {
@@ -84,6 +139,10 @@ public final class PlayerTrainingEvents {
         if (data.realm() == CultivationRealm.MORTAL) {
             data.setRealm(CultivationRealm.TEMPERED_BODY);
             data.setMinorStage(1);
+            data.setMaximumQi(0.0D);
+            data.setCurrentQi(0.0D);
+            data.setCirculationPercent(0.0D);
+            data.setBurstMode(false);
             data.setCultivationProgress(0.0D);
             data.resetTrainingSession();
 
@@ -104,9 +163,17 @@ public final class PlayerTrainingEvents {
             data.setMinorStage(nextStage);
             data.setCultivationProgress(0.0D);
             data.resetTrainingSession();
+            updateTemperedBodyEnergyState(data);
+
+            String milestone = switch (nextStage) {
+                case 4 -> " World Energy can now be perceived; use G only as a focus aid.";
+                case 7 -> " Natural Yuan Qi formation has begun; absorption is passive.";
+                default -> "";
+            };
 
             player.displayClientMessage(
-                    Component.literal("Tempered Body foundation advanced to Stage " + nextStage + "."),
+                    Component.literal(
+                            "Tempered Body advanced to Stage " + nextStage + "." + milestone),
                     false);
             ModNetworking.syncPlayer(player, data);
             return;
@@ -125,5 +192,9 @@ public final class PlayerTrainingEvents {
 
     private static int percent(double value) {
         return (int) Math.round(Math.max(0.0D, Math.min(100.0D, value)));
+    }
+
+    private static String oneDecimal(double value) {
+        return String.format(java.util.Locale.ROOT, "%.1f", value);
     }
 }
