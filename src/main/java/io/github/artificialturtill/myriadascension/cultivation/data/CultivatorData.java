@@ -419,6 +419,14 @@ public final class CultivatorData implements INBTSerializable<CompoundTag> {
         lastTrainingBreathPulseTick = gameTime;
     }
 
+    public long lastTrainingFocusPulseTick() {
+        return lastTrainingBreathPulseTick;
+    }
+
+    public void markTrainingFocusPulse(long gameTime) {
+        lastTrainingBreathPulseTick = gameTime;
+    }
+
     public boolean hasCompletedInitialSetup() {
         return characterSex != CharacterSex.UNSET
                 && bodyPolarity != BodyPolarity.UNSET
