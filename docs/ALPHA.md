@@ -1,4 +1,4 @@
-# Myriad Ascension — Alpha 0.1.0-alpha.8
+# Myriad Ascension — Alpha 0.1.0-alpha.9
 
 This is an early systems alpha for Minecraft 1.21.1 / NeoForge.
 
@@ -219,6 +219,64 @@ Right-clicking it opens an in-game guide covering:
 
 Network protocol is now version 7.
 
+## Alpha.9 editable texture and UI repair
+
+This release fixes the asset and layout problems found in alpha.8.
+
+### Editable local PNG assets
+
+Custom items no longer borrow their visible texture from `minecraft:item/...`.
+
+All current item textures now live under:
+
+`src/main/resources/assets/myriad_ascension/textures/item/`
+
+This includes manuals, medicines, poison, artifacts, the storage bag, and the Instruction manual.
+
+The Tempered Body Artifact Shield now uses:
+
+`textures/item/tempered_body_artifact_shield.png`
+
+instead of the previous iron-ingot placeholder.
+
+### Equipped artifact armor
+
+Worn artifact armor no longer uses the vanilla iron armor material for its visual layers.
+
+Editable armor textures now live at:
+
+- `textures/models/armor/tempered_body_artifact_layer_1.png`
+- `textures/models/armor/tempered_body_artifact_layer_2.png`
+
+### Editable GUI PNGs
+
+The following interfaces are now backed by mod-local PNG files:
+
+- `textures/gui/cultivator_status_panel.png`
+- `textures/gui/cultivator_status_tabs.png`
+- `textures/gui/cultivator_hud.png`
+- `textures/gui/minor_storage_bag.png`
+- `textures/gui/martial_world_guide.png`
+
+The V-screen tabs no longer use Minecraft's default grey Button texture.
+
+### V-screen text containment
+
+The V screen now enforces:
+
+- fixed content clipping,
+- width-aware text wrapping,
+- independent left/right column widths,
+- wrapping for long cultivation-method, bloodline, technique and ability names,
+- wrapped ability descriptions,
+- scrolling for the Abilities page.
+
+Long values can no longer draw into neighboring fields.
+
+### Asset map
+
+See `docs/ASSET_GUIDE.md` for exact paths, source dimensions, atlas regions, and the editing workflow.
+
 ## Known limitations
 
 - no generated clan compound yet
@@ -231,8 +289,8 @@ Network protocol is now version 7.
 - no final Qi-drain/Burst curves
 - no weapon-infusion runtime yet
 - no final spirit-beast/world-Qi/formation/alchemy/profession content
-- no final textures/UI art/audio
-- V is a functional placeholder UI
+- final art/audio is not supplied yet; current textures and UI art are editable local placeholder PNGs
+- V is functional and texture-backed; final artwork and spacing can still be iterated
 - X is reserved but not implemented
 - alpha commands intentionally bypass future gameplay requirements
 
