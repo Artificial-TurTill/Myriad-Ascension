@@ -2,9 +2,12 @@ package io.github.artificialturtill.myriadascension.client.screen;
 
 public enum CultivatorStatusTab {
     OVERVIEW("Overview"),
-    STATS_AFFINITIES("Stats & Affinities"),
+    STATS("Stats"),
+    AFFINITIES("Affinities"),
     SKILLS("Skills"),
-    TECHNIQUES("Techniques");
+    TECHNIQUES("Techniques"),
+    ABILITIES("Abilities"),
+    CONDITIONS("Conditions");
 
     private final String displayName;
 
