@@ -19,6 +19,7 @@ import io.github.artificialturtill.myriadascension.inheritance.CultivationEntryR
 import io.github.artificialturtill.myriadascension.inheritance.InheritanceAcquisitionRules;
 import io.github.artificialturtill.myriadascension.network.ModNetworking;
 import io.github.artificialturtill.myriadascension.organization.OrganizationStanding;
+import io.github.artificialturtill.myriadascension.training.TestudoTrainingRules;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
@@ -123,14 +124,17 @@ public final class AlphaCommands {
 
         data.setRealm(CultivationRealm.TEMPERED_BODY);
         data.setMinorStage(stage);
-        data.setMaximumQi(0.0D);
+        data.setMaximumQi(TestudoTrainingRules.naturalYuanQiCapacity(stage));
         data.setCurrentQi(0.0D);
         data.setCirculationPercent(0.0D);
         data.setBurstMode(false);
 
         ModNetworking.syncPlayer(player, data);
         source.sendSuccess(() -> Component.literal(
-                "[Alpha] Tempered Body Stage " + stage + " selected for testing."),
+                "[Alpha] Tempered Body Stage " + stage + " selected for testing."
+                        + (stage >= 7
+                                ? " Yuan Qi will now accumulate naturally but remains unusable."
+                                : "")),
                 false);
         return Command.SINGLE_SUCCESS;
     }
