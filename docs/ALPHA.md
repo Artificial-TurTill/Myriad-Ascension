@@ -1,4 +1,4 @@
-# Myriad Ascension — Alpha 0.1.0-alpha.7
+# Myriad Ascension — Alpha 0.1.0-alpha.8
 
 This is an early systems alpha for Minecraft 1.21.1 / NeoForge.
 
@@ -132,6 +132,92 @@ Progression:
 During Tempered Body, G is used as a breathing/training rhythm and still does not create usable Qi.
 
 Player data schema is now version 11.
+
+## Alpha.8 power, V-screen, medicines and artifacts
+
+### V screen
+
+The V interface is now divided into focused tabs:
+
+- Overview
+- Stats
+- Affinities
+- Skills
+- Techniques
+- Abilities
+- Conditions
+
+The Abilities page supports mouse-wheel scrolling and shows both unlocked capabilities and the next locked milestones.
+
+The Stats page shows:
+
+- Realm Potential
+- Current Combat Index
+- Physical Factor
+- Energy Factor
+- Soul Factor
+- Foundation Factor
+- Condition Factor
+- Battle Factor
+
+### Power scaling
+
+Every minor Stage / Order / Rank now has an explicit Realm Potential value.
+
+The current combat index combines realm potential with:
+
+- physical stats
+- energy reserve/output
+- soul stats
+- foundation/purity
+- injuries/condition
+- battle comprehension
+
+See `docs/design/minor-realm-power-and-capabilities.md`.
+
+### Medicines and poison
+
+Added:
+
+- Minor Body-Mending Pill
+- Meridian-Soothing Pill
+- Basic Antidote Pill
+- Crude Meridian Poison
+
+Low-grade medicines can leave impurities.
+
+### Artifacts
+
+Added initial artifact framework and:
+
+- Tempered Body Artifact Sword
+- Tempered Body Artifact Shield
+- Tempered Body Artifact Helmet
+- Tempered Body Artifact Chestplate
+- Tempered Body Artifact Leggings
+- Tempered Body Artifact Boots
+- Minor Storage Bag (9 internal slots)
+
+### Instruction manual
+
+Added **Instruction to the Martial World**.
+
+Every new cultivator receives one after Mortal Genesis.
+
+Right-clicking it opens an in-game guide covering:
+
+- controls
+- cultivation
+- training
+- power
+- techniques
+- medicine/poison
+- artifacts
+- martial-world progression
+
+### Network
+
+Network protocol is now version 7.
 
 ## Known limitations
 
