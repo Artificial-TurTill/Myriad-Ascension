@@ -3,7 +3,6 @@ package io.github.artificialturtill.myriadascension.client;
 import io.github.artificialturtill.myriadascension.MyriadAscension;
 import io.github.artificialturtill.myriadascension.client.screen.MartialWorldGuideScreen;
 import io.github.artificialturtill.myriadascension.network.ClientPayloadBridge;
-import io.github.artificialturtill.myriadascension.registry.ModMenus;
 import net.minecraft.client.Minecraft;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
@@ -22,7 +21,7 @@ public final class MyriadAscensionClient {
 
         modEventBus.addListener(ClientKeyMappings::register);
         modEventBus.addListener(ClientCultivatorHud::register);
-        modEventBus.addListener(ModMenus::registerScreens);
+        modEventBus.addListener(ClientMenuScreens::register);
         NeoForge.EVENT_BUS.addListener(ClientCultivationInput::onClientTick);
     }
 }
