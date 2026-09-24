@@ -1,13 +1,20 @@
 package io.github.artificialturtill.myriadascension.client.screen;
 
+import io.github.artificialturtill.myriadascension.MyriadAscension;
 import io.github.artificialturtill.myriadascension.menu.MinorStorageBagMenu;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 
 public final class MinorStorageBagScreen
         extends AbstractContainerScreen<MinorStorageBagMenu> {
+
+    private static final ResourceLocation TEXTURE =
+            ResourceLocation.fromNamespaceAndPath(
+                    MyriadAscension.MOD_ID,
+                    "textures/gui/minor_storage_bag.png");
 
     public MinorStorageBagScreen(
             MinorStorageBagMenu menu,
@@ -26,36 +33,16 @@ public final class MinorStorageBagScreen
             int mouseX,
             int mouseY) {
 
-        int left = leftPos;
-        int top = topPos;
-
-        graphics.fill(
-                left,
-                top,
-                left + imageWidth,
-                top + imageHeight,
-                0xEE17130E);
-
-        graphics.fill(
-                left,
-                top,
-                left + imageWidth,
-                top + 2,
-                0xFF8D6D2F);
-
-        graphics.fill(
-                left,
-                top + imageHeight - 2,
-                left + imageWidth,
-                top + imageHeight,
-                0xFF8D6D2F);
-
-        graphics.fill(
-                left + 57,
-                top + 12,
-                left + 119,
-                top + 74,
-                0xAA2A241B);
+        graphics.blit(
+                TEXTURE,
+                leftPos,
+                topPos,
+                0.0F,
+                0.0F,
+                imageWidth,
+                imageHeight,
+                imageWidth,
+                imageHeight);
     }
 
     @Override
