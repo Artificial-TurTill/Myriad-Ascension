@@ -102,13 +102,13 @@ Exceptional starting talent accelerates early development, while difficult const
 
 ## Alpha Build
 
-Current test version: **0.1.0-alpha.7**
+Current test version: **0.1.0-alpha.8**
 
 Successful GitHub Actions builds publish an installable JAR artifact. See `docs/ALPHA.md` for the implemented systems, alpha-only commands, controls, and known limitations.
 
 ## Development Status
 
-**Phase:** Alpha 0.1.0-alpha.7
+**Phase:** Alpha 0.1.0-alpha.8
 
 Initial development will focus on the cultivation core before expanding into large content systems.
 
@@ -190,6 +190,8 @@ myriad_ascension
 - `docs/design/primordialis-testudo-clan.md` — first test clan
 - `docs/design/empire-politics.md` — Empire diplomacy and succession
 - `docs/design/bloodlines.md` — bloodline acquisition, purity, conflict, and Primordial Tortoise lineage
+- `docs/design/minor-realm-power-and-capabilities.md` — explicit Stage/Order/Rank power scale and capability gates
+- `docs/design/martial-tools-consumables.md` — medicines, poisons, artifacts, storage, and in-game guide
 - `docs/core-systems.md` — technical core-system specification
 - `docs/roadmap.md` — implementation roadmap
 
