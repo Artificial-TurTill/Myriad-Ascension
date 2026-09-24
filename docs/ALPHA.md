@@ -1,4 +1,4 @@
-# Myriad Ascension — Alpha 0.1.0-alpha.9
+# Myriad Ascension — Alpha 0.1.0-alpha.10
 
 This is an early systems alpha for Minecraft 1.21.1 / NeoForge.
 
@@ -276,6 +276,31 @@ Long values can no longer draw into neighboring fields.
 ### Asset map
 
 See `docs/ASSET_GUIDE.md` for exact paths, source dimensions, atlas regions, and the editing workflow.
+
+## Alpha.10 vanilla-style 3D shield
+
+The Tempered Body Artifact Shield now follows Minecraft 1.21.1's actual shield rendering architecture.
+
+Changes:
+
+- replaced the flat `minecraft:item/generated` model with `builtin/entity`,
+- copied vanilla shield display transforms for normal use,
+- added a separate blocking model with vanilla blocking transforms,
+- added a client-only `BlockEntityWithoutLevelRenderer`,
+- reuses Minecraft's own `ShieldModel` geometry,
+- uses the same `(1, -1, -1)` model-space flip as the vanilla renderer,
+- retains enchantment glint through `ItemRenderer.getFoilBufferDirect`,
+- replaced the obsolete 16×16 item icon with a 64×64 entity shield texture,
+- the initial 64×64 texture uses the vanilla `shield_base_nopattern.png` UV layout as the editable foundation.
+
+Editable texture:
+
+`assets/myriad_ascension/textures/entity/tempered_body_artifact_shield.png`
+
+See:
+
+- `docs/ASSET_GUIDE.md`
+- `docs/research/vanilla-1.21.1-shields.md`
 
 ## Known limitations
 
