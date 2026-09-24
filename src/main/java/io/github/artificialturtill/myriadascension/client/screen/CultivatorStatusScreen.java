@@ -1,8 +1,12 @@
 package io.github.artificialturtill.myriadascension.client.screen;
 
+import io.github.artificialturtill.myriadascension.ability.CultivationAbilityRules;
+import io.github.artificialturtill.myriadascension.ability.CultivationAbilityState;
 import io.github.artificialturtill.myriadascension.client.ClientCultivatorState;
+import io.github.artificialturtill.myriadascension.cultivation.realm.CultivationRealm;
 import io.github.artificialturtill.myriadascension.network.CultivatorSyncPayload;
 import java.util.EnumMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import net.minecraft.client.gui.GuiGraphics;
@@ -15,6 +19,7 @@ public final class CultivatorStatusScreen extends Screen {
     private static final int PALE_GOLD = 0xFFD8C690;
     private static final int TEXT = 0xFFF2EEE2;
     private static final int MUTED = 0xFFAAA79F;
+    private static final int LOCKED = 0xFF8B7770;
     private static final int PANEL = 0xE014120F;
     private static final int PANEL_INNER = 0xD0201C16;
     private static final int BORDER = 0xFF8D6D2F;
@@ -24,6 +29,7 @@ public final class CultivatorStatusScreen extends Screen {
             new EnumMap<>(CultivatorStatusTab.class);
 
     private CultivatorStatusTab selectedTab = CultivatorStatusTab.OVERVIEW;
+    private int scrollOffset;
 
     public CultivatorStatusScreen(CultivatorSyncPayload data) {
         super(Component.translatable("screen.myriad_ascension.status.title"));
@@ -55,6 +61,7 @@ public final class CultivatorStatusScreen extends Screen {
 
     private void selectTab(CultivatorStatusTab tab) {
         selectedTab = tab;
+        scrollOffset = 0;
         updateTabButtons();
     }
 
@@ -72,23 +79,33 @@ public final class CultivatorStatusScreen extends Screen {
         return false;
     }
 
-    /**
-     * The cultivator status screen is an in-world character sheet, not a menu.
-     *
-     * <p>Vanilla Screen#render invokes renderBackground before rendering widgets.
-     * On 1.21.1 that background path applies the menu blur. Because this screen
-     * draws its custom panel before delegating to Screen#render for buttons,
-     * the vanilla blur would otherwise blur the panel and text we just drew.
-     *
-     * <p>Keep the world sharp and let the custom panel provide its own backdrop.
-     */
     @Override
     public void renderBackground(
             GuiGraphics graphics,
             int mouseX,
             int mouseY,
             float partialTick) {
-        // Intentionally empty: no vanilla blur, panorama, or menu darkening.
+        // In-world character sheet: no vanilla menu blur.
+    }
+
+    @Override
+    public boolean mouseScrolled(
+            double mouseX,
+            double mouseY,
+            double scrollX,
+            double scrollY) {
+
+        if (selectedTab == CultivatorStatusTab.ABILITIES) {
+            int max = maxAbilityScroll(data());
+            if (scrollY > 0.0D) {
+                scrollOffset = Math.max(0, scrollOffset - 1);
+            } else if (scrollY < 0.0D) {
+                scrollOffset = Math.min(max, scrollOffset + 1);
+            }
+            return true;
+        }
+
+        return super.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
     }
 
     @Override
@@ -98,9 +115,12 @@ public final class CultivatorStatusScreen extends Screen {
         CultivatorSyncPayload data = data();
         switch (selectedTab) {
             case OVERVIEW -> renderOverview(graphics, data);
-            case STATS_AFFINITIES -> renderStatsAndAffinities(graphics, data);
+            case STATS -> renderStats(graphics, data);
+            case AFFINITIES -> renderAffinities(graphics, data);
             case SKILLS -> renderSkills(graphics, data);
             case TECHNIQUES -> renderTechniques(graphics, data);
+            case ABILITIES -> renderAbilities(graphics, data);
+            case CONDITIONS -> renderConditions(graphics, data);
         }
 
         super.render(graphics, mouseX, mouseY, partialTick);
@@ -120,7 +140,6 @@ public final class CultivatorStatusScreen extends Screen {
         graphics.fill(left, top + height - 2, left + width, top + height, BORDER);
         graphics.fill(left, top, left + 2, top + height, BORDER);
         graphics.fill(left + width - 2, top, left + width, top + height, BORDER);
-
         graphics.fill(left + navWidth, top + 2, left + navWidth + 1, top + height - 2, BORDER);
 
         graphics.drawCenteredString(
@@ -150,29 +169,24 @@ public final class CultivatorStatusScreen extends Screen {
         y = line(graphics, x, y, "Sex", pretty(data.sex().name()));
         y = line(graphics, x, y, "Affiliation", pretty(data.affiliation().name()));
         y = line(graphics, x, y, "Moral Alignment", signed(data.moralAlignment()));
-        y = line(graphics, x, y, "Karma", decimal(data.karma()));
+        line(graphics, x, y, "Karma", decimal(data.karma()));
 
         int ry = contentTop();
-        section(graphics, right, ry, "Qi & Condition");
+        section(graphics, right, ry, "Energy");
         ry += 16;
-        ry = line(graphics, right, ry, "Qi",
+        ry = line(graphics, right, ry, energyName(data.realm()),
                 decimal(data.currentQi()) + " / " + decimal(data.maximumQi()));
-        ry = line(graphics, right, ry, "Circulation", decimal(data.circulationPercent()) + "%");
+        ry = line(graphics, right, ry, "Power", decimal(data.circulationPercent()) + "%");
         ry = line(graphics, right, ry, "Burst", data.burstMode() ? "ACTIVE" : "Inactive");
-        ry = line(graphics, right, ry, "Vessel Purity", decimal(data.vesselPurity()) + "%");
-        ry = line(graphics, right, ry, "Impurities", decimal(data.impurityLoad()));
-        ry = line(graphics, right, ry, "Demonic Qi", decimal(data.demonicQiContamination()));
+        ry = line(graphics, right, ry, "Combat Index", formatPower(data.currentCombatIndex()));
 
-        ry += 6;
+        ry += 7;
         section(graphics, right, ry, "Bloodline");
         ry += 16;
         ry = line(graphics, right, ry, "Lineage", bloodlineText(data));
-        ry = line(graphics, right, ry, "Purity", decimal(data.bloodlinePurity()) + "%");
-        if (data.bloodlineConflictDamage() > 0.0D) {
-            line(graphics, right, ry, "Conflict", decimal(data.bloodlineConflictDamage()));
-        }
+        line(graphics, right, ry, "Purity", decimal(data.bloodlinePurity()) + "%");
 
-        int bottomY = panelTop() + panelHeight() - 48;
+        int bottomY = panelTop() + panelHeight() - 42;
         graphics.drawString(
                 font,
                 Component.literal("Cultivation " + decimal(data.cultivationProgress())
@@ -181,24 +195,14 @@ public final class CultivatorStatusScreen extends Screen {
                 x,
                 bottomY,
                 MUTED);
-
-        graphics.drawString(
-                font,
-                Component.literal("Injuries — Body " + decimal(data.bodyInjury())
-                        + " / Meridian " + decimal(data.meridianInjury())
-                        + " / Soul " + decimal(data.soulInjury())
-                        + " / Recovery " + decimal(data.recoveryDebt())),
-                x,
-                bottomY + 13,
-                MUTED);
     }
 
-    private void renderStatsAndAffinities(GuiGraphics graphics, CultivatorSyncPayload data) {
+    private void renderStats(GuiGraphics graphics, CultivatorSyncPayload data) {
         int x = contentLeft() + 10;
-        int right = contentLeft() + contentWidth() / 2 + 18;
+        int right = contentLeft() + contentWidth() / 2 + 12;
         int y = contentTop();
 
-        section(graphics, x, y, "Stats");
+        section(graphics, x, y, "Core Stats");
         y += 17;
         y = statLine(graphics, x, y, "Strength", data.strength());
         y = statLine(graphics, x, y, "Vitality", data.vitality());
@@ -209,16 +213,23 @@ public final class CultivatorStatusScreen extends Screen {
         statLine(graphics, x, y, "Soul Strength", data.soulStrength());
 
         int ry = contentTop();
-        section(graphics, right, ry, "Affinities");
+        section(graphics, right, ry, "Power Breakdown");
         ry += 17;
-        ry = line(graphics, right, ry, "Wood", Integer.toString(data.wood()));
-        ry = line(graphics, right, ry, "Fire", Integer.toString(data.fire()));
-        ry = line(graphics, right, ry, "Earth", Integer.toString(data.earth()));
-        ry = line(graphics, right, ry, "Metal", Integer.toString(data.metal()));
-        ry = line(graphics, right, ry, "Water", Integer.toString(data.water()));
-        ry = line(graphics, right, ry, "Yin", Integer.toString(data.yin()));
-        line(graphics, right, ry, "Yang", Integer.toString(data.yang()));
+        ry = line(graphics, right, ry, "Realm Potential", formatPower(data.realmPotential()));
+        ry = line(graphics, right, ry, "Current Combat", formatPower(data.currentCombatIndex()));
+        ry = line(graphics, right, ry, "Physical", factor(data.physicalFactor()));
+        ry = line(graphics, right, ry, "Energy", factor(data.energyFactor()));
+        ry = line(graphics, right, ry, "Soul", factor(data.soulFactor()));
+        ry = line(graphics, right, ry, "Foundation", factor(data.foundationFactor()));
+        ry = line(graphics, right, ry, "Condition", factor(data.conditionFactor()));
+        line(graphics, right, ry, "Battle Skill", factor(data.battleFactor()));
 
+        graphics.drawString(
+                font,
+                Component.literal("Physical: STR/VIT/AGI   Foundation: Meridians/Dantian/Purity"),
+                x,
+                panelTop() + panelHeight() - 42,
+                MUTED);
         graphics.drawString(
                 font,
                 Component.literal("Core stats have a hard minimum value of 1."),
@@ -227,31 +238,60 @@ public final class CultivatorStatusScreen extends Screen {
                 MUTED);
     }
 
-    private void renderSkills(GuiGraphics graphics, CultivatorSyncPayload data) {
-        int x = contentLeft() + 14;
+    private void renderAffinities(GuiGraphics graphics, CultivatorSyncPayload data) {
+        int x = contentLeft() + 20;
         int y = contentTop();
 
-        section(graphics, x, y, "Cultivation Skills");
+        section(graphics, x, y, "Current Attunement");
         y += 19;
+        y = line(graphics, x, y, "Wood", Integer.toString(data.wood()));
+        y = line(graphics, x, y, "Fire", Integer.toString(data.fire()));
+        y = line(graphics, x, y, "Earth", Integer.toString(data.earth()));
+        y = line(graphics, x, y, "Metal", Integer.toString(data.metal()));
+        y = line(graphics, x, y, "Water", Integer.toString(data.water()));
+        y = line(graphics, x, y, "Yin", Integer.toString(data.yin()));
+        line(graphics, x, y, "Yang", Integer.toString(data.yang()));
+
+        int noteY = panelTop() + panelHeight() - 55;
+        graphics.drawString(
+                font,
+                Component.literal("Affinity changes efficiency, learning, refinement and Dao compatibility."),
+                x,
+                noteY,
+                MUTED);
+        graphics.drawString(
+                font,
+                Component.literal("Low affinity makes a path harder; it does not permanently forbid it."),
+                x,
+                noteY + 14,
+                MUTED);
+    }
+
+    private void renderSkills(GuiGraphics graphics, CultivatorSyncPayload data) {
+        int x = contentLeft() + 18;
+        int y = contentTop();
+
+        section(graphics, x, y, "Learned Skills");
+        y += 20;
         y = skillLine(graphics, x, y, "Passive Qi Recharging", data.passiveQiRechargingLevel());
         y = skillLine(graphics, x, y, "Meditation", data.meditationLevel());
         y = skillLine(graphics, x, y, "Qi Concealment", data.qiConcealmentLevel());
 
-        y += 14;
+        y += 16;
         graphics.drawString(
                 font,
-                Component.literal("More skills will appear here as they are learned."),
+                Component.literal("Skills are trainable competencies, separate from realm and techniques."),
                 x,
                 y,
                 MUTED);
     }
 
     private void renderTechniques(GuiGraphics graphics, CultivatorSyncPayload data) {
-        int x = contentLeft() + 14;
+        int x = contentLeft() + 18;
         int y = contentTop();
 
         section(graphics, x, y, "Equipped Technique Slots");
-        y += 19;
+        y += 20;
 
         y = techniqueLine(graphics, x, y, "Cultivation",
                 firstNonBlank(data.cultivationTechniqueId(), data.activeCultivationMethodId()));
@@ -259,24 +299,101 @@ public final class CultivatorStatusScreen extends Screen {
         y = techniqueLine(graphics, x, y, "Weapon", data.weaponTechniqueId());
         y = techniqueLine(graphics, x, y, "Eyesight", data.eyesightTechniqueId());
 
-        y += 16;
+        y += 17;
         graphics.drawString(
                 font,
-                Component.literal("Only one technique can be equipped in each category."),
+                Component.literal("One active technique per category."),
                 x,
                 y,
                 PALE_GOLD);
         graphics.drawString(
                 font,
-                Component.literal("Equipping another technique in the same category replaces the current one."),
+                Component.literal("Manuals teach techniques; equipping another replaces the current slot."),
                 x,
                 y + 14,
+                MUTED);
+    }
+
+    private void renderAbilities(GuiGraphics graphics, CultivatorSyncPayload data) {
+        List<CultivationAbilityState> abilities =
+                CultivationAbilityRules.relevantForDisplay(data.realm(), data.minorStage());
+
+        int visible = visibleAbilityCount();
+        int start = Math.min(scrollOffset, Math.max(0, abilities.size() - visible));
+        int end = Math.min(abilities.size(), start + visible);
+
+        int x = contentLeft() + 14;
+        int y = contentTop();
+
+        for (int i = start; i < end; i++) {
+            CultivationAbilityState ability = abilities.get(i);
+            int color = ability.unlocked() ? GOLD : LOCKED;
+            String prefix = ability.unlocked() ? "[Unlocked] " : "[Locked] ";
+
+            graphics.drawString(
+                    font,
+                    Component.literal(prefix + ability.name()),
+                    x,
+                    y,
+                    color);
+            graphics.drawString(
+                    font,
+                    Component.literal(ability.description()),
+                    x + 8,
+                    y + 12,
+                    ability.unlocked() ? TEXT : MUTED);
+            y += 31;
+        }
+
+        if (abilities.size() > visible) {
+            graphics.drawString(
+                    font,
+                    Component.literal("Mouse wheel to scroll  "
+                            + (start + 1) + "-" + end + " / " + abilities.size()),
+                    x,
+                    panelTop() + panelHeight() - 26,
+                    MUTED);
+        }
+    }
+
+    private void renderConditions(GuiGraphics graphics, CultivatorSyncPayload data) {
+        int x = contentLeft() + 18;
+        int y = contentTop();
+
+        section(graphics, x, y, "Foundation & Condition");
+        y += 20;
+        y = line(graphics, x, y, "Vessel Purity", decimal(data.vesselPurity()) + "%");
+        y = line(graphics, x, y, "Impurities", decimal(data.impurityLoad()));
+        y = line(graphics, x, y, "Demonic Qi", decimal(data.demonicQiContamination()));
+        y = line(graphics, x, y, "Body Injury", decimal(data.bodyInjury()));
+        y = line(graphics, x, y, "Meridian Injury", decimal(data.meridianInjury()));
+        y = line(graphics, x, y, "Soul Injury", decimal(data.soulInjury()));
+        y = line(graphics, x, y, "Recovery Debt", decimal(data.recoveryDebt()));
+        y = line(graphics, x, y, "Bloodline Conflict", decimal(data.bloodlineConflictDamage()));
+        line(graphics, x, y, "Condition Power", factor(data.conditionFactor()));
+
+        graphics.drawString(
+                font,
+                Component.literal("Medicines may repair damage, but low-grade pills can add impurities."),
+                x,
+                panelTop() + panelHeight() - 28,
                 MUTED);
     }
 
     private CultivatorSyncPayload data() {
         CultivatorSyncPayload live = ClientCultivatorState.snapshot();
         return live == null ? initialData : live;
+    }
+
+    private int maxAbilityScroll(CultivatorSyncPayload data) {
+        int size = CultivationAbilityRules.relevantForDisplay(
+                data.realm(),
+                data.minorStage()).size();
+        return Math.max(0, size - visibleAbilityCount());
+    }
+
+    private int visibleAbilityCount() {
+        return Math.max(3, (panelHeight() - 86) / 31);
     }
 
     private int line(GuiGraphics graphics, int x, int y, String label, String value) {
@@ -330,6 +447,28 @@ public final class CultivatorStatusScreen extends Screen {
         return data.bloodlineName() + " — " + data.bloodlineGrade();
     }
 
+    private static String energyName(CultivationRealm realm) {
+        if (realm.ordinal() <= CultivationRealm.SEPARATION_AND_REUNION.ordinal()) {
+            return realm == CultivationRealm.MORTAL ? "Qi" : "Yuan Qi";
+        }
+        if (realm.ordinal() <= CultivationRealm.TRANSCENDENT.ordinal()) {
+            return "True Qi";
+        }
+        if (realm.ordinal() <= CultivationRealm.ORIGIN_KING.ordinal()) {
+            return "Saint Qi";
+        }
+        if (realm == CultivationRealm.DAO_SOURCE) {
+            return "Source Qi";
+        }
+        if (realm.ordinal() <= CultivationRealm.HALF_STEP_OPEN_HEAVEN.ordinal()) {
+            return "Emperor Qi";
+        }
+        if (realm == CultivationRealm.OPEN_HEAVEN) {
+            return "World Force";
+        }
+        return "Creation Power";
+    }
+
     private static String level(int value) {
         return value <= 0 ? "Unlearned" : "Lv. " + value;
     }
@@ -360,6 +499,30 @@ public final class CultivatorStatusScreen extends Screen {
         return String.format(Locale.ROOT, "%.1f", value);
     }
 
+    private static String factor(double value) {
+        return String.format(Locale.ROOT, "x%.2f", value);
+    }
+
+    private static String formatPower(double value) {
+        double abs = Math.abs(value);
+        if (abs < 1_000.0D) {
+            return String.format(Locale.ROOT, "%.1f", value);
+        }
+        if (abs < 1_000_000.0D) {
+            return String.format(Locale.ROOT, "%.2fK", value / 1_000.0D);
+        }
+        if (abs < 1_000_000_000.0D) {
+            return String.format(Locale.ROOT, "%.2fM", value / 1_000_000.0D);
+        }
+        if (abs < 1_000_000_000_000.0D) {
+            return String.format(Locale.ROOT, "%.2fB", value / 1_000_000_000.0D);
+        }
+        if (abs < 1.0E15D) {
+            return String.format(Locale.ROOT, "%.2fT", value / 1.0E12D);
+        }
+        return String.format(Locale.ROOT, "%.2e", value);
+    }
+
     private static String pretty(String value) {
         String[] parts = value.toLowerCase(Locale.ROOT).split("_");
         StringBuilder result = new StringBuilder();
@@ -376,11 +539,11 @@ public final class CultivatorStatusScreen extends Screen {
     }
 
     private int panelWidth() {
-        return Math.min(470, Math.max(320, width - 24));
+        return Math.min(540, Math.max(360, width - 30));
     }
 
     private int panelHeight() {
-        return Math.min(280, Math.max(220, height - 24));
+        return Math.min(320, Math.max(240, height - 30));
     }
 
     private int panelLeft() {
@@ -392,7 +555,7 @@ public final class CultivatorStatusScreen extends Screen {
     }
 
     private int navigationWidth() {
-        return Math.min(112, Math.max(96, panelWidth() / 4));
+        return Math.min(122, Math.max(104, panelWidth() / 4));
     }
 
     private int contentLeft() {
@@ -404,6 +567,6 @@ public final class CultivatorStatusScreen extends Screen {
     }
 
     private int contentTop() {
-        return panelTop() + 45;
+        return panelTop() + 46;
     }
 }
