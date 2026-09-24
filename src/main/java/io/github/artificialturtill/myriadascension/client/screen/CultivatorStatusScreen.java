@@ -1,5 +1,6 @@
 package io.github.artificialturtill.myriadascension.client.screen;
 
+import io.github.artificialturtill.myriadascension.MyriadAscension;
 import io.github.artificialturtill.myriadascension.ability.CultivationAbilityRules;
 import io.github.artificialturtill.myriadascension.ability.CultivationAbilityState;
 import io.github.artificialturtill.myriadascension.client.ClientCultivatorState;
@@ -10,22 +11,30 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.FormattedCharSequence;
 
 public final class CultivatorStatusScreen extends Screen {
+    private static final ResourceLocation PANEL_TEXTURE =
+            ResourceLocation.fromNamespaceAndPath(
+                    MyriadAscension.MOD_ID,
+                    "textures/gui/cultivator_status_panel.png");
+
     private static final int GOLD = 0xFFFFD978;
     private static final int PALE_GOLD = 0xFFD8C690;
     private static final int TEXT = 0xFFF2EEE2;
     private static final int MUTED = 0xFFAAA79F;
     private static final int LOCKED = 0xFF8B7770;
-    private static final int PANEL = 0xE014120F;
-    private static final int PANEL_INNER = 0xD0201C16;
-    private static final int BORDER = 0xFF8D6D2F;
+
+    private static final int INNER_MARGIN = 12;
+    private static final int COLUMN_GAP = 14;
+    private static final int LINE_HEIGHT = 13;
+    private static final int ABILITY_ROW_HEIGHT = 43;
 
     private final CultivatorSyncPayload initialData;
-    private final Map<CultivatorStatusTab, Button> tabButtons =
+    private final Map<CultivatorStatusTab, CultivatorTabButton> tabButtons =
             new EnumMap<>(CultivatorStatusTab.class);
 
     private CultivatorStatusTab selectedTab = CultivatorStatusTab.OVERVIEW;
@@ -45,13 +54,16 @@ public final class CultivatorStatusScreen extends Screen {
         int top = panelTop();
         int navWidth = navigationWidth();
 
-        int y = top + 36;
+        int y = top + 38;
         for (CultivatorStatusTab tab : CultivatorStatusTab.values()) {
-            Button button = addRenderableWidget(Button.builder(
-                    Component.literal(tab.displayName()),
-                    pressed -> selectTab(tab))
-                    .bounds(left + 8, y, navWidth - 16, 20)
-                    .build());
+            CultivatorTabButton button = addRenderableWidget(
+                    new CultivatorTabButton(
+                            left + 9,
+                            y,
+                            navWidth - 18,
+                            20,
+                            Component.literal(tab.displayName()),
+                            pressed -> selectTab(tab)));
             tabButtons.put(tab, button);
             y += 25;
         }
@@ -66,11 +78,8 @@ public final class CultivatorStatusScreen extends Screen {
     }
 
     private void updateTabButtons() {
-        for (Map.Entry<CultivatorStatusTab, Button> entry : tabButtons.entrySet()) {
-            boolean selected = entry.getKey() == selectedTab;
-            entry.getValue().active = !selected;
-            entry.getValue().setMessage(Component.literal(
-                    (selected ? "> " : "") + entry.getKey().displayName()));
+        for (Map.Entry<CultivatorStatusTab, CultivatorTabButton> entry : tabButtons.entrySet()) {
+            entry.getValue().setSelected(entry.getKey() == selectedTab);
         }
     }
 
@@ -85,7 +94,7 @@ public final class CultivatorStatusScreen extends Screen {
             int mouseX,
             int mouseY,
             float partialTick) {
-        // In-world character sheet: no vanilla menu blur.
+        // Deliberately keep the world visible and sharp behind the in-world sheet.
     }
 
     @Override
@@ -112,6 +121,12 @@ public final class CultivatorStatusScreen extends Screen {
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         drawFrame(graphics);
 
+        graphics.enableScissor(
+                contentLeft() + 5,
+                contentTop() - 4,
+                panelLeft() + panelWidth() - 9,
+                panelTop() + panelHeight() - 9);
+
         CultivatorSyncPayload data = data();
         switch (selectedTab) {
             case OVERVIEW -> renderOverview(graphics, data);
@@ -123,29 +138,31 @@ public final class CultivatorStatusScreen extends Screen {
             case CONDITIONS -> renderConditions(graphics, data);
         }
 
+        graphics.disableScissor();
         super.render(graphics, mouseX, mouseY, partialTick);
     }
 
     private void drawFrame(GuiGraphics graphics) {
         int left = panelLeft();
         int top = panelTop();
-        int width = panelWidth();
-        int height = panelHeight();
-        int navWidth = navigationWidth();
 
-        graphics.fill(left, top, left + width, top + height, PANEL);
-        graphics.fill(left + 2, top + 2, left + width - 2, top + height - 2, PANEL_INNER);
-
-        graphics.fill(left, top, left + width, top + 2, BORDER);
-        graphics.fill(left, top + height - 2, left + width, top + height, BORDER);
-        graphics.fill(left, top, left + 2, top + height, BORDER);
-        graphics.fill(left + width - 2, top, left + width, top + height, BORDER);
-        graphics.fill(left + navWidth, top + 2, left + navWidth + 1, top + height - 2, BORDER);
+        graphics.blit(
+                PANEL_TEXTURE,
+                left,
+                top,
+                panelWidth(),
+                panelHeight(),
+                0.0F,
+                0.0F,
+                256,
+                256,
+                256,
+                256);
 
         graphics.drawCenteredString(
                 font,
                 title,
-                left + width / 2,
+                left + panelWidth() / 2,
                 top + 10,
                 GOLD);
 
@@ -153,165 +170,174 @@ public final class CultivatorStatusScreen extends Screen {
                 font,
                 Component.literal(selectedTab.displayName()),
                 contentLeft() + contentWidth() / 2,
-                top + 24,
+                top + 25,
                 PALE_GOLD);
     }
 
     private void renderOverview(GuiGraphics graphics, CultivatorSyncPayload data) {
-        int x = contentLeft() + 10;
-        int right = contentLeft() + contentWidth() / 2 + 8;
-        int y = contentTop();
+        int x = contentLeft() + INNER_MARGIN;
+        int innerWidth = contentWidth() - INNER_MARGIN * 2;
+        int columnWidth = (innerWidth - COLUMN_GAP) / 2;
+        int right = x + columnWidth + COLUMN_GAP;
 
+        int y = contentTop();
         section(graphics, x, y, "Cultivator");
-        y += 16;
-        y = line(graphics, x, y, "Realm", realmText(data));
-        y = line(graphics, x, y, "Method", prettyId(data.activeCultivationMethodId()));
-        y = line(graphics, x, y, "Sex", pretty(data.sex().name()));
-        y = line(graphics, x, y, "Affiliation", pretty(data.affiliation().name()));
-        y = line(graphics, x, y, "Moral Alignment", signed(data.moralAlignment()));
-        line(graphics, x, y, "Karma", decimal(data.karma()));
+        y += 17;
+        y = wrappedLine(graphics, x, y, "Realm", realmText(data), columnWidth);
+        y = wrappedLine(graphics, x, y, "Method", prettyId(data.activeCultivationMethodId()), columnWidth);
+        y = wrappedLine(graphics, x, y, "Sex", pretty(data.sex().name()), columnWidth);
+        y = wrappedLine(graphics, x, y, "Affiliation", pretty(data.affiliation().name()), columnWidth);
+        y = wrappedLine(graphics, x, y, "Moral Alignment", signed(data.moralAlignment()), columnWidth);
+        wrappedLine(graphics, x, y, "Karma", decimal(data.karma()), columnWidth);
 
         int ry = contentTop();
         section(graphics, right, ry, "Energy");
-        ry += 16;
-        ry = line(graphics, right, ry, energyName(data.realm()),
-                decimal(data.currentQi()) + " / " + decimal(data.maximumQi()));
-        ry = line(graphics, right, ry, "Power", decimal(data.circulationPercent()) + "%");
-        ry = line(graphics, right, ry, "Burst", data.burstMode() ? "ACTIVE" : "Inactive");
-        ry = line(graphics, right, ry, "Combat Index", formatPower(data.currentCombatIndex()));
+        ry += 17;
+        ry = wrappedLine(
+                graphics,
+                right,
+                ry,
+                energyName(data.realm()),
+                decimal(data.currentQi()) + " / " + decimal(data.maximumQi()),
+                columnWidth);
+        ry = wrappedLine(graphics, right, ry, "Power", decimal(data.circulationPercent()) + "%", columnWidth);
+        ry = wrappedLine(graphics, right, ry, "Burst", data.burstMode() ? "ACTIVE" : "Inactive", columnWidth);
+        ry = wrappedLine(graphics, right, ry, "Combat Index", formatPower(data.currentCombatIndex()), columnWidth);
 
         ry += 7;
         section(graphics, right, ry, "Bloodline");
-        ry += 16;
-        ry = line(graphics, right, ry, "Lineage", bloodlineText(data));
-        line(graphics, right, ry, "Purity", decimal(data.bloodlinePurity()) + "%");
+        ry += 17;
+        ry = wrappedLine(graphics, right, ry, "Lineage", bloodlineText(data), columnWidth);
+        wrappedLine(graphics, right, ry, "Purity", decimal(data.bloodlinePurity()) + "%", columnWidth);
 
-        int bottomY = panelTop() + panelHeight() - 42;
-        graphics.drawString(
-                font,
-                Component.literal("Cultivation " + decimal(data.cultivationProgress())
+        drawWrapped(
+                graphics,
+                "Cultivation " + decimal(data.cultivationProgress())
                         + "   |   Comprehension " + decimal(data.cultivationComprehension())
-                        + "   |   Battle " + decimal(data.battleComprehension())),
+                        + "   |   Battle " + decimal(data.battleComprehension()),
                 x,
-                bottomY,
-                MUTED);
+                panelTop() + panelHeight() - 42,
+                innerWidth,
+                MUTED,
+                1);
     }
 
     private void renderStats(GuiGraphics graphics, CultivatorSyncPayload data) {
-        int x = contentLeft() + 10;
-        int right = contentLeft() + contentWidth() / 2 + 12;
-        int y = contentTop();
+        int x = contentLeft() + INNER_MARGIN;
+        int innerWidth = contentWidth() - INNER_MARGIN * 2;
+        int columnWidth = (innerWidth - COLUMN_GAP) / 2;
+        int right = x + columnWidth + COLUMN_GAP;
 
+        int y = contentTop();
         section(graphics, x, y, "Core Stats");
         y += 17;
-        y = statLine(graphics, x, y, "Strength", data.strength());
-        y = statLine(graphics, x, y, "Vitality", data.vitality());
-        y = statLine(graphics, x, y, "Agility", data.agility());
-        y = statLine(graphics, x, y, "Spiritual Sense", data.spiritualSense());
-        y = statLine(graphics, x, y, "Meridian Quality", data.meridianQuality());
-        y = statLine(graphics, x, y, "Dantian Quality", data.dantianQuality());
-        statLine(graphics, x, y, "Soul Strength", data.soulStrength());
+        y = statLine(graphics, x, y, "Strength", data.strength(), columnWidth);
+        y = statLine(graphics, x, y, "Vitality", data.vitality(), columnWidth);
+        y = statLine(graphics, x, y, "Agility", data.agility(), columnWidth);
+        y = statLine(graphics, x, y, "Spiritual Sense", data.spiritualSense(), columnWidth);
+        y = statLine(graphics, x, y, "Meridian Quality", data.meridianQuality(), columnWidth);
+        y = statLine(graphics, x, y, "Dantian Quality", data.dantianQuality(), columnWidth);
+        statLine(graphics, x, y, "Soul Strength", data.soulStrength(), columnWidth);
 
         int ry = contentTop();
         section(graphics, right, ry, "Power Breakdown");
         ry += 17;
-        ry = line(graphics, right, ry, "Realm Potential", formatPower(data.realmPotential()));
-        ry = line(graphics, right, ry, "Current Combat", formatPower(data.currentCombatIndex()));
-        ry = line(graphics, right, ry, "Physical", factor(data.physicalFactor()));
-        ry = line(graphics, right, ry, "Energy", factor(data.energyFactor()));
-        ry = line(graphics, right, ry, "Soul", factor(data.soulFactor()));
-        ry = line(graphics, right, ry, "Foundation", factor(data.foundationFactor()));
-        ry = line(graphics, right, ry, "Condition", factor(data.conditionFactor()));
-        line(graphics, right, ry, "Battle Skill", factor(data.battleFactor()));
+        ry = wrappedLine(graphics, right, ry, "Realm Potential", formatPower(data.realmPotential()), columnWidth);
+        ry = wrappedLine(graphics, right, ry, "Current Combat", formatPower(data.currentCombatIndex()), columnWidth);
+        ry = wrappedLine(graphics, right, ry, "Physical", factor(data.physicalFactor()), columnWidth);
+        ry = wrappedLine(graphics, right, ry, "Energy", factor(data.energyFactor()), columnWidth);
+        ry = wrappedLine(graphics, right, ry, "Soul", factor(data.soulFactor()), columnWidth);
+        ry = wrappedLine(graphics, right, ry, "Foundation", factor(data.foundationFactor()), columnWidth);
+        ry = wrappedLine(graphics, right, ry, "Condition", factor(data.conditionFactor()), columnWidth);
+        wrappedLine(graphics, right, ry, "Battle Skill", factor(data.battleFactor()), columnWidth);
 
-        graphics.drawString(
-                font,
-                Component.literal("Physical: STR/VIT/AGI   Foundation: Meridians/Dantian/Purity"),
+        drawWrapped(
+                graphics,
+                "Physical = STR/VIT/AGI. Foundation = Meridians/Dantian/Purity. Core stats never fall below 1.",
                 x,
-                panelTop() + panelHeight() - 42,
-                MUTED);
-        graphics.drawString(
-                font,
-                Component.literal("Core stats have a hard minimum value of 1."),
-                x,
-                panelTop() + panelHeight() - 28,
-                MUTED);
+                panelTop() + panelHeight() - 46,
+                innerWidth,
+                MUTED,
+                2);
     }
 
     private void renderAffinities(GuiGraphics graphics, CultivatorSyncPayload data) {
         int x = contentLeft() + 20;
+        int available = contentWidth() - 40;
         int y = contentTop();
 
         section(graphics, x, y, "Current Attunement");
         y += 19;
-        y = line(graphics, x, y, "Wood", Integer.toString(data.wood()));
-        y = line(graphics, x, y, "Fire", Integer.toString(data.fire()));
-        y = line(graphics, x, y, "Earth", Integer.toString(data.earth()));
-        y = line(graphics, x, y, "Metal", Integer.toString(data.metal()));
-        y = line(graphics, x, y, "Water", Integer.toString(data.water()));
-        y = line(graphics, x, y, "Yin", Integer.toString(data.yin()));
-        line(graphics, x, y, "Yang", Integer.toString(data.yang()));
+        y = wrappedLine(graphics, x, y, "Wood", Integer.toString(data.wood()), available);
+        y = wrappedLine(graphics, x, y, "Fire", Integer.toString(data.fire()), available);
+        y = wrappedLine(graphics, x, y, "Earth", Integer.toString(data.earth()), available);
+        y = wrappedLine(graphics, x, y, "Metal", Integer.toString(data.metal()), available);
+        y = wrappedLine(graphics, x, y, "Water", Integer.toString(data.water()), available);
+        y = wrappedLine(graphics, x, y, "Yin", Integer.toString(data.yin()), available);
+        wrappedLine(graphics, x, y, "Yang", Integer.toString(data.yang()), available);
 
-        int noteY = panelTop() + panelHeight() - 55;
-        graphics.drawString(
-                font,
-                Component.literal("Affinity changes efficiency, learning, refinement and Dao compatibility."),
+        drawWrapped(
+                graphics,
+                "Affinity changes efficiency, learning, refinement and Dao compatibility. "
+                        + "Low affinity makes a path harder; it does not permanently forbid it.",
                 x,
-                noteY,
-                MUTED);
-        graphics.drawString(
-                font,
-                Component.literal("Low affinity makes a path harder; it does not permanently forbid it."),
-                x,
-                noteY + 14,
-                MUTED);
+                panelTop() + panelHeight() - 55,
+                available,
+                MUTED,
+                2);
     }
 
     private void renderSkills(GuiGraphics graphics, CultivatorSyncPayload data) {
         int x = contentLeft() + 18;
+        int available = contentWidth() - 36;
         int y = contentTop();
 
         section(graphics, x, y, "Learned Skills");
         y += 20;
-        y = skillLine(graphics, x, y, "Passive Qi Recharging", data.passiveQiRechargingLevel());
-        y = skillLine(graphics, x, y, "Meditation", data.meditationLevel());
-        y = skillLine(graphics, x, y, "Qi Concealment", data.qiConcealmentLevel());
+        y = skillLine(graphics, x, y, "Passive Qi Recharging", data.passiveQiRechargingLevel(), available);
+        y = skillLine(graphics, x, y, "Meditation", data.meditationLevel(), available);
+        y = skillLine(graphics, x, y, "Qi Concealment", data.qiConcealmentLevel(), available);
 
         y += 16;
-        graphics.drawString(
-                font,
-                Component.literal("Skills are trainable competencies, separate from realm and techniques."),
+        drawWrapped(
+                graphics,
+                "Skills are trainable competencies, separate from realm and equipped techniques.",
                 x,
                 y,
-                MUTED);
+                available,
+                MUTED,
+                2);
     }
 
     private void renderTechniques(GuiGraphics graphics, CultivatorSyncPayload data) {
         int x = contentLeft() + 18;
+        int available = contentWidth() - 36;
         int y = contentTop();
 
         section(graphics, x, y, "Equipped Technique Slots");
         y += 20;
 
-        y = techniqueLine(graphics, x, y, "Cultivation",
-                firstNonBlank(data.cultivationTechniqueId(), data.activeCultivationMethodId()));
-        y = techniqueLine(graphics, x, y, "Footwork", data.footworkTechniqueId());
-        y = techniqueLine(graphics, x, y, "Weapon", data.weaponTechniqueId());
-        y = techniqueLine(graphics, x, y, "Eyesight", data.eyesightTechniqueId());
-
-        y += 17;
-        graphics.drawString(
-                font,
-                Component.literal("One active technique per category."),
+        y = techniqueLine(
+                graphics,
                 x,
                 y,
-                PALE_GOLD);
-        graphics.drawString(
-                font,
-                Component.literal("Manuals teach techniques; equipping another replaces the current slot."),
+                "Cultivation",
+                firstNonBlank(data.cultivationTechniqueId(), data.activeCultivationMethodId()),
+                available);
+        y = techniqueLine(graphics, x, y, "Footwork", data.footworkTechniqueId(), available);
+        y = techniqueLine(graphics, x, y, "Weapon", data.weaponTechniqueId(), available);
+        y = techniqueLine(graphics, x, y, "Eyesight", data.eyesightTechniqueId(), available);
+
+        y += 14;
+        graphics.drawString(font, Component.literal("One active technique per category."), x, y, PALE_GOLD);
+        drawWrapped(
+                graphics,
+                "Manuals teach techniques. Equipping another technique in the same category replaces the current slot.",
                 x,
                 y + 14,
-                MUTED);
+                available,
+                MUTED,
+                2);
     }
 
     private void renderAbilities(GuiGraphics graphics, CultivatorSyncPayload data) {
@@ -323,6 +349,7 @@ public final class CultivatorStatusScreen extends Screen {
         int end = Math.min(abilities.size(), start + visible);
 
         int x = contentLeft() + 14;
+        int available = contentWidth() - 28;
         int y = contentTop();
 
         for (int i = start; i < end; i++) {
@@ -330,19 +357,25 @@ public final class CultivatorStatusScreen extends Screen {
             int color = ability.unlocked() ? GOLD : LOCKED;
             String prefix = ability.unlocked() ? "[Unlocked] " : "[Locked] ";
 
-            graphics.drawString(
-                    font,
-                    Component.literal(prefix + ability.name()),
+            drawWrapped(
+                    graphics,
+                    prefix + ability.name(),
                     x,
                     y,
-                    color);
-            graphics.drawString(
-                    font,
-                    Component.literal(ability.description()),
+                    available,
+                    color,
+                    1);
+
+            drawWrapped(
+                    graphics,
+                    ability.description(),
                     x + 8,
-                    y + 12,
-                    ability.unlocked() ? TEXT : MUTED);
-            y += 31;
+                    y + 13,
+                    available - 8,
+                    ability.unlocked() ? TEXT : MUTED,
+                    2);
+
+            y += ABILITY_ROW_HEIGHT;
         }
 
         if (abilities.size() > visible) {
@@ -358,26 +391,29 @@ public final class CultivatorStatusScreen extends Screen {
 
     private void renderConditions(GuiGraphics graphics, CultivatorSyncPayload data) {
         int x = contentLeft() + 18;
+        int available = contentWidth() - 36;
         int y = contentTop();
 
         section(graphics, x, y, "Foundation & Condition");
         y += 20;
-        y = line(graphics, x, y, "Vessel Purity", decimal(data.vesselPurity()) + "%");
-        y = line(graphics, x, y, "Impurities", decimal(data.impurityLoad()));
-        y = line(graphics, x, y, "Demonic Qi", decimal(data.demonicQiContamination()));
-        y = line(graphics, x, y, "Body Injury", decimal(data.bodyInjury()));
-        y = line(graphics, x, y, "Meridian Injury", decimal(data.meridianInjury()));
-        y = line(graphics, x, y, "Soul Injury", decimal(data.soulInjury()));
-        y = line(graphics, x, y, "Recovery Debt", decimal(data.recoveryDebt()));
-        y = line(graphics, x, y, "Bloodline Conflict", decimal(data.bloodlineConflictDamage()));
-        line(graphics, x, y, "Condition Power", factor(data.conditionFactor()));
+        y = wrappedLine(graphics, x, y, "Vessel Purity", decimal(data.vesselPurity()) + "%", available);
+        y = wrappedLine(graphics, x, y, "Impurities", decimal(data.impurityLoad()), available);
+        y = wrappedLine(graphics, x, y, "Demonic Qi", decimal(data.demonicQiContamination()), available);
+        y = wrappedLine(graphics, x, y, "Body Injury", decimal(data.bodyInjury()), available);
+        y = wrappedLine(graphics, x, y, "Meridian Injury", decimal(data.meridianInjury()), available);
+        y = wrappedLine(graphics, x, y, "Soul Injury", decimal(data.soulInjury()), available);
+        y = wrappedLine(graphics, x, y, "Recovery Debt", decimal(data.recoveryDebt()), available);
+        y = wrappedLine(graphics, x, y, "Bloodline Conflict", decimal(data.bloodlineConflictDamage()), available);
+        wrappedLine(graphics, x, y, "Condition Power", factor(data.conditionFactor()), available);
 
-        graphics.drawString(
-                font,
-                Component.literal("Medicines may repair damage, but low-grade pills can add impurities."),
+        drawWrapped(
+                graphics,
+                "Medicines may repair damage, but low-grade pills can add impurities.",
                 x,
-                panelTop() + panelHeight() - 28,
-                MUTED);
+                panelTop() + panelHeight() - 30,
+                available,
+                MUTED,
+                2);
     }
 
     private CultivatorSyncPayload data() {
@@ -393,30 +429,91 @@ public final class CultivatorStatusScreen extends Screen {
     }
 
     private int visibleAbilityCount() {
-        return Math.max(3, (panelHeight() - 86) / 31);
+        return Math.max(3, (panelHeight() - 92) / ABILITY_ROW_HEIGHT);
     }
 
-    private int line(GuiGraphics graphics, int x, int y, String label, String value) {
-        graphics.drawString(font, Component.literal(label + ": "), x, y, MUTED);
-        graphics.drawString(
-                font,
-                Component.literal(value),
-                x + font.width(label + ": "),
-                y,
-                TEXT);
-        return y + 13;
+    private int wrappedLine(
+            GuiGraphics graphics,
+            int x,
+            int y,
+            String label,
+            String value,
+            int maxWidth) {
+
+        String prefix = label + ": ";
+        int prefixWidth = font.width(prefix);
+
+        graphics.drawString(font, Component.literal(prefix), x, y, MUTED);
+
+        int valueWidth = Math.max(48, maxWidth - prefixWidth);
+        List<FormattedCharSequence> lines =
+                font.split(Component.literal(value == null ? "" : value), valueWidth);
+
+        if (lines.isEmpty()) {
+            return y + LINE_HEIGHT;
+        }
+
+        int drawY = y;
+        int maxLines = Math.min(3, lines.size());
+        for (int i = 0; i < maxLines; i++) {
+            graphics.drawString(
+                    font,
+                    lines.get(i),
+                    x + prefixWidth,
+                    drawY,
+                    TEXT);
+            drawY += LINE_HEIGHT;
+        }
+
+        return drawY;
     }
 
-    private int statLine(GuiGraphics graphics, int x, int y, String label, double value) {
-        return line(graphics, x, y, label, decimal(Math.max(1.0D, value)));
+    private int statLine(
+            GuiGraphics graphics,
+            int x,
+            int y,
+            String label,
+            double value,
+            int maxWidth) {
+        return wrappedLine(graphics, x, y, label, decimal(Math.max(1.0D, value)), maxWidth);
     }
 
-    private int skillLine(GuiGraphics graphics, int x, int y, String label, int value) {
-        return line(graphics, x, y, label, level(value));
+    private int skillLine(
+            GuiGraphics graphics,
+            int x,
+            int y,
+            String label,
+            int value,
+            int maxWidth) {
+        return wrappedLine(graphics, x, y, label, level(value), maxWidth);
     }
 
-    private int techniqueLine(GuiGraphics graphics, int x, int y, String category, String techniqueId) {
-        return line(graphics, x, y, category, prettyId(techniqueId));
+    private int techniqueLine(
+            GuiGraphics graphics,
+            int x,
+            int y,
+            String category,
+            String techniqueId,
+            int maxWidth) {
+        return wrappedLine(graphics, x, y, category, prettyId(techniqueId), maxWidth);
+    }
+
+    private void drawWrapped(
+            GuiGraphics graphics,
+            String text,
+            int x,
+            int y,
+            int maxWidth,
+            int color,
+            int maxLines) {
+
+        List<FormattedCharSequence> lines =
+                font.split(Component.literal(text == null ? "" : text), Math.max(20, maxWidth));
+
+        int count = Math.min(maxLines, lines.size());
+        for (int i = 0; i < count; i++) {
+            graphics.drawString(font, lines.get(i), x, y + i * LINE_HEIGHT, color);
+        }
     }
 
     private void section(GuiGraphics graphics, int x, int y, String name) {
@@ -526,6 +623,7 @@ public final class CultivatorStatusScreen extends Screen {
     private static String pretty(String value) {
         String[] parts = value.toLowerCase(Locale.ROOT).split("_");
         StringBuilder result = new StringBuilder();
+
         for (String part : parts) {
             if (part.isBlank()) {
                 continue;
@@ -535,15 +633,16 @@ public final class CultivatorStatusScreen extends Screen {
             }
             result.append(Character.toUpperCase(part.charAt(0))).append(part.substring(1));
         }
+
         return result.toString();
     }
 
     private int panelWidth() {
-        return Math.min(540, Math.max(360, width - 30));
+        return Math.min(620, Math.max(420, width - 30));
     }
 
     private int panelHeight() {
-        return Math.min(320, Math.max(240, height - 30));
+        return Math.min(340, Math.max(250, height - 30));
     }
 
     private int panelLeft() {
@@ -555,7 +654,7 @@ public final class CultivatorStatusScreen extends Screen {
     }
 
     private int navigationWidth() {
-        return Math.min(122, Math.max(104, panelWidth() / 4));
+        return panelWidth() / 4;
     }
 
     private int contentLeft() {
@@ -567,6 +666,6 @@ public final class CultivatorStatusScreen extends Screen {
     }
 
     private int contentTop() {
-        return panelTop() + 46;
+        return panelTop() + 48;
     }
 }
