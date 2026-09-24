@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "minecraft:item/book"
+    "layer0": "myriad_ascension:item/instruction_to_the_martial_world"
   }
 }
