@@ -1108,6 +1108,40 @@ The long-term combat design includes concepts such as:
 
 ---
 
+## 17.1 Minor-realm combat index
+
+Every Stage, Order and Open Heaven Rank has an explicit **Realm Potential**.
+
+The current combat index combines:
+
+- Realm Potential
+- Physical Factor
+- Energy Factor
+- Soul Factor
+- Foundation Factor
+- Condition Factor
+- Battle Factor
+
+The V screen exposes these components rather than hiding the result behind one unexplained number.
+
+See `docs/design/minor-realm-power-and-capabilities.md`.
+
+## 17.2 Starter medicines, poisons, and artifacts
+
+The first tangible martial-world item set now includes:
+
+- Minor Body-Mending Pill
+- Meridian-Soothing Pill
+- Basic Antidote Pill
+- Crude Meridian Poison
+- Tempered Body artifact weapon/shield/armor
+- Minor Storage Bag with 9 slots
+- Instruction to the Martial World
+
+The Instruction manual is granted after Mortal Genesis and provides the in-game beginner guide.
+
+See `docs/design/martial-tools-consumables.md`.
+
 # 18. Movement and Travel
 
 Long-term movement systems include:
