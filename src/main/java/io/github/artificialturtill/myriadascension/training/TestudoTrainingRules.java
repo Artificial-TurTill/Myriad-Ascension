@@ -12,7 +12,7 @@ public final class TestudoTrainingRules {
     public static final double FATIGUE_PER_TICK = 0.020D;
     public static final double REST_RECOVERY_PER_TICK = 0.020D;
     public static final double MAX_FATIGUE = 100.0D;
-    public static final int BREATH_PULSE_GRACE_TICKS = 8;
+    public static final int FOCUS_PULSE_GRACE_TICKS = 8;
 
     private static final double MAX_HORIZONTAL_SPEED_SQUARED = 0.0009D;
 
@@ -45,11 +45,27 @@ public final class TestudoTrainingRules {
                 && player.getOffhandItem().isEmpty();
     }
 
-    public static boolean hasRecentBreathPulse(CultivatorData data, long gameTime) {
-        long pulse = data.lastTrainingBreathPulseTick();
+    public static boolean requiresWorldEnergyFocus(CultivatorData data) {
+        return data.realm() == CultivationRealm.TEMPERED_BODY
+                && data.minorStage() >= 4
+                && data.minorStage() <= 6;
+    }
+
+    public static boolean hasRecentFocusPulse(CultivatorData data, long gameTime) {
+        long pulse = data.lastTrainingFocusPulseTick();
         return pulse != Long.MIN_VALUE
                 && gameTime >= pulse
-                && gameTime - pulse <= BREATH_PULSE_GRACE_TICKS;
+                && gameTime - pulse <= FOCUS_PULSE_GRACE_TICKS;
+    }
+
+    public static String trainingModeName(CultivatorData data) {
+        if (data.realm() == CultivationRealm.MORTAL || data.minorStage() <= 3) {
+            return "Testudo Physical Foundation";
+        }
+        if (data.minorStage() <= 6) {
+            return "Testudo World Energy Perception";
+        }
+        return "Testudo Vessel Consolidation";
     }
 
     public static double fatigueEfficiency(CultivatorData data) {
@@ -61,8 +77,6 @@ public final class TestudoTrainingRules {
     }
 
     public static double continuityMultiplier(CultivatorData data) {
-        // A stable, uninterrupted posture becomes up to 25% more efficient
-        // over the first two minutes of a session.
         double fraction = Math.min(1.0D, data.trainingSessionTicks() / 2400.0D);
         return 1.0D + 0.25D * fraction;
     }
