@@ -507,3 +507,38 @@ The first training implementation can advance:
 - Tempered Body Stage 1 -> Stage 9
 
 Stage 9 completion does not automatically enter Initial Element.
+
+
+## 21. Cultivation Power Index
+
+The server derives a power breakdown from CultivatorData.
+
+Components:
+
+- Realm Potential
+- Physical
+- Energy
+- Soul
+- Foundation
+- Condition
+- Battle
+
+The resulting Current Combat Index is synchronized to the client for the V screen.
+
+Realm Potential contains the large-scale cultivation hierarchy. Core stats are quality modifiers inside that hierarchy, preventing stat grinding from erasing major-realm qualitative gates.
+
+See `docs/design/minor-realm-power-and-capabilities.md`.
+
+## 22. Starter Martial-World Items
+
+The first tangible systems include:
+
+- cultivation-aware medicines,
+- cultivation-aware poison,
+- artifact type/grade metadata,
+- 9-slot ItemStack-backed storage bag,
+- in-game Instruction manual.
+
+The storage bag uses the Minecraft container data component so contents remain attached to the bag stack itself.
+
+See `docs/design/martial-tools-consumables.md`.
