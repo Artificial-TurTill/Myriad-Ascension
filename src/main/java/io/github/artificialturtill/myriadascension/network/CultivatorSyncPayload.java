@@ -7,6 +7,8 @@ import io.github.artificialturtill.myriadascension.alignment.CultivationAffiliat
 import io.github.artificialturtill.myriadascension.character.CharacterSex;
 import io.github.artificialturtill.myriadascension.cultivation.data.CultivatorData;
 import io.github.artificialturtill.myriadascension.cultivation.realm.CultivationRealm;
+import io.github.artificialturtill.myriadascension.power.CultivationPowerRules;
+import io.github.artificialturtill.myriadascension.power.PowerBreakdown;
 import io.github.artificialturtill.myriadascension.stats.CultivatorStat;
 import io.github.artificialturtill.myriadascension.technique.TechniqueCategory;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -43,6 +45,15 @@ public record CultivatorSyncPayload(
         double dantianQuality,
         double soulStrength,
 
+        double realmPotential,
+        double currentCombatIndex,
+        double physicalFactor,
+        double energyFactor,
+        double soulFactor,
+        double foundationFactor,
+        double conditionFactor,
+        double battleFactor,
+
         String cultivationTechniqueId,
         String footworkTechniqueId,
         String weaponTechniqueId,
@@ -78,6 +89,7 @@ public record CultivatorSyncPayload(
 
     public static CultivatorSyncPayload from(CultivatorData data) {
         AffinityProfile a = data.affinities();
+        PowerBreakdown power = CultivationPowerRules.calculate(data);
 
         return new CultivatorSyncPayload(
                 data.characterSex(),
@@ -107,6 +119,15 @@ public record CultivatorSyncPayload(
                 data.stats().get(CultivatorStat.MERIDIAN_QUALITY),
                 data.stats().get(CultivatorStat.DANTIAN_QUALITY),
                 data.stats().get(CultivatorStat.SOUL_STRENGTH),
+
+                power.realmPotential(),
+                power.currentCombatIndex(),
+                power.physicalFactor(),
+                power.energyFactor(),
+                power.soulFactor(),
+                power.foundationFactor(),
+                power.conditionFactor(),
+                power.battleFactor(),
 
                 data.techniqueLoadout().equippedId(TechniqueCategory.CULTIVATION),
                 data.techniqueLoadout().equippedId(TechniqueCategory.FOOTWORK),
@@ -170,6 +191,15 @@ public record CultivatorSyncPayload(
         buf.writeDouble(p.dantianQuality());
         buf.writeDouble(p.soulStrength());
 
+        buf.writeDouble(p.realmPotential());
+        buf.writeDouble(p.currentCombatIndex());
+        buf.writeDouble(p.physicalFactor());
+        buf.writeDouble(p.energyFactor());
+        buf.writeDouble(p.soulFactor());
+        buf.writeDouble(p.foundationFactor());
+        buf.writeDouble(p.conditionFactor());
+        buf.writeDouble(p.battleFactor());
+
         buf.writeUtf(p.cultivationTechniqueId());
         buf.writeUtf(p.footworkTechniqueId());
         buf.writeUtf(p.weaponTechniqueId());
@@ -220,6 +250,15 @@ public record CultivatorSyncPayload(
                 buf.readVarInt(),
                 buf.readVarInt(),
 
+                buf.readDouble(),
+                buf.readDouble(),
+                buf.readDouble(),
+                buf.readDouble(),
+                buf.readDouble(),
+                buf.readDouble(),
+                buf.readDouble(),
+
+                buf.readDouble(),
                 buf.readDouble(),
                 buf.readDouble(),
                 buf.readDouble(),
