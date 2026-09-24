@@ -5,7 +5,6 @@ import io.github.artificialturtill.myriadascension.menu.MinorStorageBagMenu;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.inventory.MenuType;
 import net.neoforged.bus.api.IEventBus;
-import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.common.extensions.IMenuTypeExtension;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -26,9 +25,4 @@ public final class ModMenus {
         MENUS.register(modEventBus);
     }
 
-    public static void registerScreens(RegisterMenuScreensEvent event) {
-        event.register(
-                MINOR_STORAGE_BAG.get(),
-                io.github.artificialturtill.myriadascension.client.screen.MinorStorageBagScreen::new);
-    }
 }
