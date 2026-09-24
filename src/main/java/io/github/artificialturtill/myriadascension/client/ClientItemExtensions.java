@@ -11,14 +11,16 @@ public final class ClientItemExtensions {
     }
 
     public static void register(RegisterClientExtensionsEvent event) {
-        TemperedBodyArtifactShieldRenderer shieldRenderer =
-                new TemperedBodyArtifactShieldRenderer();
-
         event.registerItem(
                 new IClientItemExtensions() {
+                    private BlockEntityWithoutLevelRenderer renderer;
+
                     @Override
                     public BlockEntityWithoutLevelRenderer getCustomRenderer() {
-                        return shieldRenderer;
+                        if (renderer == null) {
+                            renderer = new TemperedBodyArtifactShieldRenderer();
+                        }
+                        return renderer;
                     }
                 },
                 ModItems.TEMPERED_BODY_ARTIFACT_SHIELD.get());
