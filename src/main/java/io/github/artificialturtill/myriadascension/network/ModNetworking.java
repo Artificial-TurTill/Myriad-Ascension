@@ -5,14 +5,14 @@ import io.github.artificialturtill.myriadascension.cultivation.data.ModAttachmen
 import io.github.artificialturtill.myriadascension.cultivation.qi.QiRules;
 import io.github.artificialturtill.myriadascension.cultivation.realm.CultivationRealm;
 import io.github.artificialturtill.myriadascension.registry.ModItems;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 
 public final class ModNetworking {
-    public static final String NETWORK_VERSION = "7";
+    public static final String NETWORK_VERSION = "8";
 
     private ModNetworking() {
     }
@@ -23,32 +23,26 @@ public final class ModNetworking {
                 QiControlPayload.TYPE,
                 QiControlPayload.STREAM_CODEC,
                 ModNetworking::handleQiControl);
-
         registrar.playToServer(
                 SubmitGenesisPayload.TYPE,
                 SubmitGenesisPayload.STREAM_CODEC,
                 ModNetworking::handleSubmitGenesis);
-
         registrar.playToServer(
                 TrainingControlPayload.TYPE,
                 TrainingControlPayload.STREAM_CODEC,
                 ModNetworking::handleTrainingControl);
-
         registrar.playToClient(
                 OpenGenesisPayload.TYPE,
                 OpenGenesisPayload.STREAM_CODEC,
                 ClientPayloadBridge::handleOpenGenesis);
-
         registrar.playToClient(
                 GenesisResultPayload.TYPE,
                 GenesisResultPayload.STREAM_CODEC,
                 ClientPayloadBridge::handleGenesisResult);
-
         registrar.playToClient(
                 CultivatorSyncPayload.TYPE,
                 CultivatorSyncPayload.STREAM_CODEC,
                 ClientPayloadBridge::handleCultivatorSync);
-
         registrar.playToClient(
                 OpenMartialGuidePayload.TYPE,
                 OpenMartialGuidePayload.STREAM_CODEC,
@@ -67,7 +61,8 @@ public final class ModNetworking {
             return;
         }
 
-        if (payload.sex() == null || payload.sex() == io.github.artificialturtill.myriadascension.character.CharacterSex.UNSET) {
+        if (payload.sex() == null
+                || payload.sex() == io.github.artificialturtill.myriadascension.character.CharacterSex.UNSET) {
             return;
         }
 
@@ -115,17 +110,19 @@ public final class ModNetworking {
             return;
         }
 
-        // During physical Testudo training, G becomes the controlled-breathing rhythm.
-        // This does not create usable Qi before Initial Element.
         if (data.trainingRequested()
-                && (data.realm() == CultivationRealm.MORTAL
-                        || data.realm() == CultivationRealm.TEMPERED_BODY)) {
-            data.markTrainingBreathPulse(player.level().getGameTime());
+                && data.realm() == CultivationRealm.TEMPERED_BODY
+                && data.minorStage() >= 4
+                && data.minorStage() <= 6) {
+            data.markTrainingFocusPulse(player.level().getGameTime());
             return;
         }
 
-        // A Mortal with no cultivation capacity cannot manufacture usable Qi through input alone.
-        if (data.realm() == CultivationRealm.MORTAL || data.maximumQi() <= 0.0D || data.currentQi() <= 0.0D) {
+        if (data.realm().ordinal() < CultivationRealm.INITIAL_ELEMENT.ordinal()) {
+            return;
+        }
+
+        if (data.maximumQi() <= 0.0D || data.currentQi() <= 0.0D) {
             return;
         }
 
@@ -135,6 +132,12 @@ public final class ModNetworking {
 
     private static void handleSuppress(ServerPlayer player, CultivatorData data) {
         if (!data.tryAcceptCirculationControl(player.level().getGameTime())) {
+            return;
+        }
+
+        if (data.realm().ordinal() < CultivationRealm.INITIAL_ELEMENT.ordinal()) {
+            data.setCirculationPercent(0.0D);
+            data.setBurstMode(false);
             return;
         }
 
@@ -158,7 +161,7 @@ public final class ModNetworking {
             return;
         }
 
-        boolean canBurst = data.realm() != CultivationRealm.MORTAL
+        boolean canBurst = data.realm().ordinal() >= CultivationRealm.INITIAL_ELEMENT.ordinal()
                 && data.maximumQi() > 0.0D
                 && data.currentQi() > 0.0D
                 && data.circulationPercent() > 0.0D;
