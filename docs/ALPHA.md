@@ -1,4 +1,4 @@
-# Myriad Ascension — Alpha 0.1.0-alpha.10
+# Myriad Ascension — Alpha 0.1.0-alpha.11
 
 This is an early systems alpha for Minecraft 1.21.1 / NeoForge.
 
@@ -301,6 +301,51 @@ See:
 
 - `docs/ASSET_GUIDE.md`
 - `docs/research/vanilla-1.21.1-shields.md`
+
+## Alpha.11 runtime crash repair and complete UI asset pass
+
+### Alpha.10 startup crash
+
+Alpha.10 could compile successfully but crash during Minecraft client initialization.
+
+Root cause:
+
+- the custom artifact shield renderer was constructed during `RegisterClientExtensionsEvent`,
+- its constructor immediately called `EntityModelSet.bakeLayer(ModelLayers.SHIELD)`,
+- at that lifecycle point Minecraft had not yet populated the shield model layer,
+- the client aborted with `IllegalArgumentException: No model for layer minecraft:shield#main`.
+
+Alpha.11 removes that lifecycle dependency.
+
+The shield renderer now:
+
+- initializes lazily only when Minecraft actually requests the renderer,
+- builds the vanilla shield geometry directly with `ShieldModel.createLayer().bakeRoot()`,
+- no longer calls `EntityModelSet.bakeLayer(ModelLayers.SHIELD)` during startup.
+
+### UI asset audit
+
+Confirmed working from user testing:
+
+- `textures/gui/minor_storage_bag.png`
+- `textures/gui/cultivator_hud.png`
+
+Already asset-backed in code:
+
+- `textures/gui/cultivator_status_panel.png`
+- `textures/gui/cultivator_status_tabs.png`
+- `textures/gui/martial_world_guide.png`
+
+Newly converted in alpha.11:
+
+- `textures/gui/character_genesis.png`
+- `textures/gui/martial_button.png`
+
+Character Genesis no longer uses an invisible/hard-coded shell with vanilla buttons.
+
+The Martial World Guide navigation arrows no longer use vanilla buttons.
+
+See `docs/ASSET_GUIDE.md` for the full editable UI inventory.
 
 ## Known limitations
 
