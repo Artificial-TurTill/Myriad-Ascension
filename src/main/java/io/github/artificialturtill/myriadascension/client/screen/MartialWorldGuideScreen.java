@@ -1,17 +1,22 @@
 package io.github.artificialturtill.myriadascension.client.screen;
 
+import io.github.artificialturtill.myriadascension.MyriadAscension;
 import java.util.List;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.FormattedCharSequence;
 
 public final class MartialWorldGuideScreen extends Screen {
     private static final int GOLD = 0xFFFFD978;
     private static final int TEXT = 0xFFF2EEE2;
     private static final int MUTED = 0xFFAAA79F;
-    private static final int PANEL = 0xEE17130E;
-    private static final int BORDER = 0xFF8D6D2F;
+    private static final ResourceLocation PANEL_TEXTURE =
+            ResourceLocation.fromNamespaceAndPath(
+                    MyriadAscension.MOD_ID,
+                    "textures/gui/martial_world_guide.png");
 
     private static final List<GuidePage> PAGES = List.of(
             new GuidePage(
@@ -149,9 +154,18 @@ public final class MartialWorldGuideScreen extends Screen {
         int width = panelWidth();
         int height = panelHeight();
 
-        graphics.fill(left, top, left + width, top + height, PANEL);
-        graphics.fill(left, top, left + width, top + 2, BORDER);
-        graphics.fill(left, top + height - 2, left + width, top + height, BORDER);
+        graphics.blit(
+                PANEL_TEXTURE,
+                left,
+                top,
+                width,
+                height,
+                0.0F,
+                0.0F,
+                256,
+                256,
+                256,
+                256);
 
         graphics.drawCenteredString(
                 font,
@@ -169,15 +183,22 @@ public final class MartialWorldGuideScreen extends Screen {
                 GOLD);
 
         int y = top + 52;
+        int textWidth = width - 36;
+        graphics.enableScissor(left + 14, top + 46, left + width - 14, top + height - 36);
         for (String line : current.lines()) {
-            graphics.drawString(
-                    font,
-                    Component.literal(line),
-                    left + 18,
-                    y,
-                    line.isBlank() ? MUTED : TEXT);
-            y += 13;
+            if (line.isBlank()) {
+                y += 10;
+                continue;
+            }
+
+            List<FormattedCharSequence> wrapped =
+                    font.split(Component.literal(line), textWidth);
+            for (FormattedCharSequence part : wrapped) {
+                graphics.drawString(font, part, left + 18, y, TEXT);
+                y += 13;
+            }
         }
+        graphics.disableScissor();
 
         graphics.drawCenteredString(
                 font,
