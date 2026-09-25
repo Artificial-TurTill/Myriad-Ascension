@@ -1220,7 +1220,9 @@ The quick menu will also control features such as weapon infusion.
 
 ## 20.1 In-game cultivation HUD
 
-During normal gameplay, Myriad Ascension displays a compact top-left HUD inspired structurally by Dragon Block C.
+After the player enters a cultivation realm, Myriad Ascension displays a compact top-left HUD inspired structurally by Dragon Block C.
+
+While the player remains Mortal, the Myriad Ascension cultivation HUD is completely hidden and only Minecraft's normal survival HUD is shown.
 
 It shows:
 

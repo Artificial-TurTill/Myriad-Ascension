@@ -1685,7 +1685,12 @@ This lets a Saint feel impossibly stronger than a Mortal without overflowing Min
 
 # 29. HUD Evolution
 
-## Mortal / Tempered Body 1–6
+## Mortal
+
+- Cultivator HUD is completely hidden.
+- Mortal gameplay uses Minecraft's normal survival HUD only.
+
+## Tempered Body 1–6
 
 - Health only
 - optional training/fatigue indicator
