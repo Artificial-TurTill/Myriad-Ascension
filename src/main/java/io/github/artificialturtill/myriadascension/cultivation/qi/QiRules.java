@@ -7,6 +7,8 @@ public final class QiRules {
 
     // Prototype tuning constants. These are mechanics, not permanent lore values.
     public static final double CIRCULATION_PERCENT_PER_CONTROL_PULSE = 2.0D;
+    public static final double ACTIVE_GATHER_MIN_PER_CONTROL_PULSE = 0.25D;
+    public static final double ACTIVE_GATHER_MAX_QI_FRACTION_PER_CONTROL_PULSE = 0.0045D;
     public static final int MIN_CIRCULATION_CONTROL_INTERVAL_TICKS = 3;
     public static final int MIN_BURST_TOGGLE_INTERVAL_TICKS = 6;
 
@@ -20,5 +22,16 @@ public final class QiRules {
     public static double passiveRechargeCeiling(int passiveQiRechargingLevel) {
         int level = clampSkillLevel(passiveQiRechargingLevel);
         return Math.min(1.0D, BASE_PASSIVE_RECHARGE_CEILING + PASSIVE_RECHARGE_CEILING_PER_LEVEL * level);
+    }
+
+    public static double activeGatherPerControlPulse(
+            double maximumQi,
+            int meditationLevel) {
+
+        double base = Math.max(
+                ACTIVE_GATHER_MIN_PER_CONTROL_PULSE,
+                Math.max(0.0D, maximumQi) * ACTIVE_GATHER_MAX_QI_FRACTION_PER_CONTROL_PULSE);
+        double skillMultiplier = 1.0D + clampSkillLevel(meditationLevel) * 0.08D;
+        return base * skillMultiplier;
     }
 }
