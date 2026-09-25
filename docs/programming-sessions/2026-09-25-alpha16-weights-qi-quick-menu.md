@@ -135,3 +135,11 @@ Extended `/myriadalpha edit` with:
 - PNG structural validation.
 - Gradle/Java compile.
 - Runtime testing of creative tab placement, wearable armor rendering, weight activation, G behavior and X-menu hold/release interaction.
+
+## First Alpha.16 CI result
+
+Pull-request run 365 validated all 29 packaged PNG files successfully, then failed Java compilation on one networking contract omission:
+
+- `QuickMenuSnapshotPayload` implemented `CustomPacketPayload` but lacked its required `type()` override.
+
+The payload now returns its registered `TYPE` exactly like the other custom payloads. No PNG or resource failure was involved. A new CI build is being used to expose any further compile-time integration errors before merge.
