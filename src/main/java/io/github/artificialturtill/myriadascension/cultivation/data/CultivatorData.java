@@ -26,7 +26,7 @@ import net.minecraft.util.RandomSource;
 import net.neoforged.neoforge.common.util.INBTSerializable;
 
 public final class CultivatorData implements INBTSerializable<CompoundTag> {
-    public static final int SCHEMA_VERSION = 12;
+    public static final int SCHEMA_VERSION = 13;
 
     private int schemaVersion = SCHEMA_VERSION;
 
@@ -76,6 +76,11 @@ public final class CultivatorData implements INBTSerializable<CompoundTag> {
 
     // Training fatigue persists so relogging cannot be used as instant recovery.
     private double trainingFatigue;
+
+    // Player-controlled cultivation utility settings.
+    private boolean looseTrainingWeightsEnabled;
+    private boolean resourceScanningEnabled;
+    private boolean cultivationGaugeEnabled;
 
     // Runtime-only training state.
     private boolean trainingRequested;
@@ -431,6 +436,45 @@ public final class CultivatorData implements INBTSerializable<CompoundTag> {
         return trainingFatigue;
     }
 
+    public boolean looseTrainingWeightsEnabled() {
+        return looseTrainingWeightsEnabled;
+    }
+
+    public void setLooseTrainingWeightsEnabled(boolean enabled) {
+        looseTrainingWeightsEnabled = enabled;
+    }
+
+    public boolean toggleLooseTrainingWeights() {
+        looseTrainingWeightsEnabled = !looseTrainingWeightsEnabled;
+        return looseTrainingWeightsEnabled;
+    }
+
+    public boolean resourceScanningEnabled() {
+        return resourceScanningEnabled;
+    }
+
+    public void setResourceScanningEnabled(boolean enabled) {
+        resourceScanningEnabled = enabled;
+    }
+
+    public boolean toggleResourceScanning() {
+        resourceScanningEnabled = !resourceScanningEnabled;
+        return resourceScanningEnabled;
+    }
+
+    public boolean cultivationGaugeEnabled() {
+        return cultivationGaugeEnabled;
+    }
+
+    public void setCultivationGaugeEnabled(boolean enabled) {
+        cultivationGaugeEnabled = enabled;
+    }
+
+    public boolean toggleCultivationGauge() {
+        cultivationGaugeEnabled = !cultivationGaugeEnabled;
+        return cultivationGaugeEnabled;
+    }
+
     public void setTrainingFatigue(double trainingFatigue) {
         this.trainingFatigue = clamp(trainingFatigue, 0.0D, 100.0D);
     }
@@ -546,6 +590,9 @@ public final class CultivatorData implements INBTSerializable<CompoundTag> {
         meditationLevel = other.meditationLevel;
         qiConcealmentLevel = other.qiConcealmentLevel;
         trainingFatigue = other.trainingFatigue;
+        looseTrainingWeightsEnabled = other.looseTrainingWeightsEnabled;
+        resourceScanningEnabled = other.resourceScanningEnabled;
+        cultivationGaugeEnabled = other.cultivationGaugeEnabled;
 
         trainingRequested = false;
         trainingSessionTicks = 0;
@@ -600,6 +647,9 @@ public final class CultivatorData implements INBTSerializable<CompoundTag> {
         tag.putInt("MeditationLevel", meditationLevel);
         tag.putInt("QiConcealmentLevel", qiConcealmentLevel);
         tag.putDouble("TrainingFatigue", trainingFatigue);
+        tag.putBoolean("LooseTrainingWeightsEnabled", looseTrainingWeightsEnabled);
+        tag.putBoolean("ResourceScanningEnabled", resourceScanningEnabled);
+        tag.putBoolean("CultivationGaugeEnabled", cultivationGaugeEnabled);
 
         return tag;
     }
@@ -715,6 +765,16 @@ public final class CultivatorData implements INBTSerializable<CompoundTag> {
         trainingFatigue = loadedSchemaVersion >= 11
                 ? clamp(tag.getDouble("TrainingFatigue"), 0.0D, 100.0D)
                 : 0.0D;
+
+        if (loadedSchemaVersion >= 13) {
+            looseTrainingWeightsEnabled = tag.getBoolean("LooseTrainingWeightsEnabled");
+            resourceScanningEnabled = tag.getBoolean("ResourceScanningEnabled");
+            cultivationGaugeEnabled = tag.getBoolean("CultivationGaugeEnabled");
+        } else {
+            looseTrainingWeightsEnabled = false;
+            resourceScanningEnabled = false;
+            cultivationGaugeEnabled = false;
+        }
 
         trainingRequested = false;
         trainingSessionTicks = 0;
