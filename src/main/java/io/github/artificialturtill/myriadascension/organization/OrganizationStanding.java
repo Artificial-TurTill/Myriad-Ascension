@@ -13,6 +13,10 @@ public final class OrganizationStanding {
         serviceMerit = Math.max(0, serviceMerit + Math.max(0, amount));
     }
 
+    public void setServiceMerit(int value) {
+        serviceMerit = Math.max(0, value);
+    }
+
     public boolean member() {
         return member;
     }
