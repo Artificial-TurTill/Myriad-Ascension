@@ -420,7 +420,9 @@ The client uses synchronized server-owned values and refreshes from the latest c
 
 ### HUD
 
-A NeoForge GUI layer renders the cultivation HUD during normal gameplay.
+A NeoForge GUI layer renders the cultivation HUD during normal gameplay after the player has entered a cultivation realm.
+
+While the player is still Mortal, the entire Myriad Ascension cultivation HUD is hidden; Minecraft's normal survival HUD remains unchanged.
 
 Top-left bars:
 
