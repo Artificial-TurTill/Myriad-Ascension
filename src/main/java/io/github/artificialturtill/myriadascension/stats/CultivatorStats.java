@@ -23,8 +23,24 @@ public final class CultivatorStats {
         values.put(stat, Math.max(MINIMUM_STAT_VALUE, value));
     }
 
+    /**
+     * Ordinary progression is monotonic: negative additions are ignored.
+     * Explicit admin/testing changes should use set, and future sacrifice
+     * mechanics should use sacrifice.
+     */
     public void add(CultivatorStat stat, double amount) {
-        set(stat, get(stat) + amount);
+        if (amount > 0.0D) {
+            set(stat, get(stat) + amount);
+        }
+    }
+
+    public boolean sacrifice(CultivatorStat stat, double amount) {
+        if (stat == null || amount <= 0.0D) {
+            return false;
+        }
+        double before = get(stat);
+        set(stat, before - amount);
+        return get(stat) != before;
     }
 
     public Map<CultivatorStat, Double> view() {
