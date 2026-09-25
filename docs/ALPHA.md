@@ -1,4 +1,4 @@
-# Myriad Ascension — Alpha 0.1.0-alpha.12
+# Myriad Ascension — Alpha 0.1.0-alpha.13
 
 This is an early systems alpha for Minecraft 1.21.1 / NeoForge.
 
@@ -405,6 +405,54 @@ The following remain explicitly wired to local editable assets:
 
 These three require runtime visual verification in the alpha.12 artifact because compile-time asset references alone do not prove the client's final rendered appearance.
 
+## Alpha.13 runtime texture repair and asset validation
+
+Alpha.13 is driven by the user's alpha.12 runtime screenshots and logs rather than by compile-time assumptions.
+
+### V-screen and Martial World Guide diagnosis
+
+Alpha.12 successfully resolved both GUI ResourceLocations and reached the intended draw calls. The failure was inside Minecraft's image decoder:
+
+- `cultivator_status_panel.png` was found, but `NativeImage` rejected it with `PNG not supported: unknown PNG chunk type`.
+- `martial_world_guide.png` failed for the same reason.
+- the magenta/black result was therefore Minecraft's missing-texture fallback after image decoding failed, not a wrong namespace, filename, or Java screen path.
+- `cultivator_status_tabs.png` rendered in the runtime screenshot and did not produce the same load failure.
+
+The two visibly broken 256x256 GUI sources have been re-saved from their recoverable RGBA pixels as standards-compliant PNG files while preserving their intended artwork and dimensions.
+
+The new validator then caught a third malformed asset before release: `character_genesis.png`. It was also re-saved as a standards-compliant 512x256 RGBA PNG. This had not appeared in the supplied screenshots, but would have remained a latent runtime risk without the new CI gate.
+
+### PNG validation gate
+
+Alpha.13 adds `scripts/validate_pngs.py` and runs it in GitHub Actions before Gradle.
+
+The validator checks every packaged PNG for:
+
+- the PNG signature,
+- legal chunk structure and boundaries,
+- IHDR/IDAT/IEND presence,
+- CRC integrity,
+- a complete zlib-compressed IDAT stream,
+- no trailing bytes after IEND.
+
+A malformed custom texture now fails CI before an alpha JAR can be published.
+
+### Shield particle-atlas warning
+
+Alpha.12 also logged the artifact shield's model particle texture as missing from the block atlas.
+
+The shield's actual rendered surface remains:
+
+`textures/entity/tempered_body_artifact_shield.png`
+
+through the custom shield renderer.
+
+Only the item model's `particle` entry now follows vanilla shield behavior and points to `minecraft:block/dark_oak_planks`, which belongs to the correct atlas. This removes the unrelated block-atlas lookup without changing the custom shield surface.
+
+### Historical alpha.10 crash log
+
+The supplied crash report documents the already-known alpha.10 startup failure caused by attempting to bake `minecraft:shield#main` during `RegisterClientExtensionsEvent`. That failure remains fixed by the alpha.11 lazy renderer/direct `ShieldModel.createLayer().bakeRoot()` implementation and is not the cause of the alpha.12 GUI checkerboards.
+
 ## Known limitations
 
 - no generated clan compound yet
@@ -418,8 +466,8 @@ These three require runtime visual verification in the alpha.12 artifact because
 - no final Qi-drain/Burst curves
 - no weapon-infusion runtime yet
 - no final spirit-beast/world-Qi/formation/alchemy/profession content
-- final art/audio is not supplied yet; current textures and UI art are editable local placeholder PNGs
-- V is functional and texture-backed; final artwork and spacing can still be iterated
+- final art/audio is not supplied yet; current textures and UI art are editable local placeholder PNGs validated structurally by CI
+- V is functional and texture-backed; alpha.13 repairs the invalid panel PNG while final artwork and spacing can still be iterated
 - X is reserved but not implemented
 - alpha commands intentionally bypass future gameplay requirements
 
