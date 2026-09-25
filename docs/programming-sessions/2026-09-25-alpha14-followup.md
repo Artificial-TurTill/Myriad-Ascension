@@ -40,3 +40,15 @@ This log records changes made during the programming session immediately followi
 - GitHub Actions PNG validation.
 - Gradle build.
 - Runtime confirmation that Mortal shows no Myriad Ascension HUD and Tempered Body still shows it.
+
+## CI verification update
+
+Pull request #27 triggered GitHub Actions build run 354.
+
+Results on the implementation head:
+
+- PNG structural validation: **passed**
+- Gradle build: **passed**
+- Alpha artifact upload: **passed**
+
+The remaining verification item is runtime behavior in Minecraft: Mortal should show no Myriad Ascension cultivation HUD; entering Tempered Body should make the cultivation HUD eligible to render again.
