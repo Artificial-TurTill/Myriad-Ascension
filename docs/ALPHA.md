@@ -418,7 +418,9 @@ Alpha.12 successfully resolved both GUI ResourceLocations and reached the intend
 - the magenta/black result was therefore Minecraft's missing-texture fallback after image decoding failed, not a wrong namespace, filename, or Java screen path.
 - `cultivator_status_tabs.png` rendered in the runtime screenshot and did not produce the same load failure.
 
-The two broken 256x256 GUI sources have been losslessly re-saved from their recoverable RGBA pixels as standards-compliant PNG files while preserving their intended artwork and dimensions.
+The two visibly broken 256x256 GUI sources have been re-saved from their recoverable RGBA pixels as standards-compliant PNG files while preserving their intended artwork and dimensions.
+
+The new validator then caught a third malformed asset before release: `character_genesis.png`. It was also re-saved as a standards-compliant 512x256 RGBA PNG. This had not appeared in the supplied screenshots, but would have remained a latent runtime risk without the new CI gate.
 
 ### PNG validation gate
 
