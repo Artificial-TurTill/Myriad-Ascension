@@ -536,6 +536,7 @@ The early Testudo path now accepts multiple physical training sources rather tha
 - Weighted movement develops strength/endurance.
 - Dealing meaningful combat damage develops strength, coordination and stability.
 - Taking meaningful damage develops toughness and stability with adaptation-based diminishing returns.
+- Controlled falls/impacts above the ordinary safe threshold develop toughness and stability, with their own adaptation memory.
 - Rest/recovery develops the Recovery vector while Training Fatigue falls.
 - Tempered Body 4-6 continues physical training while G adds deliberate World Energy perception training.
 - Tempered Body 7-9 continues physical training while natural Yuan Qi absorption develops the vessel.
