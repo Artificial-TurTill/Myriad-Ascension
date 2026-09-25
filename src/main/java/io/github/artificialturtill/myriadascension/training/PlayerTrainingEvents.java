@@ -223,7 +223,7 @@ public final class PlayerTrainingEvents {
 
         int stage = data.minorStage();
 
-        if (!TemperedBodyRules.naturallyGathersPreQiEnergy(stage)) {
+        if (!TemperedBodyRules.canConsciouslyStorePreQiEnergy(stage)) {
             boolean changed = data.maximumQi() != 0.0D
                     || data.currentQi() != 0.0D
                     || data.circulationPercent() != 0.0D
@@ -283,7 +283,7 @@ public final class PlayerTrainingEvents {
     private static void displayTrainingStatus(ServerPlayer player, CultivatorData data) {
         String energySuffix = "";
         if (data.realm() == CultivationRealm.TEMPERED_BODY
-                && TemperedBodyRules.naturallyGathersPreQiEnergy(data.minorStage())) {
+                && TemperedBodyRules.canConsciouslyStorePreQiEnergy(data.minorStage())) {
             energySuffix = "  |  Yuan Qi "
                     + oneDecimal(data.currentQi())
                     + "/"
