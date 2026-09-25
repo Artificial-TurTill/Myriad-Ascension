@@ -1,4 +1,4 @@
-# Myriad Ascension — Alpha 0.1.0-alpha.14
+# Myriad Ascension — Alpha 0.1.0-alpha.15
 
 This is an early systems alpha for Minecraft 1.21.1 / NeoForge.
 
@@ -473,6 +473,138 @@ Programming sessions are now recorded under:
 
 A session log is created when work begins and updated during implementation with requested behavior, decisions, files changed, validation and build results.
 
+## Alpha.15 Body Tempering foundation, alpha editor, purification and affinity safeguards
+
+### Affinities screen
+
+The Affinities explanatory paragraph now reserves enough vertical space for three wrapped lines so the sentence no longer clips at the bottom of the V-screen content area.
+
+### Monotonic stats and affinities
+
+Ordinary progression APIs are now monotonic:
+
+- core-stat `add(...)` ignores negative additions,
+- Current Attunement gains use an increase-only API,
+- all affinity values remain clamped at 0 or above,
+- deliberate loss is isolated behind explicit sacrifice APIs for future mechanics,
+- alpha/admin edit commands remain able to set test values directly.
+
+This separates normal progression from future sacrifice mechanics instead of allowing accidental regression through generic gameplay code.
+
+### Body Tempering state
+
+Player data schema is now version 12 and persists a dedicated Body Tempering state.
+
+Tracked development vectors:
+
+- Strength
+- Endurance
+- Toughness
+- Coordination
+- Stability
+- Breath Control
+- Recovery
+- Vessel Development
+- World Energy Perception
+
+Tracked activity adaptation:
+
+- Foundation Stance
+- Controlled Breathing
+- Running
+- Swimming
+- Climbing
+- Weighted Movement
+- Striking
+- Combat
+- Defensive Stress
+- Recovery
+- World Energy Focus
+- Natural Absorption
+
+Training value now depends on activity difficulty, fatigue and adaptation. Repeating the same easy stimulus becomes less efficient instead of granting a flat event-count reward.
+
+### Primordialis Testudo physical training
+
+The early Testudo path now accepts multiple physical training sources rather than making the Foundation Stance the whole realm:
+
+- Foundation Stance develops stability, endurance and breath control.
+- Carrying Basic Training Weights increases meaningful stance/movement resistance until the cultivator adapts to the load.
+- Sprinting gives a small endurance stimulus.
+- Swimming develops endurance, breath control and coordination.
+- Climbing develops strength, endurance and coordination.
+- Weighted movement develops strength/endurance.
+- Dealing meaningful combat damage develops strength, coordination and stability.
+- Taking meaningful damage develops toughness and stability with adaptation-based diminishing returns.
+- Rest/recovery develops the Recovery vector while Training Fatigue falls.
+- Tempered Body 4-6 continues physical training while G adds deliberate World Energy perception training.
+- Tempered Body 7-9 continues physical training while natural Yuan Qi absorption develops the vessel.
+
+Kills themselves grant no cultivation reward.
+
+Stage progress is now derived from cumulative multi-vector development rather than a flat stance timer. Primordialis Testudo additionally requires breadth and its characteristic stability/toughness/endurance foundation before a stage can complete.
+
+### Basic Training Weight
+
+Added:
+
+`myriad_ascension:basic_training_weight`
+
+The alpha implementation treats weights carried in the player inventory as deliberate training load. Multiple weights increase load. As Strength and physical foundation rise, the same load provides less relative challenge.
+
+This is the initial runtime foundation for the later Curios/equipment implementation.
+
+### Minor Purification Pill
+
+Added:
+
+`myriad_ascension:minor_purification_pill`
+
+Current alpha effect:
+
+- removes up to 18 Impurity Load,
+- removes up to 6 Demonic Qi contamination,
+- restores up to 4 Vessel Purity,
+- is not consumed if there is nothing to purify.
+
+The item has its own editable mod-local placeholder PNG.
+
+### Comprehensive alpha state editor
+
+Added the `/myriadalpha edit ...` command tree for development/testing.
+
+It can directly change or manage:
+
+- realm and stage,
+- sex and affiliation,
+- moral alignment and Karma,
+- all core stats,
+- innate affinities,
+- current affinity/attunement values,
+- core skills,
+- current/max Qi, circulation and Burst,
+- cultivation/battle progress and comprehension,
+- injuries, impurity, purity, contamination, meridian load, fatigue and recovery debt,
+- bloodline purity/conflict,
+- Body Tempering vectors and activity adaptation,
+- learned/equipped techniques,
+- learned/active cultivation methods,
+- organization membership, rank and service merit.
+
+Examples:
+
+`/myriadalpha edit stat strength 5`
+
+`/myriadalpha edit affinity metal 3`
+
+`/myriadalpha edit skill meditation 4`
+
+`/myriadalpha edit condition impurities 0`
+
+`/myriadalpha edit technique equip weapon myriad_ascension:test_blade_art`
+
+`/myriadalpha edit training status`
+
 ## Known limitations
 
 - no generated clan compound yet
@@ -493,4 +625,4 @@ A session log is created when work begins and updated during implementation with
 
 ## Save compatibility
 
-This build writes player-data schema version 11. Future alpha builds will attempt migrations, but backups are recommended because this is pre-release software.
+This build writes player-data schema version 12. Future alpha builds will attempt migrations, but backups are recommended because this is pre-release software.
