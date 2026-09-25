@@ -5,6 +5,8 @@ import io.github.artificialturtill.myriadascension.cultivation.data.ModAttachmen
 import io.github.artificialturtill.myriadascension.cultivation.qi.QiRules;
 import io.github.artificialturtill.myriadascension.cultivation.realm.CultivationRealm;
 import io.github.artificialturtill.myriadascension.cultivation.realm.RealmMilestoneRules;
+import io.github.artificialturtill.myriadascension.training.BodyTemperingRules;
+import io.github.artificialturtill.myriadascension.training.TestudoTrainingRules;
 import io.github.artificialturtill.myriadascension.registry.ModItems;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.server.level.ServerPlayer;
@@ -126,14 +128,58 @@ public final class ModNetworking {
             return;
         }
 
-        // Conscious Qi circulation begins at Initial Element. Tempered Body 7-9
-        // may contain naturally formed Yuan Qi, but the player cannot mobilize it.
-        if (!RealmMilestoneRules.canActivelyUseQi(data.realm())
-                || data.maximumQi() <= 0.0D
-                || data.currentQi() <= 0.0D) {
+        // Tempered Body 7-9 can consciously draw Qi into the vessel with G,
+        // but cannot circulate/use it internally. Storage is deliberately slow.
+        if (data.realm() == CultivationRealm.TEMPERED_BODY
+                && data.minorStage() >= 7
+                && data.minorStage() <= 9) {
+
+            if (!BodyTemperingRules.supports(data)) {
+                return;
+            }
+
+            double baselineCapacity =
+                    TestudoTrainingRules.naturalYuanQiCapacity(data.minorStage());
+            if (data.maximumQi() < baselineCapacity) {
+                data.setMaximumQi(baselineCapacity);
+            }
+
+            double environment =
+                    BodyTemperingRules.testudoEnvironmentMultiplier(player, data);
+            double gathered =
+                    TestudoTrainingRules.consciousYuanQiPerPulse(data.minorStage())
+                            * environment
+                            * TestudoTrainingRules.fatigueEfficiency(data);
+
+            double before = data.currentQi();
+            data.setCurrentQi(before + gathered);
+            data.setCirculationPercent(0.0D);
+            data.setBurstMode(false);
+
+            double actuallyStored = Math.max(0.0D, data.currentQi() - before);
+            if (actuallyStored > 0.0D) {
+                BodyTemperingRules.trainNaturalAbsorption(
+                        data,
+                        actuallyStored,
+                        environment);
+            }
+
+            syncPlayer(player, data);
             return;
         }
 
+        // Initial Element is the first realm of true internal Qi circulation.
+        // G both gathers/recharges and raises normal circulation.
+        if (!RealmMilestoneRules.canActivelyUseQi(data.realm())
+                || data.maximumQi() <= 0.0D) {
+            return;
+        }
+
+        data.setCurrentQi(
+                data.currentQi()
+                        + QiRules.activeGatherPerControlPulse(
+                                data.maximumQi(),
+                                data.meditationLevel()));
         data.increaseCirculation(QiRules.CIRCULATION_PERCENT_PER_CONTROL_PULSE);
         syncPlayer(player, data);
     }
