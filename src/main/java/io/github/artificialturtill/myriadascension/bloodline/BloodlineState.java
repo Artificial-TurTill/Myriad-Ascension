@@ -57,6 +57,14 @@ public final class BloodlineState {
         return conflictDamage;
     }
 
+    public void setPurityForTesting(double value) {
+        purity = clamp(value, 0.0D, 100.0D);
+    }
+
+    public void setConflictDamageForTesting(double value) {
+        conflictDamage = Math.max(0.0D, value);
+    }
+
     public void addConflictDamage(double amount) {
         conflictDamage = Math.max(0.0D, conflictDamage + Math.max(0.0D, amount));
     }

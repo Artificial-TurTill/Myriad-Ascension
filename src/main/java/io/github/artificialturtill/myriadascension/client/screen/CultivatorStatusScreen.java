@@ -281,10 +281,10 @@ public final class CultivatorStatusScreen extends Screen {
                 "Affinity changes efficiency, learning, refinement and Dao compatibility. "
                         + "Low affinity makes a path harder; it does not permanently forbid it.",
                 x,
-                panelTop() + panelHeight() - 55,
+                panelTop() + panelHeight() - 72,
                 available,
                 MUTED,
-                2);
+                3);
     }
 
     private void renderSkills(GuiGraphics graphics, CultivatorSyncPayload data) {

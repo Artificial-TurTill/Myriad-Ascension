@@ -25,6 +25,17 @@ public final class CultivationMethodState {
         return id != null && knownMethods.add(id.toString());
     }
 
+    public boolean forget(ResourceLocation id) {
+        if (id == null) {
+            return false;
+        }
+        boolean removed = knownMethods.remove(id.toString());
+        if (activeMethod.equals(id.toString())) {
+            activeMethod = "";
+        }
+        return removed;
+    }
+
     public boolean setActive(ResourceLocation id) {
         if (id == null || !knows(id)) {
             return false;
