@@ -1,6 +1,7 @@
 package io.github.artificialturtill.myriadascension.cultivation.data;
 
 import io.github.artificialturtill.myriadascension.affinity.AffinityProfile;
+import io.github.artificialturtill.myriadascension.affinity.AffinityType;
 import io.github.artificialturtill.myriadascension.affinity.BodyPolarity;
 import io.github.artificialturtill.myriadascension.affinity.StartingAffinityGenerator;
 import io.github.artificialturtill.myriadascension.alignment.CultivationAffiliation;
@@ -18,13 +19,14 @@ import io.github.artificialturtill.myriadascension.stats.CultivatorStats;
 import io.github.artificialturtill.myriadascension.technique.TechniqueCategory;
 import io.github.artificialturtill.myriadascension.technique.TechniqueKnowledgeState;
 import io.github.artificialturtill.myriadascension.technique.TechniqueLoadoutState;
+import io.github.artificialturtill.myriadascension.training.BodyTemperingState;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.RandomSource;
 import net.neoforged.neoforge.common.util.INBTSerializable;
 
 public final class CultivatorData implements INBTSerializable<CompoundTag> {
-    public static final int SCHEMA_VERSION = 11;
+    public static final int SCHEMA_VERSION = 12;
 
     private int schemaVersion = SCHEMA_VERSION;
 
@@ -44,6 +46,7 @@ public final class CultivatorData implements INBTSerializable<CompoundTag> {
     private final CultivatorStats stats = new CultivatorStats();
     private final TechniqueLoadoutState techniqueLoadout = new TechniqueLoadoutState();
     private final TechniqueKnowledgeState techniqueKnowledge = new TechniqueKnowledgeState();
+    private final BodyTemperingState bodyTempering = new BodyTemperingState();
 
     private CultivationRealm realm = CultivationRealm.MORTAL;
     private int minorStage;
@@ -136,6 +139,34 @@ public final class CultivatorData implements INBTSerializable<CompoundTag> {
         return affinities;
     }
 
+    /**
+     * Normal progression may only improve current attunement. Deliberate loss
+     * belongs to an explicit sacrifice mechanic and must call sacrificeAffinity.
+     */
+    public void increaseAffinity(AffinityType type, int amount) {
+        if (type == null || amount <= 0) {
+            return;
+        }
+        affinities.set(type, affinities.get(type) + amount);
+    }
+
+    public boolean sacrificeAffinity(AffinityType type, int amount) {
+        if (type == null || amount <= 0) {
+            return false;
+        }
+        int before = affinities.get(type);
+        int after = Math.max(0, before - amount);
+        affinities.set(type, after);
+        return after != before;
+    }
+
+    /** Alpha/admin setter. Gameplay systems should use increaseAffinity instead. */
+    public void setAffinityForTesting(AffinityType type, int value) {
+        if (type != null) {
+            affinities.set(type, value);
+        }
+    }
+
     public QiNatureProfile qiNature() {
         return qiNature;
     }
@@ -170,6 +201,10 @@ public final class CultivatorData implements INBTSerializable<CompoundTag> {
 
     public TechniqueKnowledgeState techniqueKnowledge() {
         return techniqueKnowledge;
+    }
+
+    public BodyTemperingState bodyTempering() {
+        return bodyTempering;
     }
 
     public void completeInitialSetup(CharacterSex sex, double startingMoralAlignment, RandomSource random) {
@@ -231,16 +266,28 @@ public final class CultivatorData implements INBTSerializable<CompoundTag> {
         return cultivationComprehension;
     }
 
+    public void setCultivationComprehension(double value) {
+        cultivationComprehension = Math.max(0.0D, value);
+    }
+
     public void addCultivationComprehension(double amount) {
-        cultivationComprehension = Math.max(0.0D, cultivationComprehension + amount);
+        if (amount > 0.0D) {
+            setCultivationComprehension(cultivationComprehension + amount);
+        }
     }
 
     public double battleComprehension() {
         return battleComprehension;
     }
 
+    public void setBattleComprehension(double value) {
+        battleComprehension = Math.max(0.0D, value);
+    }
+
     public void addBattleComprehension(double amount) {
-        battleComprehension = Math.max(0.0D, battleComprehension + amount);
+        if (amount > 0.0D) {
+            setBattleComprehension(battleComprehension + amount);
+        }
     }
 
     public double currentQi() {
@@ -472,6 +519,7 @@ public final class CultivatorData implements INBTSerializable<CompoundTag> {
         stats.copyFrom(other.stats);
         techniqueLoadout.copyFrom(other.techniqueLoadout);
         techniqueKnowledge.copyFrom(other.techniqueKnowledge);
+        bodyTempering.copyFrom(other.bodyTempering);
 
         realm = other.realm;
         minorStage = other.minorStage;
@@ -525,6 +573,7 @@ public final class CultivatorData implements INBTSerializable<CompoundTag> {
         tag.put("Stats", stats.save());
         tag.put("TechniqueLoadout", techniqueLoadout.save());
         tag.put("TechniqueKnowledge", techniqueKnowledge.save());
+        tag.put("BodyTempering", bodyTempering.save());
 
         tag.putString("Realm", realm.name());
         tag.putInt("MinorStage", minorStage);
@@ -624,6 +673,10 @@ public final class CultivatorData implements INBTSerializable<CompoundTag> {
 
         if (loadedSchemaVersion >= 10 && tag.contains("TechniqueKnowledge")) {
             techniqueKnowledge.load(tag.getCompound("TechniqueKnowledge"));
+        }
+
+        if (loadedSchemaVersion >= 12 && tag.contains("BodyTempering")) {
+            bodyTempering.load(tag.getCompound("BodyTempering"));
         }
 
         realm = CultivationRealm.fromSerializedName(tag.getString("Realm"));
