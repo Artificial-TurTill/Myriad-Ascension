@@ -394,7 +394,7 @@ public final class BodyTemperingRules {
                     + perceptionFraction * 0.30D;
         } else {
             double perceptionTarget = 24.0D;
-            double vesselTarget = (targetStage - 6) * 8.0D;
+            double vesselTarget = (targetStage - 6) * 5.0D;
             double perceptionFraction = clamp(
                     data.bodyTempering().development(BodyTemperingVector.WORLD_ENERGY_PERCEPTION)
                             / perceptionTarget,
