@@ -295,7 +295,7 @@ As of alpha.13 development, the custom UI texture inventory is:
 | Cultivator V Screen | `textures/gui/cultivator_status_panel.png` | active; malformed alpha.12 PNG sanitized in alpha.13 |
 | V Screen tabs | `textures/gui/cultivator_status_tabs.png` | active; confirmed by alpha.12 runtime screenshot |
 | Martial World Guide | `textures/gui/martial_world_guide.png` | active; malformed alpha.12 PNG sanitized in alpha.13 |
-| Character Genesis | `textures/gui/character_genesis.png` | active |
+| Character Genesis | `textures/gui/character_genesis.png` | active; malformed legacy PNG sanitized in alpha.13 |
 | Shared martial buttons | `textures/gui/martial_button.png` | active |
 
 Dynamic text, numeric values, progress bars, item slots, and interaction logic remain code-driven because they must change at runtime. Their ornamental/static visual shells are asset-backed.
@@ -312,7 +312,7 @@ For future alphas, bump the mod version and artifact name only after the intende
 
 Minecraft's `NativeImage`/STB loader can reject a file that some image editors still display. Alpha.12 exposed this with the V-screen and Martial World Guide backgrounds: both resources existed at the correct path but contained malformed PNG chunk structure.
 
-Alpha.13 therefore adds:
+Alpha.13 therefore sanitizes the affected V-screen, Martial World Guide and Character Genesis PNGs and adds:
 
 `scripts/validate_pngs.py`
 
