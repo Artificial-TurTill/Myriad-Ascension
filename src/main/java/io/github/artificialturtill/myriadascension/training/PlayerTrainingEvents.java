@@ -10,6 +10,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.neoforged.neoforge.event.entity.living.LivingFallEvent;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 
@@ -89,6 +90,28 @@ public final class PlayerTrainingEvents {
             displayTrainingStatus(player, data);
             ModNetworking.syncPlayer(player, data);
         }
+    }
+
+    public static void onLivingFall(LivingFallEvent event) {
+        if (!(event.getEntity() instanceof ServerPlayer player)) {
+            return;
+        }
+
+        CultivatorData data = player.getData(ModAttachments.CULTIVATOR_DATA);
+        if (!BodyTemperingRules.supports(data)) {
+            return;
+        }
+
+        double distance = event.getDistance();
+        if (distance <= 3.0D) {
+            return;
+        }
+
+        BodyTemperingRules.trainFallingImpact(data, distance);
+        data.setTrainingFatigue(
+                data.trainingFatigue() + Math.min(0.45D, (distance - 3.0D) * 0.025D));
+        updateTrainingProgress(player, data);
+        ModNetworking.syncPlayer(player, data);
     }
 
     public static void onLivingIncomingDamage(LivingIncomingDamageEvent event) {
