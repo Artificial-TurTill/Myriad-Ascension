@@ -51,7 +51,8 @@ public final class AlphaCommands {
                         .then(Commands.literal("grant_testudo_bloodline")
                                 .executes(context -> grantTestudoBloodline(context.getSource())))
                         .then(Commands.literal("authorize_fundamentals")
-                                .executes(context -> authorizeFundamentals(context.getSource()))));
+                                .executes(context -> authorizeFundamentals(context.getSource())))
+                        .then(AlphaStateCommands.build()));
     }
 
     private static int status(CommandSourceStack source) throws CommandSyntaxException {
