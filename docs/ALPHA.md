@@ -1,4 +1,4 @@
-# Myriad Ascension — Alpha 0.1.0-alpha.13
+# Myriad Ascension — Alpha 0.1.0-alpha.14
 
 This is an early systems alpha for Minecraft 1.21.1 / NeoForge.
 
@@ -452,6 +452,26 @@ Only the item model's `particle` entry now follows vanilla shield behavior and p
 ### Historical alpha.10 crash log
 
 The supplied crash report documents the already-known alpha.10 startup failure caused by attempting to bake `minecraft:shield#main` during `RegisterClientExtensionsEvent`. That failure remains fixed by the alpha.11 lazy renderer/direct `ShieldModel.createLayer().bakeRoot()` implementation and is not the cause of the alpha.12 GUI checkerboards.
+
+## Alpha.14 Mortal HUD visibility and development logging
+
+### Mortal HUD visibility
+
+The top-left Myriad Ascension cultivation HUD is now completely hidden while the synchronized player realm is `MORTAL`.
+
+This hides the mod's Health / Qi / Power panel as one unit. Minecraft's normal survival HUD is not modified.
+
+Once the player enters any cultivation realm, beginning with Tempered Body, the cultivation HUD becomes eligible to render again according to the current HUD implementation.
+
+No HUD texture or other UI artwork was redesigned for this change.
+
+### Programming session logs
+
+Programming sessions are now recorded under:
+
+`docs/programming-sessions/`
+
+A session log is created when work begins and updated during implementation with requested behavior, decisions, files changed, validation and build results.
 
 ## Known limitations
 
