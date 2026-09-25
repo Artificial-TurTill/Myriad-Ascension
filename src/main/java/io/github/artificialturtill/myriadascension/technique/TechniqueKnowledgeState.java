@@ -20,6 +20,10 @@ public final class TechniqueKnowledgeState {
         return techniqueId != null && knownTechniques.add(techniqueId.toString());
     }
 
+    public boolean forget(ResourceLocation techniqueId) {
+        return techniqueId != null && knownTechniques.remove(techniqueId.toString());
+    }
+
     public Set<String> view() {
         return Collections.unmodifiableSet(knownTechniques);
     }
