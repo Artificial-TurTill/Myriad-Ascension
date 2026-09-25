@@ -319,3 +319,18 @@ Alpha.13 therefore sanitizes the affected V-screen, Martial World Guide and Char
 GitHub Actions runs this before Gradle. Every PNG under `src/main/resources/assets/` must have valid chunk boundaries, CRCs, IHDR/IDAT/IEND structure and a complete IDAT zlib stream.
 
 When replacing an editable texture, preserve the expected dimensions/UV layout and save it as a standards-compliant PNG. CI is now the first guard; Minecraft runtime testing remains the final guard.
+
+
+## 14. Alpha.15 editable item placeholders
+
+Two new gameplay items use mod-local editable PNGs:
+
+- `textures/item/minor_purification_pill.png` — 16x16
+- `textures/item/basic_training_weight.png` — 16x16
+
+Their corresponding item models are:
+
+- `models/item/minor_purification_pill.json`
+- `models/item/basic_training_weight.json`
+
+The supplied alpha artwork is intentionally simple placeholder art. It can be replaced directly without Java changes as long as the PNG remains structurally valid.
