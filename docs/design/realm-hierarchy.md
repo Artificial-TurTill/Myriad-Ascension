@@ -75,11 +75,13 @@ Tempered Body is split into three functional bands:
 
 ### Stages 7–9
 
-- natural ambient energy gathering begins,
+- body tempering remains an active progression requirement,
+- conscious G-driven ambient energy gathering into the vessel begins,
+- storing Yuan Qi is slow and difficult,
 - dantian/meridian preparation accelerates,
 - the player is approaching Initial Element.
 
-**Myriad Ascension override:** Tempered Body does not yet grant consciously usable Qi. Active Qi begins at Initial Element.
+**Myriad Ascension override:** Tempered Body can consciously gather/store Qi but cannot yet truly circulate or spend it. Normal internal Qi circulation/use begins at Initial Element.
 
 ## Ascension
 

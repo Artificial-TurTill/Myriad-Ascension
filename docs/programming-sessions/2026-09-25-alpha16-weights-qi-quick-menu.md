@@ -143,3 +143,25 @@ Pull-request run 365 validated all 29 packaged PNG files successfully, then fail
 - `QuickMenuSnapshotPayload` implemented `CustomPacketPayload` but lacked its required `type()` override.
 
 The payload now returns its registered `TYPE` exactly like the other custom payloads. No PNG or resource failure was involved. A new CI build is being used to expose any further compile-time integration errors before merge.
+
+## Alpha.16 CI verification
+
+Pull-request run 366 completed successfully on the corrected implementation head.
+
+Results:
+
+- PNG structural validation: **passed**
+- Java/Gradle build: **passed**
+- Alpha artifact upload: **passed**
+
+The first run's missing payload `type()` implementation was the only compile error exposed. The corrected quick-menu networking, custom creative tab, wearable armor material/items, stage-local training state, conscious Tempered Body gathering and Initial Element recharge/circulation all compile together on NeoForge 1.21.1.
+
+The progression design documents were also updated to remove obsolete references to passive late-Tempered-Body gathering.
+
+Runtime verification is still required for:
+- X-menu hold/hover/release interaction and layout at the user's resolution,
+- wearable training-weight visuals and actual training-load feel,
+- custom creative-tab placement,
+- Stage 4-6 physical/perception balance,
+- Stage 7-9 conscious gathering rate,
+- Initial Element recharge/circulation rate.
