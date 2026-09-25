@@ -33,3 +33,72 @@ The source defines early body training around Strength, Endurance, Toughness, Co
 5. Expand Tempered Body into multi-vector physical training with effort/adaptation/fatigue foundations.
 6. Update docs and this session log as implementation proceeds.
 7. Run PNG validation + Gradle CI and merge only after success.
+
+## Implementation update
+
+### Affinity/UI repair
+
+- Expanded the Affinities-page explanatory text allowance from two wrapped lines to three and moved it upward so the sentence is not clipped.
+- Confirmed the persistent `AffinityProfile` already clamps every affinity to a minimum of 0.
+- Added explicit increase-only and sacrifice APIs around Current Attunement so ordinary progression and deliberate future loss are separate concepts.
+- Changed ordinary core-stat `add(...)` to ignore negative additions. Explicit sacrifice/admin setters remain separate.
+
+### Body Tempering implementation
+
+Added persistent Body Tempering development vectors:
+
+- Strength
+- Endurance
+- Toughness
+- Coordination
+- Stability
+- Breath Control
+- Recovery
+- Vessel Development
+- World Energy Perception
+
+Added persistent adaptation per training activity and upgraded player data to schema version 12.
+
+Implemented runtime stimuli for:
+
+- Foundation Stance
+- Controlled Breathing
+- ordinary running
+- swimming
+- climbing
+- inventory-carried training weights / weighted movement
+- meaningful striking/combat damage
+- meaningful incoming damage / defensive tempering
+- recovery/rest
+- Tempered Body 4-6 World Energy focus
+- Tempered Body 7-9 vessel development through natural absorption
+
+Stage progress is now derived from multi-vector development. Primordialis Testudo specifically requires breadth plus Stability/Toughness/Endurance rather than allowing one repeated exercise to carry the entire realm.
+
+### Items
+
+Added `minor_purification_pill`:
+
+- reduces Impurity Load,
+- reduces Demonic Qi contamination,
+- restores Vessel Purity,
+- is not consumed when there is nothing to purify.
+
+Added `basic_training_weight` with inventory-based load for the current alpha foundation.
+
+Both have editable local 16x16 placeholder PNGs.
+
+### Alpha/admin editing
+
+Added `/myriadalpha edit` with direct edit/test access to realm/stage, stats, affinities, skills, Qi, conditions, progress/comprehension, bloodline condition, Body Tempering vectors/adaptation, techniques, cultivation methods and organization standing.
+
+### Documentation/version
+
+- Bumped version/artifact to `0.1.0-alpha.15`.
+- Updated Alpha and Asset Guide documentation.
+
+## Validation still pending
+
+- PNG structural validation.
+- Java/Gradle compilation.
+- Runtime verification of Affinities wrapping, Body Tempering activity detection, item behavior and alpha editor commands.
