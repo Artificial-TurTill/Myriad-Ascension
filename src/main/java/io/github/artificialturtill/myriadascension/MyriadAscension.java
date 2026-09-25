@@ -29,6 +29,7 @@ public final class MyriadAscension {
         NeoForge.EVENT_BUS.addListener(PlayerCultivationEvents::onPlayerLoggedIn);
         NeoForge.EVENT_BUS.addListener(PlayerCultivationEvents::onPlayerClone);
         NeoForge.EVENT_BUS.addListener(PlayerTrainingEvents::onPlayerTick);
+        NeoForge.EVENT_BUS.addListener(PlayerTrainingEvents::onLivingIncomingDamage);
         NeoForge.EVENT_BUS.addListener(AlphaCommands::register);
 
         LOGGER.info("Myriad Ascension initializing on NeoForge.");
