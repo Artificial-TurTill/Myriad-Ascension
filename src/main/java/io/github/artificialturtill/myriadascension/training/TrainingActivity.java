@@ -10,6 +10,7 @@ public enum TrainingActivity {
     STRIKING("Striking"),
     COMBAT("Combat"),
     DEFENSIVE_STRESS("Defensive Stress"),
+    FALLING_IMPACT("Controlled Falling / Impact"),
     RECOVERY("Recovery"),
     WORLD_ENERGY_FOCUS("World Energy Focus"),
     NATURAL_ABSORPTION("Natural Absorption");
