@@ -62,6 +62,11 @@ public record QuickMenuSnapshotPayload(
                 data.looseTrainingWeightsEnabled());
     }
 
+    @Override
+    public Type<QuickMenuSnapshotPayload> type() {
+        return TYPE;
+    }
+
     public List<String> techniques(TechniqueCategory category) {
         return switch (category) {
             case CULTIVATION -> cultivationTechniques;
