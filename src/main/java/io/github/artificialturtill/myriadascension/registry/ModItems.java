@@ -199,6 +199,11 @@ public final class ModItems {
         return TECHNIQUE_MANUALS.get(techniqueId);
     }
 
+    public static TechniqueCategory techniqueCategory(ResourceLocation techniqueId) {
+        Supplier<TechniqueManualItem> manual = TECHNIQUE_MANUALS.get(techniqueId);
+        return manual == null ? null : manual.get().category();
+    }
+
     private static Supplier<ArtifactArmorItem> registerArtifactArmor(
             String itemPath,
             ArmorItem.Type type) {
