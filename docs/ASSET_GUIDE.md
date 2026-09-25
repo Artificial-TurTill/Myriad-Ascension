@@ -187,6 +187,8 @@ Source size:
 
 The initial placeholder is copied from vanilla 1.21.1's `shield_base_nopattern.png` so the UV layout is guaranteed to match `ShieldModel`.
 
+The item model's `particle` texture deliberately uses `minecraft:block/dark_oak_planks`, matching vanilla shield model behavior. The `particle` slot is atlas-backed and must not point at the custom entity texture. The shield's visible surface is still the Myriad Ascension entity PNG rendered by the custom BEWLR.
+
 Associated models:
 
 - `models/item/tempered_body_artifact_shield.json`
@@ -284,15 +286,15 @@ The placeholders are intentionally simple. They exist so every custom visual has
 
 ## UI resource inventory
 
-As of alpha.12 development, the custom UI texture inventory is:
+As of alpha.13 development, the custom UI texture inventory is:
 
 | UI | Editable PNG | Rendering status |
 | --- | --- | --- |
 | Cultivation HUD | `textures/gui/cultivator_hud.png` | active |
 | Minor Storage Bag | `textures/gui/minor_storage_bag.png` | active |
-| Cultivator V Screen | `textures/gui/cultivator_status_panel.png` | wired; runtime visual verification required in alpha.12 |
-| V Screen tabs | `textures/gui/cultivator_status_tabs.png` | wired; runtime visual verification required in alpha.12 |
-| Martial World Guide | `textures/gui/martial_world_guide.png` | wired; runtime visual verification required in alpha.12 |
+| Cultivator V Screen | `textures/gui/cultivator_status_panel.png` | active; malformed alpha.12 PNG sanitized in alpha.13 |
+| V Screen tabs | `textures/gui/cultivator_status_tabs.png` | active; confirmed by alpha.12 runtime screenshot |
+| Martial World Guide | `textures/gui/martial_world_guide.png` | active; malformed alpha.12 PNG sanitized in alpha.13 |
 | Character Genesis | `textures/gui/character_genesis.png` | active |
 | Shared martial buttons | `textures/gui/martial_button.png` | active |
 
@@ -304,3 +306,16 @@ Dynamic text, numeric values, progress bars, item slots, and interaction logic r
 The alpha.12 artifact is intentionally built only after the post-alpha.11 UI commits, cultivation corrections, and corrected HUD/storage-bag textures are present on the same release head.
 
 For future alphas, bump the mod version and artifact name only after the intended release changes are already committed. This prevents a versioned artifact from being generated before later same-version UI fixes.
+
+
+## 13. Alpha.13 PNG validity rule
+
+Minecraft's `NativeImage`/STB loader can reject a file that some image editors still display. Alpha.12 exposed this with the V-screen and Martial World Guide backgrounds: both resources existed at the correct path but contained malformed PNG chunk structure.
+
+Alpha.13 therefore adds:
+
+`scripts/validate_pngs.py`
+
+GitHub Actions runs this before Gradle. Every PNG under `src/main/resources/assets/` must have valid chunk boundaries, CRCs, IHDR/IDAT/IEND structure and a complete IDAT zlib stream.
+
+When replacing an editable texture, preserve the expected dimensions/UV layout and save it as a standards-compliant PNG. CI is now the first guard; Minecraft runtime testing remains the final guard.
