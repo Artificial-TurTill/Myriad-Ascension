@@ -102,3 +102,22 @@ Added `/myriadalpha edit` with direct edit/test access to realm/stage, stats, af
 - PNG structural validation.
 - Java/Gradle compilation.
 - Runtime verification of Affinities wrapping, Body Tempering activity detection, item behavior and alpha editor commands.
+
+## CI verification update
+
+Pull request #28 triggered GitHub Actions build run 357.
+
+Results on the implementation head:
+
+- PNG structural validation: **passed**
+- Gradle/Java build: **passed**
+- Alpha artifact upload: **passed**
+
+The compile pass confirms the NeoForge 1.21.1 event hooks used for combat/defensive Body Tempering, the new persistent schema, item registrations and command tree are syntactically valid.
+
+Runtime verification remains required for:
+- Affinities paragraph wrapping on the user's display,
+- movement/swimming/climbing/combat training feel and balance,
+- inventory-carried training-weight load behavior,
+- Minor Purification Pill effects,
+- the full `/myriadalpha edit` command tree.
