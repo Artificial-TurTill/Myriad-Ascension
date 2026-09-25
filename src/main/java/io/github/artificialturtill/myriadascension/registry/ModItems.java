@@ -12,6 +12,7 @@ import io.github.artificialturtill.myriadascension.item.TechniqueManualItem;
 import io.github.artificialturtill.myriadascension.item.medicine.AntidotePillItem;
 import io.github.artificialturtill.myriadascension.item.medicine.MedicineItem;
 import io.github.artificialturtill.myriadascension.item.medicine.MedicineProfile;
+import io.github.artificialturtill.myriadascension.item.medicine.PurificationPillItem;
 import io.github.artificialturtill.myriadascension.item.poison.MeridianPoisonItem;
 import io.github.artificialturtill.myriadascension.technique.TechniqueCategory;
 import java.util.LinkedHashMap;
@@ -80,6 +81,18 @@ public final class ModItems {
                     "basic_antidote_pill",
                     AntidotePillItem::new,
                     new Item.Properties().stacksTo(16));
+
+    public static final Supplier<PurificationPillItem> MINOR_PURIFICATION_PILL =
+            ITEMS.registerItem(
+                    "minor_purification_pill",
+                    PurificationPillItem::new,
+                    new Item.Properties().stacksTo(16));
+
+    public static final Supplier<Item> BASIC_TRAINING_WEIGHT =
+            ITEMS.registerItem(
+                    "basic_training_weight",
+                    Item::new,
+                    new Item.Properties().stacksTo(4));
 
     public static final Supplier<MeridianPoisonItem> CRUDE_MERIDIAN_POISON =
             ITEMS.registerItem(
@@ -202,6 +215,7 @@ public final class ModItems {
             event.accept(MINOR_BODY_MENDING_PILL.get());
             event.accept(MERIDIAN_SOOTHING_PILL.get());
             event.accept(BASIC_ANTIDOTE_PILL.get());
+            event.accept(MINOR_PURIFICATION_PILL.get());
         }
 
         if (event.getTabKey() == CreativeModeTabs.COMBAT) {
@@ -217,6 +231,7 @@ public final class ModItems {
         if (event.getTabKey() == CreativeModeTabs.TOOLS_AND_UTILITIES) {
             event.accept(MINOR_STORAGE_BAG.get());
             event.accept(INSTRUCTION_TO_THE_MARTIAL_WORLD.get());
+            event.accept(BASIC_TRAINING_WEIGHT.get());
             for (Supplier<TechniqueManualItem> manual : TECHNIQUE_MANUALS.values()) {
                 event.accept(manual.get());
             }
