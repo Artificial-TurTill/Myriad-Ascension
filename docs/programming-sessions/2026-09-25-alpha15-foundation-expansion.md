@@ -121,3 +121,15 @@ Runtime verification remains required for:
 - inventory-carried training-weight load behavior,
 - Minor Purification Pill effects,
 - the full `/myriadalpha edit` command tree.
+
+## Controlled impact follow-up
+
+After the first successful compile, the Body Tempering activity set was completed with an explicit controlled falling/impact path:
+
+- added a dedicated `FALLING_IMPACT` adaptation channel,
+- added a `LivingFallEvent` hook,
+- falls beyond the ordinary safe threshold can develop Toughness and Stability,
+- fall stimulus scales with excess distance and then diminishes through adaptation,
+- this remains subject to Training Fatigue and the same multi-vector stage requirements.
+
+The follow-up compile/CI run also passed before release finalization.
