@@ -259,6 +259,29 @@ public final class BodyTemperingRules {
                 difficulty);
     }
 
+    public static void trainFallingImpact(CultivatorData data, double fallDistance) {
+        double excess = Math.max(0.0D, fallDistance - 3.0D);
+        if (excess <= 0.0D) {
+            return;
+        }
+
+        double stimulus = Math.min(0.65D, excess * 0.045D);
+        double difficulty = Math.min(2.5D, 0.6D + excess / 6.0D);
+
+        applyStimulus(
+                data,
+                TrainingActivity.FALLING_IMPACT,
+                BodyTemperingVector.TOUGHNESS,
+                stimulus,
+                difficulty);
+        applyStimulus(
+                data,
+                TrainingActivity.FALLING_IMPACT,
+                BodyTemperingVector.STABILITY,
+                stimulus * 0.65D,
+                difficulty);
+    }
+
     public static void trainRecovery(CultivatorData data) {
         applyStimulus(
                 data,
