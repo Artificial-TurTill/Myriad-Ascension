@@ -46,15 +46,16 @@ public final class ClientCultivatorHud {
         }
 
         CultivatorSyncPayload data = ClientCultivatorState.snapshot();
+        if (data == null || !data.realm().isCultivatorRealm()) {
+            return;
+        }
 
         double health = Math.max(0.0D, minecraft.player.getHealth());
         double maxHealth = Math.max(1.0D, minecraft.player.getMaxHealth());
 
-        double qi = data == null ? 0.0D : Math.max(0.0D, data.currentQi());
-        double maxQi = data == null ? 0.0D : Math.max(0.0D, data.maximumQi());
-        double power = data == null
-                ? 0.0D
-                : Math.max(0.0D, Math.min(100.0D, data.circulationPercent()));
+        double qi = Math.max(0.0D, data.currentQi());
+        double maxQi = Math.max(0.0D, data.maximumQi());
+        double power = Math.max(0.0D, Math.min(100.0D, data.circulationPercent()));
 
         graphics.blit(
                 HUD_TEXTURE,
@@ -90,7 +91,7 @@ public final class ClientCultivatorHud {
                 decimal(qi) + " / " + decimal(maxQi));
 
         y += BAR_HEIGHT + GAP;
-        String burstSuffix = data != null && data.burstMode() ? "  BURST" : "";
+        String burstSuffix = data.burstMode() ? "  BURST" : "";
         drawBar(
                 graphics,
                 y,
