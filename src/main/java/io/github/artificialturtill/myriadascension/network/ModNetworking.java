@@ -8,6 +8,8 @@ import io.github.artificialturtill.myriadascension.cultivation.realm.RealmMilest
 import io.github.artificialturtill.myriadascension.training.BodyTemperingRules;
 import io.github.artificialturtill.myriadascension.training.TestudoTrainingRules;
 import io.github.artificialturtill.myriadascension.registry.ModItems;
+import io.github.artificialturtill.myriadascension.technique.TechniqueCategory;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
@@ -15,7 +17,7 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 
 public final class ModNetworking {
-    public static final String NETWORK_VERSION = "7";
+    public static final String NETWORK_VERSION = "8";
 
     private ModNetworking() {
     }
@@ -37,6 +39,16 @@ public final class ModNetworking {
                 TrainingControlPayload.STREAM_CODEC,
                 ModNetworking::handleTrainingControl);
 
+        registrar.playToServer(
+                QuickMenuRequestPayload.TYPE,
+                QuickMenuRequestPayload.STREAM_CODEC,
+                ModNetworking::handleQuickMenuRequest);
+
+        registrar.playToServer(
+                QuickMenuActionPayload.TYPE,
+                QuickMenuActionPayload.STREAM_CODEC,
+                ModNetworking::handleQuickMenuAction);
+
         registrar.playToClient(
                 OpenGenesisPayload.TYPE,
                 OpenGenesisPayload.STREAM_CODEC,
@@ -56,6 +68,98 @@ public final class ModNetworking {
                 OpenMartialGuidePayload.TYPE,
                 OpenMartialGuidePayload.STREAM_CODEC,
                 ClientPayloadBridge::handleOpenMartialGuide);
+
+        registrar.playToClient(
+                QuickMenuSnapshotPayload.TYPE,
+                QuickMenuSnapshotPayload.STREAM_CODEC,
+                ClientPayloadBridge::handleQuickMenuSnapshot);
+    }
+
+    private static void handleQuickMenuRequest(
+            QuickMenuRequestPayload payload,
+            IPayloadContext context) {
+
+        if (!(context.player() instanceof ServerPlayer player)) {
+            return;
+        }
+
+        CultivatorData data = player.getData(ModAttachments.CULTIVATOR_DATA);
+        context.reply(QuickMenuSnapshotPayload.from(data));
+    }
+
+    private static void handleQuickMenuAction(
+            QuickMenuActionPayload payload,
+            IPayloadContext context) {
+
+        if (!(context.player() instanceof ServerPlayer player)) {
+            return;
+        }
+
+        CultivatorData data = player.getData(ModAttachments.CULTIVATOR_DATA);
+        int direction = payload.direction() < 0 ? -1 : 1;
+
+        switch (payload.action()) {
+            case CYCLE_METHOD -> {
+                QuickMenuSnapshotPayload snapshot = QuickMenuSnapshotPayload.from(data);
+                String next = cycleValue(
+                        snapshot.knownMethods(),
+                        data.cultivationMethods().activeMethodId(),
+                        direction);
+
+                if (next.isBlank()) {
+                    data.cultivationMethods().clearActive();
+                } else {
+                    ResourceLocation id = ResourceLocation.tryParse(next);
+                    if (id != null) {
+                        data.cultivationMethods().setActive(id);
+                    }
+                }
+            }
+            case CYCLE_TECHNIQUE -> {
+                TechniqueCategory category = payload.category();
+                if (category != null) {
+                    QuickMenuSnapshotPayload snapshot = QuickMenuSnapshotPayload.from(data);
+                    String next = cycleValue(
+                            snapshot.techniques(category),
+                            data.techniqueLoadout().equippedId(category),
+                            direction);
+
+                    if (next.isBlank()) {
+                        data.techniqueLoadout().clear(category);
+                    } else {
+                        ResourceLocation id = ResourceLocation.tryParse(next);
+                        if (id != null) {
+                            data.techniqueLoadout().equip(category, id);
+                        }
+                    }
+                }
+            }
+            case TOGGLE_RESOURCE_SCANNING -> data.toggleResourceScanning();
+            case TOGGLE_CULTIVATION_GAUGE -> data.toggleCultivationGauge();
+            case TOGGLE_LOOSE_WEIGHTS -> data.toggleLooseTrainingWeights();
+        }
+
+        syncPlayer(player, data);
+        context.reply(QuickMenuSnapshotPayload.from(data));
+    }
+
+    private static String cycleValue(
+            java.util.List<String> values,
+            String current,
+            int direction) {
+
+        if (values == null || values.isEmpty()) {
+            return current == null ? "" : current;
+        }
+
+        String safeCurrent = current == null ? "" : current;
+        int index = values.indexOf(safeCurrent);
+        if (index < 0) {
+            index = 0;
+        }
+
+        int next = Math.floorMod(index + (direction < 0 ? -1 : 1), values.size());
+        return values.get(next);
     }
 
     private static void handleSubmitGenesis(SubmitGenesisPayload payload, IPayloadContext context) {
