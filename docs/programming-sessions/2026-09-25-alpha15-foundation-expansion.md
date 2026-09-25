@@ -133,3 +133,11 @@ After the first successful compile, the Body Tempering activity set was complete
 - this remains subject to Training Fatigue and the same multi-vector stage requirements.
 
 The follow-up compile/CI run also passed before release finalization.
+
+## Post-merge command parser audit
+
+Before handing Alpha 15 to runtime testing, the new editor command examples were checked against Brigadier parsing. Namespaced Minecraft resource IDs contain a colon (for example `myriad_ascension:test_blade_art`), which is not accepted by Brigadier's unquoted `word()` parser.
+
+The technique/method ID arguments were changed to a greedy string argument and still validated through `ResourceLocation.tryParse(...)`. This allows ordinary namespaced IDs exactly as documented while still rejecting invalid resource locations.
+
+A replacement Alpha 15 artifact will be built from the corrected release head.
