@@ -1,4 +1,4 @@
-# Myriad Ascension — Alpha 0.1.0-alpha.15
+# Myriad Ascension — Alpha 0.1.0-alpha.16
 
 This is an early systems alpha for Minecraft 1.21.1 / NeoForge.
 
@@ -493,7 +493,7 @@ This separates normal progression from future sacrifice mechanics instead of all
 
 ### Body Tempering state
 
-Player data schema is now version 12 and persists a dedicated Body Tempering state.
+Player data schema is now version 14 and persists a dedicated Body Tempering state.
 
 Tracked development vectors:
 
@@ -539,7 +539,7 @@ The early Testudo path now accepts multiple physical training sources rather tha
 - Controlled falls/impacts above the ordinary safe threshold develop toughness and stability, with their own adaptation memory.
 - Rest/recovery develops the Recovery vector while Training Fatigue falls.
 - Tempered Body 4-6 continues physical training while G adds deliberate World Energy perception training.
-- Tempered Body 7-9 continues physical training while natural Yuan Qi absorption develops the vessel.
+- Tempered Body 7-9 continues physical training while deliberate G gathering develops the vessel.
 
 Kills themselves grant no cultivation reward.
 
@@ -551,9 +551,9 @@ Added:
 
 `myriad_ascension:basic_training_weight`
 
-The alpha implementation treats weights carried in the player inventory as deliberate training load. Multiple weights increase load. As Strength and physical foundation rise, the same load provides less relative challenge.
+Loose Basic Training Weights now contribute load only after the player deliberately secures them by right-clicking the item. Multiple secured weights increase load. As Strength and physical foundation rise, the same load provides less relative challenge.
 
-This is the initial runtime foundation for the later Curios/equipment implementation.
+Wearable training-weight gear now uses normal armor equipment slots and contributes training load while worn.
 
 ### Minor Purification Pill
 
@@ -606,6 +606,84 @@ Examples:
 
 `/myriadalpha edit training status`
 
+
+
+## Alpha.16 — weights, conscious gathering, and the X quick menu
+
+### Dedicated creative inventory tab
+
+All Myriad Ascension items are now exposed through a dedicated **Myriad Ascension** creative-mode tab. The mod no longer injects its items into vanilla Food, Combat, or Tools tabs.
+
+### Deliberate and wearable training weights
+
+- Right-click `basic_training_weight` to secure/release loose inventory weights.
+- Loose weights add load only while secured.
+- `training_weight_vest` adds 25 training load while worn.
+- `training_weight_leggings` adds 18 training load while worn.
+- `training_ankle_weights` adds 12 training load while worn.
+- Wearable weights grant zero armor protection; they are resistance equipment, not defensive armor.
+
+### Body Tempering remains bodily
+
+From Tempered Body Stage 4 onward, progression tracks fresh physical work performed in the current stage in addition to cumulative physical development.
+
+Stages 4-6 therefore require:
+- continued active bodily tempering,
+- fresh physical work in the current stage,
+- World Energy perception development.
+
+Stages 7-9 also retain fresh physical work requirements while vessel development becomes increasingly important.
+
+### Stage 7-9 conscious Qi gathering
+
+The old passive late-Tempered-Body refill has been removed.
+
+At Tempered Body Stages 7-9:
+- the vessel has Yuan Qi storage capacity,
+- holding **G** consciously gathers Qi into that vessel,
+- gathering is deliberately slow and affected by environment and fatigue,
+- successful storage develops the vessel,
+- circulation, Burst, and actual Qi spending remain locked.
+
+Accumulating Qi before Initial Element is therefore a feat rather than passive background regeneration.
+
+### Initial Element true circulation
+
+At Initial Element and above, **G**:
+- actively recharges the reserve,
+- can recharge from an empty reserve,
+- raises internal circulation,
+- recharges substantially faster than Tempered Body storage,
+- benefits from Meditation level in the current prototype tuning.
+
+### X cultivation quick menu
+
+Holding **X** requests and opens a translucent 3x3 in-world quick menu. The world remains visible and the game is not paused.
+
+Current controls:
+- Cultivation Method
+- Cultivation Technique
+- Weapon Technique
+- Footwork Technique
+- Eyesight Technique
+- Element / Yin-Yang Scan toggle
+- Cultivation Gauge toggle
+- Loose Training Weights toggle
+- central MORE/future-controls cell
+
+Interaction:
+- hover a cell and release X to activate/cycle it,
+- left click cycles forward/toggles,
+- right click cycles backward,
+- method and technique changes are server-authoritative.
+
+The Resource Scan and Cultivation Gauge switches are persistent foundations for future detection/rendering systems; Alpha.16 does not yet highlight resources or reveal target cultivation levels.
+
+### Data/network
+
+- player-data schema: **14**
+- network protocol: **8**
+
 ## Known limitations
 
 - no generated clan compound yet
@@ -614,16 +692,16 @@ Examples:
 - no physical manual/library items yet
 - no seated calm-cultivation runtime yet
 - environmental Current Attunement growth is designed and documented but still lacks a full runtime loop
-- no final Tempered Body stat/progression tuning; Stage 7-9 Yuan Qi capacities/rates are provisional alpha values
+- no final Tempered Body stat/progression tuning; Stage 7-9 conscious-gathering capacities/rates are provisional alpha values
 - no passive Qi-regeneration runtime yet
 - no final Qi-drain/Burst curves
 - no weapon-infusion runtime yet
+- resource scanning and cultivation-gauge toggles persist, but their actual detection/rendering systems are not implemented yet
 - no final spirit-beast/world-Qi/formation/alchemy/profession content
 - final art/audio is not supplied yet; current textures and UI art are editable local placeholder PNGs validated structurally by CI
 - V is functional and texture-backed; alpha.13 repairs the invalid panel PNG while final artwork and spacing can still be iterated
-- X is reserved but not implemented
 - alpha commands intentionally bypass future gameplay requirements
 
 ## Save compatibility
 
-This build writes player-data schema version 12. Future alpha builds will attempt migrations, but backups are recommended because this is pre-release software.
+This build writes player-data schema version 14. Future alpha builds will attempt migrations, but backups are recommended because this is pre-release software.

@@ -16,15 +16,15 @@ public final class TestudoTrainingRules {
     public static final double MAX_FATIGUE = 100.0D;
     public static final int FOCUS_PULSE_GRACE_TICKS = 8;
 
-    // Provisional alpha values for the naturally forming Yuan Qi reserve.
-    // The reserve exists at Tempered Body 7-9 but remains sealed from active use.
+    // Provisional alpha values for the pre-Initial-Element Yuan Qi vessel.
+    // Tempered Body 7-9 can store Qi only through deliberate G gathering.
     public static final double STAGE_7_YUAN_QI_CAPACITY = 25.0D;
     public static final double STAGE_8_YUAN_QI_CAPACITY = 50.0D;
     public static final double STAGE_9_YUAN_QI_CAPACITY = 75.0D;
 
-    private static final double STAGE_7_NATURAL_YUAN_QI_PER_TICK = 0.0015D;
-    private static final double STAGE_8_NATURAL_YUAN_QI_PER_TICK = 0.0020D;
-    private static final double STAGE_9_NATURAL_YUAN_QI_PER_TICK = 0.0025D;
+    private static final double STAGE_7_CONSCIOUS_YUAN_QI_PER_PULSE = 0.015D;
+    private static final double STAGE_8_CONSCIOUS_YUAN_QI_PER_PULSE = 0.025D;
+    private static final double STAGE_9_CONSCIOUS_YUAN_QI_PER_PULSE = 0.040D;
 
     private static final double MAX_HORIZONTAL_SPEED_SQUARED = 0.0009D;
 
@@ -70,7 +70,7 @@ public final class TestudoTrainingRules {
                 && gameTime - pulse <= FOCUS_PULSE_GRACE_TICKS;
     }
 
-    public static double naturalYuanQiCapacity(int stage) {
+    public static double temperedYuanQiCapacity(int stage) {
         return switch (Math.max(1, Math.min(9, stage))) {
             case 7 -> STAGE_7_YUAN_QI_CAPACITY;
             case 8 -> STAGE_8_YUAN_QI_CAPACITY;
@@ -79,11 +79,11 @@ public final class TestudoTrainingRules {
         };
     }
 
-    public static double naturalYuanQiPerTick(int stage) {
+    public static double consciousYuanQiPerPulse(int stage) {
         return switch (Math.max(1, Math.min(9, stage))) {
-            case 7 -> STAGE_7_NATURAL_YUAN_QI_PER_TICK;
-            case 8 -> STAGE_8_NATURAL_YUAN_QI_PER_TICK;
-            case 9 -> STAGE_9_NATURAL_YUAN_QI_PER_TICK;
+            case 7 -> STAGE_7_CONSCIOUS_YUAN_QI_PER_PULSE;
+            case 8 -> STAGE_8_CONSCIOUS_YUAN_QI_PER_PULSE;
+            case 9 -> STAGE_9_CONSCIOUS_YUAN_QI_PER_PULSE;
             default -> 0.0D;
         };
     }
@@ -96,7 +96,7 @@ public final class TestudoTrainingRules {
         return switch (TemperedBodyRules.bandForStage(data.minorStage())) {
             case BODY_STRENGTHENING -> "Physical Foundation";
             case ENERGY_SENSING -> "World-Energy Perception";
-            case NATURAL_GATHERING -> "Natural-Gathering Consolidation";
+            case CONSCIOUS_GATHERING -> "Conscious Vessel Gathering";
         };
     }
 

@@ -22,7 +22,7 @@ The goal is not to reproduce any one existing setting. Myriad Ascension uses ori
 
 | Key | Function |
 | --- | --- |
-| **G** | Tempered Body 4-6: focus perception; Initial Element+: raise conscious circulation |
+| **G** | Tempered Body 4-6: focus perception; Tempered Body 7-9: consciously gather/store Qi; Initial Element+: recharge and circulate Qi |
 | **H** | Suppress/lower normal Qi circulation |
 | **R** | Toggle Burst overdrive |
 | **X** | Open compact cultivation quick menu |
@@ -32,9 +32,9 @@ Keybinds will be configurable.
 
 ## Core Combat Concept
 
-A cultivator can eventually develop a stored Qi reserve and an **active output level**. Tempered Body Stages 7-9 may already contain naturally formed Yuan Qi, but conscious circulation and active output remain locked until Initial Element. Higher active output then increases physical enhancement, movement, technique performance, spiritual pressure, weapon infusion, and other effects, but drains Qi faster and increases strain.
+A cultivator can eventually develop a stored Qi reserve and an **active output level**. Tempered Body Stages 7-9 can consciously gather Yuan Qi into the vessel, but true internal circulation and active output remain locked until Initial Element. Higher active output then increases physical enhancement, movement, technique performance, spiritual pressure, weapon infusion, and other effects, but drains Qi faster and increases strain.
 
-The **X quick menu** will control how active Qi is applied, such as:
+The **X quick menu** is now a translucent in-world control overlay for cultivation methods, technique slots, training weights, and expandable cultivation utilities. Future active-Qi allocation controls can also live there, such as:
 
 - Body reinforcement
 - Movement

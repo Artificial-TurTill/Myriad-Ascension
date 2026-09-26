@@ -542,8 +542,8 @@ Source anchor:
 
 - Stages 1–3 strengthen the body
 - Stages 4–6 unlock increasing World Energy sense
-- Stages 7–9 naturally gather World Energy and generate Yuan Qi
-- ordinary cultivators at 7–9 cannot consciously accelerate absorption/restoration
+- Stages 7–9 consciously gather World Energy with G and store Yuan Qi in the prepared vessel
+- this pre-Initial-Element storage is deliberately difficult and still does not grant true internal circulation/use
 
 ## Stage 1 — Initial Tempering
 
@@ -628,7 +628,7 @@ Important:
 
 - reserve exists
 - active technique use remains locked
-- G does not accelerate normal absorption
+- G consciously gathers into the vessel, but does not grant true circulation
 - Power % remains locked
 
 Environment now strongly matters.
@@ -638,7 +638,7 @@ Environment now strongly matters.
 Unlocks:
 
 - larger Yuan Qi reserve
-- stronger natural refill
+- stronger conscious gathering/storage ability
 - better internal stability
 - preparation for deliberate circulation
 
@@ -680,7 +680,7 @@ The HUD now shows:
 
 Controls:
 
-- G: consciously circulate/mobilize Yuan Qi
+- G: actively recharge and consciously circulate/mobilize Yuan Qi
 - H: suppress circulation
 - R: Burst if unlocked/safe
 

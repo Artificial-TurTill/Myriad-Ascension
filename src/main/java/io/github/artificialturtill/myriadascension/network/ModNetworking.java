@@ -6,6 +6,12 @@ import io.github.artificialturtill.myriadascension.cultivation.qi.QiRules;
 import io.github.artificialturtill.myriadascension.cultivation.realm.CultivationRealm;
 import io.github.artificialturtill.myriadascension.cultivation.realm.RealmMilestoneRules;
 import io.github.artificialturtill.myriadascension.registry.ModItems;
+import io.github.artificialturtill.myriadascension.training.BodyTemperingRules;
+import io.github.artificialturtill.myriadascension.training.TestudoTrainingRules;
+import io.github.artificialturtill.myriadascension.technique.TechniqueCategory;
+import java.util.ArrayList;
+import java.util.List;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
@@ -13,7 +19,7 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 
 public final class ModNetworking {
-    public static final String NETWORK_VERSION = "7";
+    public static final String NETWORK_VERSION = "8";
 
     private ModNetworking() {
     }
@@ -35,6 +41,16 @@ public final class ModNetworking {
                 TrainingControlPayload.STREAM_CODEC,
                 ModNetworking::handleTrainingControl);
 
+        registrar.playToServer(
+                QuickMenuRequestPayload.TYPE,
+                QuickMenuRequestPayload.STREAM_CODEC,
+                ModNetworking::handleQuickMenuRequest);
+
+        registrar.playToServer(
+                QuickMenuActionPayload.TYPE,
+                QuickMenuActionPayload.STREAM_CODEC,
+                ModNetworking::handleQuickMenuAction);
+
         registrar.playToClient(
                 OpenGenesisPayload.TYPE,
                 OpenGenesisPayload.STREAM_CODEC,
@@ -54,6 +70,129 @@ public final class ModNetworking {
                 OpenMartialGuidePayload.TYPE,
                 OpenMartialGuidePayload.STREAM_CODEC,
                 ClientPayloadBridge::handleOpenMartialGuide);
+
+        registrar.playToClient(
+                QuickMenuSnapshotPayload.TYPE,
+                QuickMenuSnapshotPayload.STREAM_CODEC,
+                ClientPayloadBridge::handleQuickMenuSnapshot);
+    }
+
+    private static void handleQuickMenuRequest(
+            QuickMenuRequestPayload payload,
+            IPayloadContext context) {
+
+        if (!(context.player() instanceof ServerPlayer player)) {
+            return;
+        }
+
+        CultivatorData data = player.getData(ModAttachments.CULTIVATOR_DATA);
+        context.reply(QuickMenuSnapshotPayload.from(data));
+    }
+
+    private static void handleQuickMenuAction(
+            QuickMenuActionPayload payload,
+            IPayloadContext context) {
+
+        if (!(context.player() instanceof ServerPlayer player)) {
+            return;
+        }
+
+        CultivatorData data = player.getData(ModAttachments.CULTIVATOR_DATA);
+        int direction = payload.direction() < 0 ? -1 : 1;
+
+        switch (payload.action()) {
+            case CYCLE_METHOD -> cycleMethod(data, direction);
+            case CYCLE_TECHNIQUE -> {
+                if (payload.category() != null) {
+                    cycleTechnique(data, payload.category(), direction);
+                }
+            }
+            case TOGGLE_RESOURCE_SCANNING ->
+                    data.setResourceScanningEnabled(!data.resourceScanningEnabled());
+            case TOGGLE_CULTIVATION_GAUGE ->
+                    data.setCultivationGaugeEnabled(!data.cultivationGaugeEnabled());
+            case TOGGLE_LOOSE_WEIGHTS ->
+                    data.setLooseTrainingWeightsEnabled(!data.looseTrainingWeightsEnabled());
+        }
+
+        syncPlayer(player, data);
+        context.reply(QuickMenuSnapshotPayload.from(data));
+    }
+
+    private static void cycleMethod(CultivatorData data, int direction) {
+        List<String> choices = new ArrayList<>();
+        choices.add("");
+        choices.addAll(data.cultivationMethods().knownMethods());
+
+        String next = cycleValue(
+                choices,
+                data.cultivationMethods().activeMethodId(),
+                direction);
+
+        if (next.isBlank()) {
+            data.cultivationMethods().clearActive();
+            return;
+        }
+
+        ResourceLocation id = ResourceLocation.tryParse(next);
+        if (id != null) {
+            data.cultivationMethods().setActive(id);
+        }
+    }
+
+    private static void cycleTechnique(
+            CultivatorData data,
+            TechniqueCategory category,
+            int direction) {
+
+        List<String> choices = new ArrayList<>();
+        choices.add("");
+
+        for (String raw : data.techniqueKnowledge().view()) {
+            ResourceLocation id = ResourceLocation.tryParse(raw);
+            if (id == null) {
+                continue;
+            }
+
+            var manual = ModItems.manualFor(id);
+            if (manual != null && manual.get().category() == category) {
+                choices.add(raw);
+            }
+        }
+
+        String current = data.techniqueLoadout().equippedId(category);
+        if (!current.isBlank() && !choices.contains(current)) {
+            choices.add(current);
+        }
+
+        String next = cycleValue(choices, current, direction);
+        if (next.isBlank()) {
+            data.techniqueLoadout().clear(category);
+            return;
+        }
+
+        ResourceLocation id = ResourceLocation.tryParse(next);
+        if (id != null) {
+            data.techniqueLoadout().equip(category, id);
+        }
+    }
+
+    private static String cycleValue(
+            List<String> values,
+            String current,
+            int direction) {
+
+        if (values.isEmpty()) {
+            return current == null ? "" : current;
+        }
+
+        String safeCurrent = current == null ? "" : current;
+        int index = values.indexOf(safeCurrent);
+        if (index < 0) {
+            index = 0;
+        }
+
+        return values.get(Math.floorMod(index + direction, values.size()));
     }
 
     private static void handleSubmitGenesis(SubmitGenesisPayload payload, IPayloadContext context) {
@@ -126,14 +265,48 @@ public final class ModNetworking {
             return;
         }
 
-        // Conscious Qi circulation begins at Initial Element. Tempered Body 7-9
-        // may contain naturally formed Yuan Qi, but the player cannot mobilize it.
-        if (!RealmMilestoneRules.canActivelyUseQi(data.realm())
-                || data.maximumQi() <= 0.0D
-                || data.currentQi() <= 0.0D) {
+        // Tempered Body 7-9: G consciously gathers Qi into the vessel.
+        // It is storage only; circulation and active use remain locked.
+        if (data.realm() == CultivationRealm.TEMPERED_BODY
+                && data.minorStage() >= 7
+                && data.minorStage() <= 9) {
+
+            double capacity = TestudoTrainingRules.temperedYuanQiCapacity(data.minorStage());
+            if (data.maximumQi() < capacity) {
+                data.setMaximumQi(capacity);
+            }
+
+            double environment = BodyTemperingRules.testudoEnvironmentMultiplier(player, data);
+            double gathered = TestudoTrainingRules.consciousYuanQiPerPulse(data.minorStage())
+                    * environment
+                    * TestudoTrainingRules.fatigueEfficiency(data);
+
+            double before = data.currentQi();
+            data.setCurrentQi(before + gathered);
+            data.setCirculationPercent(0.0D);
+            data.setBurstMode(false);
+
+            double actuallyStored = Math.max(0.0D, data.currentQi() - before);
+            if (actuallyStored > 0.0D) {
+                BodyTemperingRules.trainNaturalAbsorption(data, actuallyStored, environment);
+            }
+
+            syncPlayer(player, data);
             return;
         }
 
+        // Initial Element+ is true internal Qi control. G both actively
+        // replenishes the reserve and raises internal circulation.
+        if (!RealmMilestoneRules.canActivelyUseQi(data.realm())
+                || data.maximumQi() <= 0.0D) {
+            return;
+        }
+
+        data.setCurrentQi(
+                data.currentQi()
+                        + QiRules.activeGatherPerControlPulse(
+                                data.maximumQi(),
+                                data.meditationLevel()));
         data.increaseCirculation(QiRules.CIRCULATION_PERCENT_PER_CONTROL_PULSE);
         syncPlayer(player, data);
     }

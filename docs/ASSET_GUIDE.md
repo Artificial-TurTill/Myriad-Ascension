@@ -334,3 +334,16 @@ Their corresponding item models are:
 - `models/item/basic_training_weight.json`
 
 The supplied alpha artwork is intentionally simple placeholder art. It can be replaced directly without Java changes as long as the PNG remains structurally valid.
+
+
+## Alpha.16 wearable training-weight assets
+
+Editable local assets added for the new resistance equipment:
+
+- `textures/item/training_weight_vest.png`
+- `textures/item/training_weight_leggings.png`
+- `textures/item/training_ankle_weights.png`
+- `textures/models/armor/training_weight_layer_1.png`
+- `textures/models/armor/training_weight_layer_2.png`
+
+Their item-model JSON files live under `models/item/`. These are deliberately simple placeholder assets and can be replaced independently without touching Java code.

@@ -445,14 +445,14 @@ Cannot:
 
 Can:
 
-- naturally absorb World Energy
-- begin producing **Yuan Qi**
+- consciously gather World Energy with G
+- begin storing **Yuan Qi**
 - form a functional early dantian reservoir
-- circulate Yuan Qi naturally through prepared meridians
+- continue physically tempering the body while developing the vessel
 
 Cannot:
 
-- deliberately increase normal absorption with G
+- truly circulate Yuan Qi internally
 - consciously spend Yuan Qi
 - activate Power %
 - use Qi techniques
@@ -461,7 +461,7 @@ Cannot:
 
 Can:
 
-- naturally maintain a larger Yuan Qi reserve
+- consciously accumulate a larger Yuan Qi reserve
 - develop stronger meridian/dantian preparation
 - benefit strongly from rich environments and gathering formations
 
@@ -486,7 +486,7 @@ Cannot:
 
 # 9. Initial Element — 9 Stages
 
-This realm unlocks **conscious Yuan Qi use**, but not free external projection.
+This realm unlocks **true internal Yuan Qi circulation/use and substantially easier active recharging**, but not free external projection.
 
 ## Stage 1 — 6.0
 

@@ -26,7 +26,7 @@ import net.minecraft.util.RandomSource;
 import net.neoforged.neoforge.common.util.INBTSerializable;
 
 public final class CultivatorData implements INBTSerializable<CompoundTag> {
-    public static final int SCHEMA_VERSION = 12;
+    public static final int SCHEMA_VERSION = 14;
 
     private int schemaVersion = SCHEMA_VERSION;
 
@@ -76,6 +76,13 @@ public final class CultivatorData implements INBTSerializable<CompoundTag> {
 
     // Training fatigue persists so relogging cannot be used as instant recovery.
     private double trainingFatigue;
+
+    // Whether loose Basic Training Weight items are deliberately secured.
+    private boolean looseTrainingWeightsEnabled;
+
+    // Quick-menu utility switches. The scanning/gauging renderers come later.
+    private boolean resourceScanningEnabled;
+    private boolean cultivationGaugeEnabled;
 
     // Runtime-only training state.
     private boolean trainingRequested;
@@ -233,11 +240,18 @@ public final class CultivatorData implements INBTSerializable<CompoundTag> {
     }
 
     public void setRealm(CultivationRealm realm) {
-        this.realm = realm == null ? CultivationRealm.MORTAL : realm;
+        CultivationRealm nextRealm = realm == null ? CultivationRealm.MORTAL : realm;
+        boolean changed = this.realm != nextRealm;
+        this.realm = nextRealm;
+
         if (this.realm == CultivationRealm.MORTAL) {
             minorStage = 0;
         } else {
             minorStage = Math.max(1, Math.min(minorStage, this.realm.defaultMinorStages()));
+        }
+
+        if (changed) {
+            bodyTempering.resetStagePhysicalWork();
         }
     }
 
@@ -246,12 +260,14 @@ public final class CultivatorData implements INBTSerializable<CompoundTag> {
     }
 
     public void setMinorStage(int minorStage) {
-        if (realm == CultivationRealm.MORTAL) {
-            this.minorStage = 0;
-            return;
-        }
+        int nextStage = realm == CultivationRealm.MORTAL
+                ? 0
+                : Math.max(1, Math.min(realm.defaultMinorStages(), minorStage));
 
-        this.minorStage = Math.max(1, Math.min(realm.defaultMinorStages(), minorStage));
+        if (this.minorStage != nextStage) {
+            this.minorStage = nextStage;
+            bodyTempering.resetStagePhysicalWork();
+        }
     }
 
     public double cultivationProgress() {
@@ -435,6 +451,30 @@ public final class CultivatorData implements INBTSerializable<CompoundTag> {
         this.trainingFatigue = clamp(trainingFatigue, 0.0D, 100.0D);
     }
 
+    public boolean looseTrainingWeightsEnabled() {
+        return looseTrainingWeightsEnabled;
+    }
+
+    public void setLooseTrainingWeightsEnabled(boolean enabled) {
+        looseTrainingWeightsEnabled = enabled;
+    }
+
+    public boolean resourceScanningEnabled() {
+        return resourceScanningEnabled;
+    }
+
+    public void setResourceScanningEnabled(boolean enabled) {
+        resourceScanningEnabled = enabled;
+    }
+
+    public boolean cultivationGaugeEnabled() {
+        return cultivationGaugeEnabled;
+    }
+
+    public void setCultivationGaugeEnabled(boolean enabled) {
+        cultivationGaugeEnabled = enabled;
+    }
+
     public boolean trainingRequested() {
         return trainingRequested;
     }
@@ -546,6 +586,9 @@ public final class CultivatorData implements INBTSerializable<CompoundTag> {
         meditationLevel = other.meditationLevel;
         qiConcealmentLevel = other.qiConcealmentLevel;
         trainingFatigue = other.trainingFatigue;
+        looseTrainingWeightsEnabled = other.looseTrainingWeightsEnabled;
+        resourceScanningEnabled = other.resourceScanningEnabled;
+        cultivationGaugeEnabled = other.cultivationGaugeEnabled;
 
         trainingRequested = false;
         trainingSessionTicks = 0;
@@ -600,6 +643,9 @@ public final class CultivatorData implements INBTSerializable<CompoundTag> {
         tag.putInt("MeditationLevel", meditationLevel);
         tag.putInt("QiConcealmentLevel", qiConcealmentLevel);
         tag.putDouble("TrainingFatigue", trainingFatigue);
+        tag.putBoolean("LooseTrainingWeightsEnabled", looseTrainingWeightsEnabled);
+        tag.putBoolean("ResourceScanningEnabled", resourceScanningEnabled);
+        tag.putBoolean("CultivationGaugeEnabled", cultivationGaugeEnabled);
 
         return tag;
     }
@@ -715,6 +761,13 @@ public final class CultivatorData implements INBTSerializable<CompoundTag> {
         trainingFatigue = loadedSchemaVersion >= 11
                 ? clamp(tag.getDouble("TrainingFatigue"), 0.0D, 100.0D)
                 : 0.0D;
+
+        looseTrainingWeightsEnabled = loadedSchemaVersion >= 13
+                && tag.getBoolean("LooseTrainingWeightsEnabled");
+        resourceScanningEnabled = loadedSchemaVersion >= 14
+                && tag.getBoolean("ResourceScanningEnabled");
+        cultivationGaugeEnabled = loadedSchemaVersion >= 14
+                && tag.getBoolean("CultivationGaugeEnabled");
 
         trainingRequested = false;
         trainingSessionTicks = 0;

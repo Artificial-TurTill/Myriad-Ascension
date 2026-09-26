@@ -3,6 +3,7 @@ package io.github.artificialturtill.myriadascension.training;
 import io.github.artificialturtill.myriadascension.clan.PrimordialisTestudoClan;
 import io.github.artificialturtill.myriadascension.cultivation.data.CultivatorData;
 import io.github.artificialturtill.myriadascension.cultivation.realm.CultivationRealm;
+import io.github.artificialturtill.myriadascension.item.WearableTrainingWeightItem;
 import io.github.artificialturtill.myriadascension.registry.ModItems;
 import io.github.artificialturtill.myriadascension.stats.CultivatorStat;
 import net.minecraft.server.level.ServerPlayer;
@@ -38,19 +39,31 @@ public final class BodyTemperingRules {
                 || data.realm() == CultivationRealm.TEMPERED_BODY;
     }
 
-    public static double trainingWeightLoad(ServerPlayer player) {
-        if (player == null) {
+    public static double trainingWeightLoad(ServerPlayer player, CultivatorData data) {
+        if (player == null || data == null) {
             return 0.0D;
         }
 
-        int count = 0;
-        for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
-            ItemStack stack = player.getInventory().getItem(i);
-            if (stack.is(ModItems.BASIC_TRAINING_WEIGHT.get())) {
-                count += stack.getCount();
+        double load = 0.0D;
+
+        if (data.looseTrainingWeightsEnabled()) {
+            int count = 0;
+            for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
+                ItemStack stack = player.getInventory().getItem(i);
+                if (stack.is(ModItems.BASIC_TRAINING_WEIGHT.get())) {
+                    count += stack.getCount();
+                }
+            }
+            load += count * TRAINING_WEIGHT_LOAD;
+        }
+
+        for (ItemStack stack : player.getArmorSlots()) {
+            if (stack.getItem() instanceof WearableTrainingWeightItem wearable) {
+                load += wearable.trainingLoad();
             }
         }
-        return count * TRAINING_WEIGHT_LOAD;
+
+        return load;
     }
 
     public static double adaptedLoadCapacity(CultivatorData data) {
@@ -60,7 +73,7 @@ public final class BodyTemperingRules {
     }
 
     public static double effectiveLoadRatio(ServerPlayer player, CultivatorData data) {
-        double load = trainingWeightLoad(player);
+        double load = trainingWeightLoad(player, data);
         if (load <= 0.0D) {
             return 0.0D;
         }
@@ -89,6 +102,9 @@ public final class BodyTemperingRules {
 
         data.bodyTempering().train(vector, effective);
         data.bodyTempering().addAdaptation(activity, baseStimulus * difficulty);
+        if (countsAsActivePhysicalTempering(vector)) {
+            data.bodyTempering().addStagePhysicalWork(effective);
+        }
         improveCoreStats(data, vector, effective);
         return effective;
     }
@@ -349,30 +365,41 @@ public final class BodyTemperingRules {
         double result;
         if (targetStage <= 3) {
             result = physicalFraction;
-        } else if (targetStage <= 6) {
-            double perceptionTarget = (targetStage - 3) * 8.0D;
-            double perceptionFraction = clamp(
-                    data.bodyTempering().development(BodyTemperingVector.WORLD_ENERGY_PERCEPTION)
-                            / perceptionTarget,
-                    0.0D,
-                    1.0D);
-            result = physicalFraction * 0.62D + perceptionFraction * 0.38D;
         } else {
-            double perceptionTarget = 24.0D;
-            double vesselTarget = (targetStage - 6) * 8.0D;
-            double perceptionFraction = clamp(
-                    data.bodyTempering().development(BodyTemperingVector.WORLD_ENERGY_PERCEPTION)
-                            / perceptionTarget,
+            double stagePhysicalTarget = 2.0D + targetStage * 0.40D;
+            double stagePhysicalFraction = clamp(
+                    data.bodyTempering().stagePhysicalWork() / stagePhysicalTarget,
                     0.0D,
                     1.0D);
-            double vesselFraction = clamp(
-                    data.bodyTempering().development(BodyTemperingVector.VESSEL_DEVELOPMENT)
-                            / vesselTarget,
-                    0.0D,
-                    1.0D);
-            result = physicalFraction * 0.48D
-                    + perceptionFraction * 0.20D
-                    + vesselFraction * 0.32D;
+
+            if (targetStage <= 6) {
+                double perceptionTarget = (targetStage - 3) * 8.0D;
+                double perceptionFraction = clamp(
+                        data.bodyTempering().development(BodyTemperingVector.WORLD_ENERGY_PERCEPTION)
+                                / perceptionTarget,
+                        0.0D,
+                        1.0D);
+                result = physicalFraction * 0.42D
+                        + stagePhysicalFraction * 0.28D
+                        + perceptionFraction * 0.30D;
+            } else {
+                double perceptionTarget = 24.0D;
+                double vesselTarget = (targetStage - 6) * 5.0D;
+                double perceptionFraction = clamp(
+                        data.bodyTempering().development(BodyTemperingVector.WORLD_ENERGY_PERCEPTION)
+                                / perceptionTarget,
+                        0.0D,
+                        1.0D);
+                double vesselFraction = clamp(
+                        data.bodyTempering().development(BodyTemperingVector.VESSEL_DEVELOPMENT)
+                                / vesselTarget,
+                        0.0D,
+                        1.0D);
+                result = physicalFraction * 0.30D
+                        + stagePhysicalFraction * 0.20D
+                        + perceptionFraction * 0.10D
+                        + vesselFraction * 0.40D;
+            }
         }
 
         if (!hasPhysicalBreadth(data, physicalTarget)) {
@@ -448,6 +475,15 @@ public final class BodyTemperingRules {
                 && data.bodyTempering().development(BodyTemperingVector.ENDURANCE) >= floor;
 
         return developed >= 4 && testudoCore;
+    }
+
+    private static boolean countsAsActivePhysicalTempering(BodyTemperingVector vector) {
+        return vector == BodyTemperingVector.STRENGTH
+                || vector == BodyTemperingVector.ENDURANCE
+                || vector == BodyTemperingVector.TOUGHNESS
+                || vector == BodyTemperingVector.COORDINATION
+                || vector == BodyTemperingVector.STABILITY
+                || vector == BodyTemperingVector.BREATH_CONTROL;
     }
 
     private static void improveCoreStats(
