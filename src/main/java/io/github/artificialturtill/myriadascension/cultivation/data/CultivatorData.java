@@ -26,7 +26,7 @@ import net.minecraft.util.RandomSource;
 import net.neoforged.neoforge.common.util.INBTSerializable;
 
 public final class CultivatorData implements INBTSerializable<CompoundTag> {
-    public static final int SCHEMA_VERSION = 13;
+    public static final int SCHEMA_VERSION = 14;
 
     private int schemaVersion = SCHEMA_VERSION;
 
@@ -79,6 +79,10 @@ public final class CultivatorData implements INBTSerializable<CompoundTag> {
 
     // Whether loose Basic Training Weight items are deliberately secured.
     private boolean looseTrainingWeightsEnabled;
+
+    // Quick-menu utility switches. The scanning/gauging renderers come later.
+    private boolean resourceScanningEnabled;
+    private boolean cultivationGaugeEnabled;
 
     // Runtime-only training state.
     private boolean trainingRequested;
@@ -455,6 +459,22 @@ public final class CultivatorData implements INBTSerializable<CompoundTag> {
         looseTrainingWeightsEnabled = enabled;
     }
 
+    public boolean resourceScanningEnabled() {
+        return resourceScanningEnabled;
+    }
+
+    public void setResourceScanningEnabled(boolean enabled) {
+        resourceScanningEnabled = enabled;
+    }
+
+    public boolean cultivationGaugeEnabled() {
+        return cultivationGaugeEnabled;
+    }
+
+    public void setCultivationGaugeEnabled(boolean enabled) {
+        cultivationGaugeEnabled = enabled;
+    }
+
     public boolean trainingRequested() {
         return trainingRequested;
     }
@@ -567,6 +587,8 @@ public final class CultivatorData implements INBTSerializable<CompoundTag> {
         qiConcealmentLevel = other.qiConcealmentLevel;
         trainingFatigue = other.trainingFatigue;
         looseTrainingWeightsEnabled = other.looseTrainingWeightsEnabled;
+        resourceScanningEnabled = other.resourceScanningEnabled;
+        cultivationGaugeEnabled = other.cultivationGaugeEnabled;
 
         trainingRequested = false;
         trainingSessionTicks = 0;
@@ -622,6 +644,8 @@ public final class CultivatorData implements INBTSerializable<CompoundTag> {
         tag.putInt("QiConcealmentLevel", qiConcealmentLevel);
         tag.putDouble("TrainingFatigue", trainingFatigue);
         tag.putBoolean("LooseTrainingWeightsEnabled", looseTrainingWeightsEnabled);
+        tag.putBoolean("ResourceScanningEnabled", resourceScanningEnabled);
+        tag.putBoolean("CultivationGaugeEnabled", cultivationGaugeEnabled);
 
         return tag;
     }
@@ -740,6 +764,10 @@ public final class CultivatorData implements INBTSerializable<CompoundTag> {
 
         looseTrainingWeightsEnabled = loadedSchemaVersion >= 13
                 && tag.getBoolean("LooseTrainingWeightsEnabled");
+        resourceScanningEnabled = loadedSchemaVersion >= 14
+                && tag.getBoolean("ResourceScanningEnabled");
+        cultivationGaugeEnabled = loadedSchemaVersion >= 14
+                && tag.getBoolean("CultivationGaugeEnabled");
 
         trainingRequested = false;
         trainingSessionTicks = 0;
