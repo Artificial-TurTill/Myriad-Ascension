@@ -32,3 +32,55 @@ Each phase must compile before the next one is treated as trusted.
 - Storing Qi before Initial Element should feel difficult and exceptional.
 - Initial Element unlocks true internal circulation/use and easier active recharge.
 - X opens a translucent in-world menu for cultivation methods, technique slots and future settings such as elemental/Yin-Yang scanning and cultivation-level gauging.
+
+
+## Phase verification
+
+### Phase 1 — training weights and creative tab
+
+PR build 370 passed:
+- PNG validation: success
+- Java/Gradle build: success
+- artifact upload: success
+
+Verified compile-time integration:
+- deliberate loose training-weight activation
+- zero-protection wearable training weights
+- dedicated Myriad Ascension creative tab
+- removal of vanilla creative-tab injection
+
+### Phase 2 — Body Tempering and Qi progression
+
+The final Phase 2 head passed PR build 373.
+
+Verified compile-time integration:
+- fresh stage-local physical work from Tempered Body Stage 4 onward
+- conscious Stage 7-9 G gathering
+- no passive Stage 7-9 refill
+- no Tempered Body circulation/Burst
+- Initial Element+ active recharge and circulation
+- Meditation-scaled active recharge
+
+Intermediate builds 371 and 372 failed only because the deliberately split atomic batches temporarily referenced the second batch before it landed. The completed Phase 2 head passed cleanly.
+
+### Phase 3 — translucent X menu
+
+PR build 374 passed the new payload classes and translucent screen in isolation.
+PR build 375 passed the fully wired server-authoritative menu.
+
+Verified compile-time integration:
+- quick-menu request/action/snapshot payloads
+- server-side method and technique cycling
+- persisted Resource Scan / Cultivation Gauge switches
+- loose-weight quick toggle
+- hold-X / hover / release-X interaction surface
+- left/right click cycling
+- non-pausing transparent world overlay
+
+### Final integration
+
+Alpha version advanced to 0.1.0-alpha.16.
+Player-data schema: 14.
+Network protocol: 8.
+
+Final PR CI is required after this documentation/version pass before merge.
