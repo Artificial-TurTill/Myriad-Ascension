@@ -43,5 +43,9 @@
   "item.myriad_ascension.instruction_to_the_martial_world": "Instruction to the Martial World",
   "container.myriad_ascension.minor_storage_bag": "Minor Storage Bag",
   "item.myriad_ascension.minor_purification_pill": "Minor Purification Pill",
-  "item.myriad_ascension.basic_training_weight": "Basic Training Weight"
+  "item.myriad_ascension.basic_training_weight": "Basic Training Weight",
+  "itemGroup.myriad_ascension": "Myriad Ascension",
+  "item.myriad_ascension.training_weight_vest": "Training Weight Vest",
+  "item.myriad_ascension.training_weight_leggings": "Training Weight Leggings",
+  "item.myriad_ascension.training_ankle_weights": "Training Ankle Weights"
 }
