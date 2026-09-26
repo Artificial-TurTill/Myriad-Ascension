@@ -32,6 +32,13 @@ public final class ClientQuickMenuPayloadHandler {
 
         if (expectingOpen) {
             expectingOpen = false;
+
+            // If X was only tapped and released before the server snapshot arrived,
+            // do not leave a stale quick menu open after the intended hold gesture.
+            if (!ClientKeyMappings.QUICK_MENU.isDown()) {
+                return;
+            }
+
             minecraft.setScreen(new CultivationQuickMenuScreen(payload));
         }
     }
