@@ -236,11 +236,18 @@ public final class CultivatorData implements INBTSerializable<CompoundTag> {
     }
 
     public void setRealm(CultivationRealm realm) {
-        this.realm = realm == null ? CultivationRealm.MORTAL : realm;
+        CultivationRealm nextRealm = realm == null ? CultivationRealm.MORTAL : realm;
+        boolean changed = this.realm != nextRealm;
+        this.realm = nextRealm;
+
         if (this.realm == CultivationRealm.MORTAL) {
             minorStage = 0;
         } else {
             minorStage = Math.max(1, Math.min(minorStage, this.realm.defaultMinorStages()));
+        }
+
+        if (changed) {
+            bodyTempering.resetStagePhysicalWork();
         }
     }
 
@@ -249,12 +256,14 @@ public final class CultivatorData implements INBTSerializable<CompoundTag> {
     }
 
     public void setMinorStage(int minorStage) {
-        if (realm == CultivationRealm.MORTAL) {
-            this.minorStage = 0;
-            return;
-        }
+        int nextStage = realm == CultivationRealm.MORTAL
+                ? 0
+                : Math.max(1, Math.min(realm.defaultMinorStages(), minorStage));
 
-        this.minorStage = Math.max(1, Math.min(realm.defaultMinorStages(), minorStage));
+        if (this.minorStage != nextStage) {
+            this.minorStage = nextStage;
+            bodyTempering.resetStagePhysicalWork();
+        }
     }
 
     public double cultivationProgress() {

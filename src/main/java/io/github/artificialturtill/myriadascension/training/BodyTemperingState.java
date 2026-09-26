@@ -11,6 +11,9 @@ public final class BodyTemperingState {
     private final EnumMap<TrainingActivity, Double> adaptation =
             new EnumMap<>(TrainingActivity.class);
 
+    // Fresh bodily work performed since the current realm/stage was entered.
+    private double stagePhysicalWork;
+
     public BodyTemperingState() {
         for (BodyTemperingVector vector : BodyTemperingVector.values()) {
             development.put(vector, 0.0D);
@@ -54,6 +57,24 @@ public final class BodyTemperingState {
         }
     }
 
+    public double stagePhysicalWork() {
+        return Math.max(0.0D, stagePhysicalWork);
+    }
+
+    public void addStagePhysicalWork(double amount) {
+        if (amount > 0.0D) {
+            stagePhysicalWork += amount;
+        }
+    }
+
+    public void resetStagePhysicalWork() {
+        stagePhysicalWork = 0.0D;
+    }
+
+    public void setStagePhysicalWorkForTesting(double value) {
+        stagePhysicalWork = Math.max(0.0D, value);
+    }
+
     public Map<BodyTemperingVector, Double> developmentView() {
         return Collections.unmodifiableMap(development);
     }
@@ -69,6 +90,7 @@ public final class BodyTemperingState {
         for (TrainingActivity activity : TrainingActivity.values()) {
             adaptation.put(activity, other.adaptation(activity));
         }
+        stagePhysicalWork = other.stagePhysicalWork();
     }
 
     public CompoundTag save() {
@@ -85,6 +107,7 @@ public final class BodyTemperingState {
 
         root.put("Development", developmentTag);
         root.put("Adaptation", adaptationTag);
+        root.putDouble("StagePhysicalWork", stagePhysicalWork());
         return root;
     }
 
@@ -102,5 +125,6 @@ public final class BodyTemperingState {
                     activity,
                     Math.max(0.0D, adaptationTag.getDouble(activity.name())));
         }
+        stagePhysicalWork = Math.max(0.0D, root.getDouble("StagePhysicalWork"));
     }
 }
