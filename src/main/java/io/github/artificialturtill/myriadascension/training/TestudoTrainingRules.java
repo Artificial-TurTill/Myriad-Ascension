@@ -96,7 +96,7 @@ public final class TestudoTrainingRules {
         return switch (TemperedBodyRules.bandForStage(data.minorStage())) {
             case BODY_STRENGTHENING -> "Physical Foundation";
             case ENERGY_SENSING -> "World-Energy Perception";
-            case NATURAL_GATHERING -> "Natural-Gathering Consolidation";
+            case CONSCIOUS_GATHERING -> "Conscious Vessel Gathering";
         };
     }
 
