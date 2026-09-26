@@ -3,6 +3,7 @@ package io.github.artificialturtill.myriadascension.training;
 import io.github.artificialturtill.myriadascension.clan.PrimordialisTestudoClan;
 import io.github.artificialturtill.myriadascension.cultivation.data.CultivatorData;
 import io.github.artificialturtill.myriadascension.cultivation.realm.CultivationRealm;
+import io.github.artificialturtill.myriadascension.item.WearableTrainingWeightItem;
 import io.github.artificialturtill.myriadascension.registry.ModItems;
 import io.github.artificialturtill.myriadascension.stats.CultivatorStat;
 import net.minecraft.server.level.ServerPlayer;
@@ -38,19 +39,31 @@ public final class BodyTemperingRules {
                 || data.realm() == CultivationRealm.TEMPERED_BODY;
     }
 
-    public static double trainingWeightLoad(ServerPlayer player) {
-        if (player == null) {
+    public static double trainingWeightLoad(ServerPlayer player, CultivatorData data) {
+        if (player == null || data == null) {
             return 0.0D;
         }
 
-        int count = 0;
-        for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
-            ItemStack stack = player.getInventory().getItem(i);
-            if (stack.is(ModItems.BASIC_TRAINING_WEIGHT.get())) {
-                count += stack.getCount();
+        double load = 0.0D;
+
+        if (data.looseTrainingWeightsEnabled()) {
+            int count = 0;
+            for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
+                ItemStack stack = player.getInventory().getItem(i);
+                if (stack.is(ModItems.BASIC_TRAINING_WEIGHT.get())) {
+                    count += stack.getCount();
+                }
+            }
+            load += count * TRAINING_WEIGHT_LOAD;
+        }
+
+        for (ItemStack stack : player.getArmorSlots()) {
+            if (stack.getItem() instanceof WearableTrainingWeightItem wearable) {
+                load += wearable.trainingLoad();
             }
         }
-        return count * TRAINING_WEIGHT_LOAD;
+
+        return load;
     }
 
     public static double adaptedLoadCapacity(CultivatorData data) {
@@ -60,7 +73,7 @@ public final class BodyTemperingRules {
     }
 
     public static double effectiveLoadRatio(ServerPlayer player, CultivatorData data) {
-        double load = trainingWeightLoad(player);
+        double load = trainingWeightLoad(player, data);
         if (load <= 0.0D) {
             return 0.0D;
         }
