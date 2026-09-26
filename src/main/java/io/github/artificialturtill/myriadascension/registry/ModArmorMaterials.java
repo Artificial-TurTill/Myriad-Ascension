@@ -40,27 +40,6 @@ public final class ModArmorMaterials {
                             0.0F,
                             0.0F));
 
-    public static final DeferredHolder<ArmorMaterial, ArmorMaterial> TRAINING_WEIGHT =
-            ARMOR_MATERIALS.register(
-                    "training_weight",
-                    () -> new ArmorMaterial(
-                            Util.make(new EnumMap<>(ArmorItem.Type.class), map -> {
-                                map.put(ArmorItem.Type.BOOTS, 0);
-                                map.put(ArmorItem.Type.LEGGINGS, 0);
-                                map.put(ArmorItem.Type.CHESTPLATE, 0);
-                                map.put(ArmorItem.Type.HELMET, 0);
-                                map.put(ArmorItem.Type.BODY, 0);
-                            }),
-                            0,
-                            SoundEvents.ARMOR_EQUIP_CHAIN,
-                            () -> Ingredient.of(Items.IRON_INGOT),
-                            List.of(new ArmorMaterial.Layer(
-                                    ResourceLocation.fromNamespaceAndPath(
-                                            MyriadAscension.MOD_ID,
-                                            "training_weight"))),
-                            0.0F,
-                            0.0F));
-
     private ModArmorMaterials() {
     }
 

@@ -8,7 +8,6 @@ public final class ClientPayloadBridge {
     private static Consumer<GenesisResultPayload> genesisResultHandler = payload -> {};
     private static Consumer<CultivatorSyncPayload> cultivatorSyncHandler = payload -> {};
     private static Runnable openMartialGuideHandler = () -> {};
-    private static Consumer<QuickMenuSnapshotPayload> quickMenuSnapshotHandler = payload -> {};
 
     private ClientPayloadBridge() {
     }
@@ -28,10 +27,6 @@ public final class ClientPayloadBridge {
         openMartialGuideHandler = handler == null ? () -> {} : handler;
     }
 
-    public static void installQuickMenuHandler(Consumer<QuickMenuSnapshotPayload> handler) {
-        quickMenuSnapshotHandler = handler == null ? payload -> {} : handler;
-    }
-
     public static void handleOpenGenesis(OpenGenesisPayload payload, IPayloadContext context) {
         openGenesisHandler.run();
     }
@@ -46,11 +41,5 @@ public final class ClientPayloadBridge {
 
     public static void handleOpenMartialGuide(OpenMartialGuidePayload payload, IPayloadContext context) {
         openMartialGuideHandler.run();
-    }
-
-    public static void handleQuickMenuSnapshot(
-            QuickMenuSnapshotPayload payload,
-            IPayloadContext context) {
-        quickMenuSnapshotHandler.accept(payload);
     }
 }

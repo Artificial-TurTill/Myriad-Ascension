@@ -13,7 +13,7 @@ public final class RealmMilestoneRules {
                 || (realm == CultivationRealm.TEMPERED_BODY && subdivision >= 4);
     }
 
-    public static boolean canConsciouslyGatherPreQiEnergy(CultivationRealm realm, int subdivision) {
+    public static boolean canPassivelyGatherPreQiEnergy(CultivationRealm realm, int subdivision) {
         return realm.ordinal() > CultivationRealm.TEMPERED_BODY.ordinal()
                 || (realm == CultivationRealm.TEMPERED_BODY && subdivision >= 7);
     }

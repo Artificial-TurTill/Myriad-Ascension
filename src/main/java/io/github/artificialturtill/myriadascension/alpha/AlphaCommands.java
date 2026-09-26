@@ -125,7 +125,6 @@ public final class AlphaCommands {
 
         data.setRealm(CultivationRealm.TEMPERED_BODY);
         data.setMinorStage(stage);
-        data.bodyTempering().resetStageWork();
         data.setMaximumQi(TestudoTrainingRules.naturalYuanQiCapacity(stage));
         data.setCurrentQi(0.0D);
         data.setCirculationPercent(0.0D);

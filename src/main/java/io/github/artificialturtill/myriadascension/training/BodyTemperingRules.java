@@ -3,7 +3,6 @@ package io.github.artificialturtill.myriadascension.training;
 import io.github.artificialturtill.myriadascension.clan.PrimordialisTestudoClan;
 import io.github.artificialturtill.myriadascension.cultivation.data.CultivatorData;
 import io.github.artificialturtill.myriadascension.cultivation.realm.CultivationRealm;
-import io.github.artificialturtill.myriadascension.item.WearableTrainingWeightItem;
 import io.github.artificialturtill.myriadascension.registry.ModItems;
 import io.github.artificialturtill.myriadascension.stats.CultivatorStat;
 import net.minecraft.server.level.ServerPlayer;
@@ -39,34 +38,19 @@ public final class BodyTemperingRules {
                 || data.realm() == CultivationRealm.TEMPERED_BODY;
     }
 
-    public static double trainingWeightLoad(ServerPlayer player, CultivatorData data) {
-        if (player == null || data == null) {
+    public static double trainingWeightLoad(ServerPlayer player) {
+        if (player == null) {
             return 0.0D;
         }
 
-        double load = 0.0D;
-
-        // Loose weights are deliberate equipment only after the player secures them
-        // with right click or through the X quick menu.
-        if (data.looseTrainingWeightsEnabled()) {
-            int count = 0;
-            for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
-                ItemStack stack = player.getInventory().getItem(i);
-                if (stack.is(ModItems.BASIC_TRAINING_WEIGHT.get())) {
-                    count += stack.getCount();
-                }
-            }
-            load += count * TRAINING_WEIGHT_LOAD;
-        }
-
-        // Worn training gear is always active while equipped.
-        for (ItemStack stack : player.getArmorSlots()) {
-            if (stack.getItem() instanceof WearableTrainingWeightItem wearable) {
-                load += wearable.trainingLoad();
+        int count = 0;
+        for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
+            ItemStack stack = player.getInventory().getItem(i);
+            if (stack.is(ModItems.BASIC_TRAINING_WEIGHT.get())) {
+                count += stack.getCount();
             }
         }
-
-        return load;
+        return count * TRAINING_WEIGHT_LOAD;
     }
 
     public static double adaptedLoadCapacity(CultivatorData data) {
@@ -76,7 +60,7 @@ public final class BodyTemperingRules {
     }
 
     public static double effectiveLoadRatio(ServerPlayer player, CultivatorData data) {
-        double load = trainingWeightLoad(player, data);
+        double load = trainingWeightLoad(player);
         if (load <= 0.0D) {
             return 0.0D;
         }
@@ -105,13 +89,6 @@ public final class BodyTemperingRules {
 
         data.bodyTempering().train(vector, effective);
         data.bodyTempering().addAdaptation(activity, baseStimulus * difficulty);
-
-        if (isPhysicalVector(vector)) {
-            data.bodyTempering().addStagePhysicalWork(effective);
-        } else {
-            data.bodyTempering().addStageEnergyWork(effective);
-        }
-
         improveCoreStats(data, vector, effective);
         return effective;
     }
@@ -369,18 +346,9 @@ public final class BodyTemperingRules {
         double physicalTarget = 6.0D + targetStage * 4.0D;
         double physicalFraction = clamp(physicalFoundation(data) / physicalTarget, 0.0D, 1.0D);
 
-        // Every stage requires fresh bodily work. This prevents Stages 4-9 from
-        // degenerating into "energy-only" progression after early training.
-        double stagePhysicalTarget = 4.0D + targetStage * 0.50D;
-        double stagePhysicalFraction = clamp(
-                data.bodyTempering().stagePhysicalWork() / stagePhysicalTarget,
-                0.0D,
-                1.0D);
-
         double result;
         if (targetStage <= 3) {
-            result = physicalFraction * 0.72D
-                    + stagePhysicalFraction * 0.28D;
+            result = physicalFraction;
         } else if (targetStage <= 6) {
             double perceptionTarget = (targetStage - 3) * 8.0D;
             double perceptionFraction = clamp(
@@ -388,13 +356,10 @@ public final class BodyTemperingRules {
                             / perceptionTarget,
                     0.0D,
                     1.0D);
-
-            result = physicalFraction * 0.40D
-                    + stagePhysicalFraction * 0.30D
-                    + perceptionFraction * 0.30D;
+            result = physicalFraction * 0.62D + perceptionFraction * 0.38D;
         } else {
             double perceptionTarget = 24.0D;
-            double vesselTarget = (targetStage - 6) * 5.0D;
+            double vesselTarget = (targetStage - 6) * 8.0D;
             double perceptionFraction = clamp(
                     data.bodyTempering().development(BodyTemperingVector.WORLD_ENERGY_PERCEPTION)
                             / perceptionTarget,
@@ -405,11 +370,9 @@ public final class BodyTemperingRules {
                             / vesselTarget,
                     0.0D,
                     1.0D);
-
-            result = physicalFraction * 0.28D
-                    + stagePhysicalFraction * 0.22D
-                    + perceptionFraction * 0.10D
-                    + vesselFraction * 0.40D;
+            result = physicalFraction * 0.48D
+                    + perceptionFraction * 0.20D
+                    + vesselFraction * 0.32D;
         }
 
         if (!hasPhysicalBreadth(data, physicalTarget)) {
@@ -485,11 +448,6 @@ public final class BodyTemperingRules {
                 && data.bodyTempering().development(BodyTemperingVector.ENDURANCE) >= floor;
 
         return developed >= 4 && testudoCore;
-    }
-
-    private static boolean isPhysicalVector(BodyTemperingVector vector) {
-        return vector != BodyTemperingVector.WORLD_ENERGY_PERCEPTION
-                && vector != BodyTemperingVector.VESSEL_DEVELOPMENT;
     }
 
     private static void improveCoreStats(

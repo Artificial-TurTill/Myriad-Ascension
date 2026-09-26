@@ -6,7 +6,6 @@ import io.github.artificialturtill.myriadascension.cultivation.data.ModAttachmen
 import io.github.artificialturtill.myriadascension.cultivation.data.PlayerCultivationEvents;
 import io.github.artificialturtill.myriadascension.network.ModNetworking;
 import io.github.artificialturtill.myriadascension.registry.ModArmorMaterials;
-import io.github.artificialturtill.myriadascension.registry.ModCreativeTabs;
 import io.github.artificialturtill.myriadascension.registry.ModItems;
 import io.github.artificialturtill.myriadascension.registry.ModMenus;
 import io.github.artificialturtill.myriadascension.training.PlayerTrainingEvents;
@@ -25,7 +24,6 @@ public final class MyriadAscension {
         ModAttachments.register(modEventBus);
         ModArmorMaterials.register(modEventBus);
         ModItems.register(modEventBus);
-        ModCreativeTabs.register(modEventBus);
         ModMenus.register(modEventBus);
         modEventBus.addListener(ModNetworking::registerPayloads);
         NeoForge.EVENT_BUS.addListener(PlayerCultivationEvents::onPlayerLoggedIn);

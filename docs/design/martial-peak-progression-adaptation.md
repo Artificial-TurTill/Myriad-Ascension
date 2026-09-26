@@ -50,17 +50,15 @@ Focus:
 
 Myriad Ascension uses this band for early environmental affinity training.
 
-### Stages 7–9 — Conscious Vessel Gathering
+### Stages 7–9 — Natural Gathering
 
 Focus:
 
-- continued physical body tempering,
-- deliberately drawing ambient energy inward with G,
-- accomplishing the difficult feat of storing Yuan Qi in a still-immature vessel,
-- meridian/dantian preparation,
-- transition toward true internal Qi circulation.
+- the vessel starts naturally drawing in ambient energy,
+- meridians/dantian are being prepared,
+- transition toward true Qi usage.
 
-**Project override:** this stored pre-Initial-Element Yuan Qi cannot yet be truly circulated or spent. Initial Element is the first realm of normal internal Qi use and substantially easier active recharging.
+**Project override:** this gathered pre-Qi energy is not consciously usable as active Qi during Tempered Body. Active Qi usage begins at Initial Element.
 
 ## Initial Element
 

@@ -11,11 +11,6 @@ public final class BodyTemperingState {
     private final EnumMap<TrainingActivity, Double> adaptation =
             new EnumMap<>(TrainingActivity.class);
 
-    // Stage-local work prevents later Tempered Body stages from being cleared
-    // entirely by development banked in earlier stages.
-    private double stagePhysicalWork;
-    private double stageEnergyWork;
-
     public BodyTemperingState() {
         for (BodyTemperingVector vector : BodyTemperingVector.values()) {
             development.put(vector, 0.0D);
@@ -59,36 +54,6 @@ public final class BodyTemperingState {
         }
     }
 
-    public double stagePhysicalWork() {
-        return Math.max(0.0D, stagePhysicalWork);
-    }
-
-    public double stageEnergyWork() {
-        return Math.max(0.0D, stageEnergyWork);
-    }
-
-    public void addStagePhysicalWork(double amount) {
-        if (amount > 0.0D) {
-            stagePhysicalWork += amount;
-        }
-    }
-
-    public void addStageEnergyWork(double amount) {
-        if (amount > 0.0D) {
-            stageEnergyWork += amount;
-        }
-    }
-
-    public void resetStageWork() {
-        stagePhysicalWork = 0.0D;
-        stageEnergyWork = 0.0D;
-    }
-
-    public void setStageWorkForTesting(double physical, double energy) {
-        stagePhysicalWork = Math.max(0.0D, physical);
-        stageEnergyWork = Math.max(0.0D, energy);
-    }
-
     public Map<BodyTemperingVector, Double> developmentView() {
         return Collections.unmodifiableMap(development);
     }
@@ -104,8 +69,6 @@ public final class BodyTemperingState {
         for (TrainingActivity activity : TrainingActivity.values()) {
             adaptation.put(activity, other.adaptation(activity));
         }
-        stagePhysicalWork = other.stagePhysicalWork();
-        stageEnergyWork = other.stageEnergyWork();
     }
 
     public CompoundTag save() {
@@ -122,8 +85,6 @@ public final class BodyTemperingState {
 
         root.put("Development", developmentTag);
         root.put("Adaptation", adaptationTag);
-        root.putDouble("StagePhysicalWork", stagePhysicalWork());
-        root.putDouble("StageEnergyWork", stageEnergyWork());
         return root;
     }
 
@@ -141,8 +102,5 @@ public final class BodyTemperingState {
                     activity,
                     Math.max(0.0D, adaptationTag.getDouble(activity.name())));
         }
-
-        stagePhysicalWork = Math.max(0.0D, root.getDouble("StagePhysicalWork"));
-        stageEnergyWork = Math.max(0.0D, root.getDouble("StageEnergyWork"));
     }
 }

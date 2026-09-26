@@ -426,14 +426,12 @@ They still cannot properly practice active elemental Qi arts.
 
 Focus:
 
-- continued physical body tempering,
-- conscious ambient energy gathering with G,
-- difficult Yuan Qi storage in the vessel,
+- natural ambient energy gathering,
 - meridian preparation,
 - dantian preparation,
 - transition toward Initial Element.
 
-The player can deliberately gather Qi into the vessel, but cannot yet truly circulate or spend it. Initial Element unlocks normal internal circulation and much easier active recharging.
+The body may gather pre-Qi energy naturally, but the player cannot deliberately spend Qi yet.
 
 ---
 

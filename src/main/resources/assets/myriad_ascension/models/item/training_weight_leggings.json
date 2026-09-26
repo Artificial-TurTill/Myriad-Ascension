@@ -1,6 +1,0 @@
-{
-  "parent": "minecraft:item/generated",
-  "textures": {
-    "layer0": "myriad_ascension:item/training_weight_leggings"
-  }
-}

@@ -223,7 +223,7 @@ public final class PlayerTrainingEvents {
 
         int stage = data.minorStage();
 
-        if (!TemperedBodyRules.canConsciouslyStorePreQiEnergy(stage)) {
+        if (!TemperedBodyRules.naturallyGathersPreQiEnergy(stage)) {
             boolean changed = data.maximumQi() != 0.0D
                     || data.currentQi() != 0.0D
                     || data.circulationPercent() != 0.0D
@@ -236,22 +236,22 @@ public final class PlayerTrainingEvents {
         }
 
         double baselineCapacity = TestudoTrainingRules.naturalYuanQiCapacity(stage);
-        boolean changed = false;
         if (data.maximumQi() < baselineCapacity) {
             data.setMaximumQi(baselineCapacity);
-            changed = true;
         }
 
-        // Stages 7-9 have a vessel capable of storing Yuan Qi, but storage no longer
-        // fills itself. The cultivator must consciously gather with G. Even then,
-        // the Qi remains sealed from true internal circulation until Initial Element.
-        if (data.circulationPercent() != 0.0D || data.burstMode()) {
-            data.setCirculationPercent(0.0D);
-            data.setBurstMode(false);
-            changed = true;
-        }
+        double environment = BodyTemperingRules.testudoEnvironmentMultiplier(player, data);
+        double attempted = TestudoTrainingRules.naturalYuanQiPerTick(stage) * environment;
+        double before = data.currentQi();
+        data.setCurrentQi(Math.min(data.maximumQi(), data.currentQi() + attempted));
+        data.setCirculationPercent(0.0D);
+        data.setBurstMode(false);
 
-        return changed;
+        double actuallyStored = Math.max(0.0D, data.currentQi() - before);
+        double vesselStimulus = actuallyStored > 0.0D ? actuallyStored : attempted * 0.25D;
+        BodyTemperingRules.trainNaturalAbsorption(data, vesselStimulus, environment);
+
+        return data.currentQi() != before;
     }
 
     private static boolean updateTrainingProgress(ServerPlayer player, CultivatorData data) {
@@ -283,7 +283,7 @@ public final class PlayerTrainingEvents {
     private static void displayTrainingStatus(ServerPlayer player, CultivatorData data) {
         String energySuffix = "";
         if (data.realm() == CultivationRealm.TEMPERED_BODY
-                && TemperedBodyRules.canConsciouslyStorePreQiEnergy(data.minorStage())) {
+                && TemperedBodyRules.naturallyGathersPreQiEnergy(data.minorStage())) {
             energySuffix = "  |  Yuan Qi "
                     + oneDecimal(data.currentQi())
                     + "/"
@@ -309,7 +309,6 @@ public final class PlayerTrainingEvents {
             data.setCirculationPercent(0.0D);
             data.setBurstMode(false);
             data.setCultivationProgress(0.0D);
-            data.bodyTempering().resetStageWork();
             data.resetTrainingSession();
 
             player.displayClientMessage(
@@ -328,13 +327,12 @@ public final class PlayerTrainingEvents {
             int nextStage = data.minorStage() + 1;
             data.setMinorStage(nextStage);
             data.setCultivationProgress(0.0D);
-            data.bodyTempering().resetStageWork();
             data.resetTrainingSession();
             updateTemperedBodyEnergyState(player, data);
 
             String milestone = switch (nextStage) {
                 case 4 -> " World Energy perception can now be deliberately trained with G.";
-                case 7 -> " Your vessel can now consciously gather Yuan Qi with G. Storing even a little is a feat; true circulation waits for Initial Element.";
+                case 7 -> " Natural Yuan Qi formation has begun; absorption is passive.";
                 default -> "";
             };
 

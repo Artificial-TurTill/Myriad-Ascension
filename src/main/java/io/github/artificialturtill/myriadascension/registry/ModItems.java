@@ -7,9 +7,7 @@ import io.github.artificialturtill.myriadascension.artifact.ArtifactShieldItem;
 import io.github.artificialturtill.myriadascension.artifact.ArtifactWeaponItem;
 import io.github.artificialturtill.myriadascension.artifact.MinorStorageBagItem;
 import io.github.artificialturtill.myriadascension.clan.PrimordialisTestudoClan;
-import io.github.artificialturtill.myriadascension.item.BasicTrainingWeightItem;
 import io.github.artificialturtill.myriadascension.item.MartialWorldGuideItem;
-import io.github.artificialturtill.myriadascension.item.WearableTrainingWeightItem;
 import io.github.artificialturtill.myriadascension.item.TechniqueManualItem;
 import io.github.artificialturtill.myriadascension.item.medicine.AntidotePillItem;
 import io.github.artificialturtill.myriadascension.item.medicine.MedicineItem;
@@ -23,11 +21,13 @@ import java.util.function.Supplier;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.item.Tiers;
 import net.minecraft.world.item.component.ItemContainerContents;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
 public final class ModItems {
@@ -88,41 +88,11 @@ public final class ModItems {
                     PurificationPillItem::new,
                     new Item.Properties().stacksTo(16));
 
-    public static final Supplier<BasicTrainingWeightItem> BASIC_TRAINING_WEIGHT =
+    public static final Supplier<Item> BASIC_TRAINING_WEIGHT =
             ITEMS.registerItem(
                     "basic_training_weight",
-                    BasicTrainingWeightItem::new,
+                    Item::new,
                     new Item.Properties().stacksTo(4));
-
-    public static final Supplier<WearableTrainingWeightItem> TRAINING_WEIGHT_VEST =
-            ITEMS.registerItem(
-                    "training_weight_vest",
-                    properties -> new WearableTrainingWeightItem(
-                            ModArmorMaterials.TRAINING_WEIGHT,
-                            ArmorItem.Type.CHESTPLATE,
-                            25.0D,
-                            properties),
-                    new Item.Properties().durability(320));
-
-    public static final Supplier<WearableTrainingWeightItem> TRAINING_WEIGHT_LEGGINGS =
-            ITEMS.registerItem(
-                    "training_weight_leggings",
-                    properties -> new WearableTrainingWeightItem(
-                            ModArmorMaterials.TRAINING_WEIGHT,
-                            ArmorItem.Type.LEGGINGS,
-                            18.0D,
-                            properties),
-                    new Item.Properties().durability(300));
-
-    public static final Supplier<WearableTrainingWeightItem> TRAINING_ANKLE_WEIGHTS =
-            ITEMS.registerItem(
-                    "training_ankle_weights",
-                    properties -> new WearableTrainingWeightItem(
-                            ModArmorMaterials.TRAINING_WEIGHT,
-                            ArmorItem.Type.BOOTS,
-                            12.0D,
-                            properties),
-                    new Item.Properties().durability(260));
 
     public static final Supplier<MeridianPoisonItem> CRUDE_MERIDIAN_POISON =
             ITEMS.registerItem(
@@ -193,15 +163,11 @@ public final class ModItems {
 
     public static void register(IEventBus modEventBus) {
         ITEMS.register(modEventBus);
+        modEventBus.addListener(ModItems::addCreativeTabContents);
     }
 
     public static Supplier<TechniqueManualItem> manualFor(ResourceLocation techniqueId) {
         return TECHNIQUE_MANUALS.get(techniqueId);
-    }
-
-    public static TechniqueCategory techniqueCategory(ResourceLocation techniqueId) {
-        Supplier<TechniqueManualItem> manual = TECHNIQUE_MANUALS.get(techniqueId);
-        return manual == null ? null : manual.get().category();
     }
 
     private static Supplier<ArtifactArmorItem> registerArtifactArmor(
@@ -244,5 +210,31 @@ public final class ModItems {
         return manual;
     }
 
+    private static void addCreativeTabContents(BuildCreativeModeTabContentsEvent event) {
+        if (event.getTabKey() == CreativeModeTabs.FOOD_AND_DRINKS) {
+            event.accept(MINOR_BODY_MENDING_PILL.get());
+            event.accept(MERIDIAN_SOOTHING_PILL.get());
+            event.accept(BASIC_ANTIDOTE_PILL.get());
+            event.accept(MINOR_PURIFICATION_PILL.get());
+        }
 
+        if (event.getTabKey() == CreativeModeTabs.COMBAT) {
+            event.accept(CRUDE_MERIDIAN_POISON.get());
+            event.accept(TEMPERED_BODY_ARTIFACT_SWORD.get());
+            event.accept(TEMPERED_BODY_ARTIFACT_SHIELD.get());
+            event.accept(TEMPERED_BODY_ARTIFACT_HELMET.get());
+            event.accept(TEMPERED_BODY_ARTIFACT_CHESTPLATE.get());
+            event.accept(TEMPERED_BODY_ARTIFACT_LEGGINGS.get());
+            event.accept(TEMPERED_BODY_ARTIFACT_BOOTS.get());
+        }
+
+        if (event.getTabKey() == CreativeModeTabs.TOOLS_AND_UTILITIES) {
+            event.accept(MINOR_STORAGE_BAG.get());
+            event.accept(INSTRUCTION_TO_THE_MARTIAL_WORLD.get());
+            event.accept(BASIC_TRAINING_WEIGHT.get());
+            for (Supplier<TechniqueManualItem> manual : TECHNIQUE_MANUALS.values()) {
+                event.accept(manual.get());
+            }
+        }
+    }
 }

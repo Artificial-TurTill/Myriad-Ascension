@@ -135,16 +135,8 @@ public final class AlphaStateCommands {
                                 .then(Commands.argument("activity", StringArgumentType.word())
                                         .then(Commands.argument("value", DoubleArgumentType.doubleArg(0.0D))
                                                 .executes(AlphaStateCommands::setTrainingAdaptation))))
-                        .then(Commands.literal("stage_work")
-                                .then(Commands.argument("physical", DoubleArgumentType.doubleArg(0.0D))
-                                        .then(Commands.argument("energy", DoubleArgumentType.doubleArg(0.0D))
-                                                .executes(AlphaStateCommands::setTrainingStageWork))))
                         .then(Commands.literal("status")
                                 .executes(AlphaStateCommands::trainingStatus)))
-                .then(Commands.literal("utility")
-                        .then(Commands.argument("setting", StringArgumentType.word())
-                                .then(Commands.argument("value", BoolArgumentType.bool())
-                                        .executes(AlphaStateCommands::setUtilitySetting))))
                 .then(Commands.literal("technique")
                         .then(Commands.literal("learn")
                                 .then(Commands.argument("id", StringArgumentType.greedyString())
@@ -375,35 +367,6 @@ public final class AlphaStateCommands {
         return changed(context, activity.displayName() + " adaptation = " + value);
     }
 
-    private static int setTrainingStageWork(CommandContext<CommandSourceStack> context)
-            throws CommandSyntaxException {
-        double physical = DoubleArgumentType.getDouble(context, "physical");
-        double energy = DoubleArgumentType.getDouble(context, "energy");
-        data(context).bodyTempering().setStageWorkForTesting(physical, energy);
-        return changed(context, "Stage work physical=" + physical + " energy=" + energy);
-    }
-
-    private static int setUtilitySetting(CommandContext<CommandSourceStack> context)
-            throws CommandSyntaxException {
-        String setting = normalize(StringArgumentType.getString(context, "setting"));
-        boolean value = BoolArgumentType.getBool(context, "value");
-        CultivatorData data = data(context);
-
-        switch (setting) {
-            case "loose_weights", "training_weights" ->
-                    data.setLooseTrainingWeightsEnabled(value);
-            case "resource_scan", "resource_scanning" ->
-                    data.setResourceScanningEnabled(value);
-            case "cultivation_gauge", "gauge" ->
-                    data.setCultivationGaugeEnabled(value);
-            default -> {
-                return fail(context, "Unknown utility setting: " + setting);
-            }
-        }
-
-        return changed(context, setting + " = " + value);
-    }
-
     private static int trainingStatus(CommandContext<CommandSourceStack> context)
             throws CommandSyntaxException {
         CultivatorData data = data(context);
@@ -414,10 +377,6 @@ public final class AlphaStateCommands {
                     .append("=")
                     .append(String.format(Locale.ROOT, "%.2f", data.bodyTempering().development(vector)));
         }
-        text.append(" stagePhysical=")
-                .append(String.format(Locale.ROOT, "%.2f", data.bodyTempering().stagePhysicalWork()))
-                .append(" stageEnergy=")
-                .append(String.format(Locale.ROOT, "%.2f", data.bodyTempering().stageEnergyWork()));
         context.getSource().sendSuccess(() -> Component.literal(text.toString()), false);
         return Command.SINGLE_SUCCESS;
     }

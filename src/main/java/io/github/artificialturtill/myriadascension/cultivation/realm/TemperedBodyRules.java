@@ -12,7 +12,7 @@ public final class TemperedBodyRules {
         if (clamped <= 6) {
             return TemperedBodyBand.ENERGY_SENSING;
         }
-        return TemperedBodyBand.CONSCIOUS_GATHERING;
+        return TemperedBodyBand.NATURAL_GATHERING;
     }
 
     public static boolean strengthensBodyOnly(int stage) {
@@ -23,7 +23,7 @@ public final class TemperedBodyRules {
         return stage >= 4;
     }
 
-    public static boolean canConsciouslyStorePreQiEnergy(int stage) {
+    public static boolean naturallyGathersPreQiEnergy(int stage) {
         return stage >= 7;
     }
 

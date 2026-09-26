@@ -1,4 +1,4 @@
-# Myriad Ascension — Alpha 0.1.0-alpha.16
+# Myriad Ascension — Alpha 0.1.0-alpha.15
 
 This is an early systems alpha for Minecraft 1.21.1 / NeoForge.
 
@@ -539,7 +539,7 @@ The early Testudo path now accepts multiple physical training sources rather tha
 - Controlled falls/impacts above the ordinary safe threshold develop toughness and stability, with their own adaptation memory.
 - Rest/recovery develops the Recovery vector while Training Fatigue falls.
 - Tempered Body 4-6 continues physical training while G adds deliberate World Energy perception training.
-- Tempered Body 7-9 continues physical training while deliberate G gathering develops the vessel.
+- Tempered Body 7-9 continues physical training while natural Yuan Qi absorption develops the vessel.
 
 Kills themselves grant no cultivation reward.
 
@@ -551,7 +551,9 @@ Added:
 
 `myriad_ascension:basic_training_weight`
 
-Loose Basic Training Weights now contribute load only after the player deliberately secures them by right-clicking the item or toggling them in the X menu. Multiple enabled weights increase load. As Strength and physical foundation rise, the same load provides less relative challenge.
+The alpha implementation treats weights carried in the player inventory as deliberate training load. Multiple weights increase load. As Strength and physical foundation rise, the same load provides less relative challenge.
+
+This is the initial runtime foundation for the later Curios/equipment implementation.
 
 ### Minor Purification Pill
 
@@ -604,104 +606,6 @@ Examples:
 
 `/myriadalpha edit training status`
 
-## Alpha.16 deliberate weights, conscious vessel gathering and X quick menu
-
-### Dedicated creative tab
-
-All registered Myriad Ascension items now live in the dedicated **Myriad Ascension** creative-mode tab.
-
-The mod no longer injects its medicines, artifacts, manuals, storage, poisons or training equipment into vanilla Food, Combat, or Tools tabs.
-
-### Active and wearable training weights
-
-The existing `basic_training_weight` is now an active tool rather than passive inventory weight.
-
-- right-clicking a Basic Training Weight secures/releases loose training weights,
-- only secured loose weights contribute their inventory load,
-- the X quick menu exposes the same loose-weight toggle,
-- merely owning weights no longer trains the player.
-
-Added zero-protection wearable training equipment:
-
-- `training_weight_vest` — 25 load,
-- `training_weight_leggings` — 18 load,
-- `training_ankle_weights` — 12 load.
-
-Wearable weights use normal armor-equipment slots and are always active while worn. Their function is training resistance, not protection.
-
-### Tempered Body remains literal body tempering
-
-Every Tempered Body stage now tracks fresh stage-local physical work in addition to cumulative body development.
-
-This specifically prevents Stages 4-6 from becoming perception-only progression:
-
-- cumulative physical development still matters,
-- fresh physical work in the current stage is required,
-- World Energy perception is an additional requirement rather than a replacement for body tempering.
-
-Stages 7-9 also retain fresh physical work requirements.
-
-### Tempered Body 7-9 conscious Qi gathering
-
-The old passive late-Tempered-Body refill has been removed.
-
-At Stages 7-9:
-
-- the vessel gains Yuan Qi capacity,
-- **G consciously gathers Yuan Qi into the vessel**,
-- gathering is deliberately slow and affected by environment/fatigue,
-- stored Qi cannot be internally circulated, suppressed as an active flow, spent, or Burst,
-- successful storage develops Vessel Development.
-
-Accumulating Qi before Initial Element is therefore treated as a difficult feat in its own right.
-
-### Initial Element true circulation and easier recharge
-
-Initial Element is now mechanically distinct from Tempered Body 7-9.
-
-Holding **G** at Initial Element and above:
-
-- actively recharges the Qi reserve,
-- raises internal circulation,
-- works from an empty reserve,
-- recharges substantially faster than Tempered Body vessel storage,
-- benefits from Meditation level in the current prototype formula.
-
-This is the first realm where the cultivator truly circulates and uses Qi internally.
-
-### X translucent cultivation quick menu
-
-X now opens a transparent in-world quick menu inspired by the supplied DragonBlock C-style reference while using original Myriad Ascension UI code and labels.
-
-Current cells:
-
-- Cultivation Method,
-- Cultivation Technique,
-- Weapon Technique,
-- Footwork Technique,
-- Eyesight Technique,
-- Element / Yin-Yang Scan toggle,
-- Cultivation Gauge toggle,
-- Loose Training Weights toggle,
-- center MORE/future-controls cell.
-
-Interaction:
-
-- hold X to open,
-- hover a cell and release X to activate/cycle it,
-- left-click cycles forward/toggles,
-- right-click cycles backward,
-- the world remains visible and the game is not paused.
-
-Method and technique changes are server-authoritative.
-
-The scanning and cultivation-gauge settings are persisted foundations for later scanner implementations; Alpha.16 does not yet highlight elemental blocks or reveal other entities' cultivation data.
-
-### Data/network
-
-- player-data schema: **13**
-- network protocol: **8**
-
 ## Known limitations
 
 - no generated clan compound yet
@@ -710,16 +614,16 @@ The scanning and cultivation-gauge settings are persisted foundations for later 
 - no physical manual/library items yet
 - no seated calm-cultivation runtime yet
 - environmental Current Attunement growth is designed and documented but still lacks a full runtime loop
-- no final Tempered Body stat/progression tuning; Stage 7-9 conscious gathering capacities/rates are provisional alpha values
+- no final Tempered Body stat/progression tuning; Stage 7-9 Yuan Qi capacities/rates are provisional alpha values
 - no passive Qi-regeneration runtime yet
 - no final Qi-drain/Burst curves
 - no weapon-infusion runtime yet
-- resource scanning and cultivation gauging toggles exist, but their actual detection/rendering systems are not implemented yet
 - no final spirit-beast/world-Qi/formation/alchemy/profession content
 - final art/audio is not supplied yet; current textures and UI art are editable local placeholder PNGs validated structurally by CI
 - V is functional and texture-backed; alpha.13 repairs the invalid panel PNG while final artwork and spacing can still be iterated
+- X is reserved but not implemented
 - alpha commands intentionally bypass future gameplay requirements
 
 ## Save compatibility
 
-This build writes player-data schema version 13. Future alpha builds will attempt migrations, but backups are recommended because this is pre-release software.
+This build writes player-data schema version 12. Future alpha builds will attempt migrations, but backups are recommended because this is pre-release software.
