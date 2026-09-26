@@ -18,6 +18,7 @@ public final class MyriadAscensionClient {
         ClientPayloadBridge.installCultivatorSyncHandler(ClientCultivatorState::update);
         ClientPayloadBridge.installMartialGuideHandler(
                 () -> Minecraft.getInstance().setScreen(new MartialWorldGuideScreen()));
+        ClientPayloadBridge.installQuickMenuHandler(ClientQuickMenuPayloadHandler::handleSnapshot);
 
         modEventBus.addListener(ClientKeyMappings::register);
         modEventBus.addListener(ClientCultivatorHud::register);

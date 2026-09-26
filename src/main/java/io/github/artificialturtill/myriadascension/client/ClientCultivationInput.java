@@ -45,9 +45,10 @@ public final class ClientCultivationInput {
             PacketDistributor.sendToServer(new QiControlPayload(QiControlAction.TOGGLE_BURST));
         }
 
-        // Reserve the inputs now. Their screens are implemented in later milestones.
         while (ClientKeyMappings.QUICK_MENU.consumeClick()) {
-            // X quick menu: intentionally not opened until the menu implementation is ready.
+            if (minecraft.screen == null) {
+                ClientQuickMenuPayloadHandler.requestOpen();
+            }
         }
 
         while (ClientKeyMappings.STATUS.consumeClick()) {
