@@ -11,8 +11,11 @@ Target: Minecraft 1.21.1, NeoForge 21.1.252, Java 21.
   at 0 % release, costs `(int)(1 + run factor)` Qi per second through the real tick handler, stops at 0 % release).
   Content log: `1 races, 2 power types, 4 classes, 3 skills, 0 transformations`.
 
-Not run: graphical client (new keys, X menu, Turbo motion, HUD label), multiplayer. GitHub CI of the 0.1.1 commit:
-see its workflow run.
+- GitHub CI: run [37918728539](https://github.com/Artificial-TurTill/Myriad-Ascension/actions/runs/37918728539) on
+  `97087fa` (0.1.1 code `58f737b` + its vault note, pushed together) completed **successfully** (build, unit tests,
+  GameTests, artifact upload).
+
+Not run: graphical client (new keys, X menu, Turbo motion, HUD label), multiplayer.
 
 ## 0.1.0-dev (2026-10-09)
 
