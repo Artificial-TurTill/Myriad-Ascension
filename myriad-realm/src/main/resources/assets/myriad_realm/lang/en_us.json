@@ -1,0 +1,41 @@
+{
+  "power_type.myriad_realm.qi": "Qi",
+  "power_type.myriad_realm.qi.desc": "The energy of the Myriad Realm. A Qi cultivator starts as an ordinary mortal (every attribute 1) and grows through training, Qi and the cultivation path. Body is your only life.",
+  "resource.myriad_realm.qi": "Qi",
+
+  "class.myriad_realm.martial_cultivator": "Martial Cultivator",
+  "class.myriad_realm.martial_cultivator.desc": "Balanced body and Qi.",
+  "class.myriad_realm.spirit_cultivator": "Spirit Cultivator",
+  "class.myriad_realm.spirit_cultivator.desc": "Excels in Qi: stronger Qi power, pool and defense, weaker body and fists.",
+  "class.myriad_realm.body_cultivator": "Body Cultivator",
+  "class.myriad_realm.body_cultivator.desc": "Tempers the flesh: stronger fists, body and stamina, weaker Qi.",
+
+  "attribute.myriad_realm.strength": "Strength",
+  "attribute.myriad_realm.strength.desc": "Raises Melee.",
+  "attribute.myriad_realm.dexterity": "Dexterity",
+  "attribute.myriad_realm.dexterity.desc": "Raises Defense.",
+  "attribute.myriad_realm.constitution": "Constitution",
+  "attribute.myriad_realm.constitution.desc": "Raises Body and Stamina.",
+  "attribute.myriad_realm.willpower": "Willpower",
+  "attribute.myriad_realm.willpower.desc": "Raises Qi Power.",
+  "attribute.myriad_realm.mind": "Mind",
+  "attribute.myriad_realm.mind.desc": "Reserved by learned skills and raises the TP you earn.",
+  "attribute.myriad_realm.spirit": "Spirit",
+  "attribute.myriad_realm.spirit.desc": "Raises the Qi pool.",
+  "stat.myriad_realm.melee": "Melee",
+  "stat.myriad_realm.defense": "Defense",
+  "stat.myriad_realm.body": "Body",
+  "stat.myriad_realm.stamina": "Stamina",
+  "stat.myriad_realm.qi_power": "Qi Power",
+  "stat.myriad_realm.qi_pool": "Max Qi",
+
+  "skill.myriad_realm.qi_meditation": "Qi Meditation",
+  "skill.myriad_realm.qi_meditation.desc": "While charging, Qi refills by 0.5 % of its maximum per second and level, paid with Stamina.",
+  "skill.myriad_realm.qi_condensation": "Qi Condensation",
+  "skill.myriad_realm.qi_condensation.desc": "+1 % maximum Qi per level.",
+  "skill.myriad_realm.endurance": "Endurance",
+  "skill.myriad_realm.endurance.desc": "-3 % damage taken per level.",
+
+  "form.myriad_realm.qi_surge": "Qi Surge",
+  "form.myriad_realm.qi_surge.desc": "Example transformation: Qi floods the meridians (STR, DEX, WIL x1.25) at the cost of 2 % Qi per second."
+}

@@ -1,0 +1,26 @@
+modLoader="javafml"
+loaderVersion="${loader_version_range}"
+license="${mod_license}"
+issueTrackerURL="https://github.com/Artificial-TurTill/Myriad-Ascension/issues"
+
+[[mods]]
+modId="${foundation_mod_id}"
+version="${foundation_version}"
+displayName="${foundation_mod_name}"
+displayURL="https://github.com/Artificial-TurTill/Myriad-Ascension"
+authors="Artificial-TurTill"
+description='''The character engine extracted from Dragonblock C+ (JRMCore concepts): races and appearance, power types (Natural and add-on energies), attributes and statistics, classes, Training Points, power release, skills and transformations. Content add-ons such as Myriad Realm plug into it.'''
+
+[[dependencies.${foundation_mod_id}]]
+modId="neoforge"
+type="required"
+versionRange="[${neo_version},)"
+ordering="NONE"
+side="BOTH"
+
+[[dependencies.${foundation_mod_id}]]
+modId="minecraft"
+type="required"
+versionRange="${minecraft_version_range}"
+ordering="NONE"
+side="BOTH"

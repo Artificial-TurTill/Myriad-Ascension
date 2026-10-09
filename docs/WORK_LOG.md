@@ -1,0 +1,49 @@
+# Work log
+
+## 2026-10-09: Foundation extracted from Dragonblock C+, Myriad Realm add-on (0.1.0-dev)
+
+Request: take the Dragonblock C+ mod (uploaded `dragonblockcplus-0.8.0.2-dev-WP.jar`; source on the port branch of
+`Artificial-TurTill/Dragonblock-C-`, commit `0e43f12`) and extract the whole stat system and its infrastructure plus
+the concepts of skills, races and transformations, so Myriad Realm ideas can be added to it. Strip every DBC item,
+races back to Human only. Keep the main structure, race and appearance, stats, the Natural / Ki character and the
+class concepts; in Myriad Realm the energy is Qi, a separate system, and a Qi character starts with 1 in every
+stat. Myriad Realm is an add-on of the Foundation. Set up the same Obsidian vault and development process as
+Dragonblock C+.
+
+Decisions asked from the user:
+- Existing alpha-16 code: **fresh start, archive alpha-16**.
+- Packaging: **two separate jar mods**, the Foundation a required dependency of Myriad Realm.
+
+Done:
+- Read the DBC+ source (FighterState, CharacterData, LegacyStats / LegacyBaseStats / LegacyGameplay / LegacyDamage,
+  CharacterService, CharacterCombat, CharacterAttachments, CreationScreen, CharacterScreen, BasicSkill,
+  TransformSkill, ARSN layer) and its vault / work log / validation conventions. The jar only contains classes; the
+  source branch was used for all reading.
+- Archived alpha-16: `src/` and the old build removed (history keeps it, last commit `bcdb5d1`), documents moved to
+  `archive/alpha-16/`.
+- New Gradle multi-project (`foundation`, `myriad-realm`), ModDevGradle 2.0.147, NeoForge 21.1.252 (the DBC+ version;
+  alpha-16 used .251). Myriad Realm depends on the Foundation project for compiling and declares it as a required
+  `ordering="AFTER"` dependency; the Foundation jar contains no Myriad Realm code and vice versa.
+- Foundation: ARSN runtime vendored from DBC+ (+ ARSN-REF-6 `objectsOf`, ARSN-REF-7 negative literals), schema and
+  content loader with cross-reference checks, records for power types / classes / races / skills / transformations,
+  `StatMath` (JRMCore maths generalised), `Fighter`, `CharacterProfile` (with dormant state), attachments (character,
+  runtime, synced public look), service (actions, creation, tick, sync), combat (Body as life), `VanillaBridge`
+  (Natural attribute modifiers, height scale), network (protocol 1), commands, client (creation wizard, sheet,
+  Skills, Transformations, HUD, keys V / G / R / Z, hidden hearts for Body characters).
+- Built-in content: Human (appearance presets), Natural (STR / DEX / CON, Melee Dmg 0.3, Defense 1.0, Health 2.0),
+  class Unclassed.
+- Myriad Realm: Qi (six attributes starting at 1, JRMCore Ki per-point values, Body life, release, Mind capacity),
+  Martial / Spirit / Body Cultivator, Qi Meditation / Qi Condensation / Endurance, example form Qi Surge.
+- Tests: 19 Foundation unit tests, 5 Myriad Realm unit tests, 5 GameTests (Myriad Realm GameTest source set with an
+  empty 3x3x3 structure template).
+- Vault, README, CLAUDE.md, this log, VALIDATION.md, CI for two jars.
+
+Problems met:
+- The ARSN reference parser had no negative literals and no hex numbers: added ARSN-REF-7, colours became
+  `"#RRGGBB"` strings.
+- Five unit-test expectations were wrong (class bonus on the pool, level count, ARSN error code 1003 for a failed
+  constraint); the code was right, the tests were corrected.
+- A GameTest measured a punch on a 10-health cow; the fixture now raises the cow's health.
+- Maven Central answered 429 once while downloading JUnit; the retry passed.
+
+Validation: see `docs/VALIDATION.md` (0.1.0).

@@ -1,0 +1,59 @@
+plugins {
+    id 'net.neoforged.moddev'
+}
+
+version = realm_version
+base { archivesName = realm_mod_id }
+
+// In-game tests (headless server with both mods): ./gradlew :myriad-realm:runGameTestServer -PgameTests
+sourceSets {
+    gametest {
+        compileClasspath += sourceSets.main.output
+        runtimeClasspath += sourceSets.main.output
+    }
+}
+
+dependencies {
+    // Compile against the Foundation; at runtime it is its own mod jar (a required dependency in neoforge.mods.toml).
+    implementation project(':foundation')
+    gametestImplementation project(':foundation')
+}
+
+neoForge {
+    version = project.neo_version
+    parchment {
+        mappingsVersion = project.parchment_mappings_version
+        minecraftVersion = project.parchment_minecraft_version
+    }
+    runs {
+        client { client() }
+        server { server(); programArgument '--nogui' }
+        gameTestServer {
+            type = 'gameTestServer'
+            systemProperty 'neoforge.enabledGameTestNamespaces', project.realm_mod_id
+        }
+    }
+    addModdingDependenciesTo sourceSets.gametest
+    mods {
+        "${realm_mod_id}" {
+            sourceSet(sourceSets.main)
+            if (project.hasProperty('gameTests')) sourceSet(sourceSets.gametest)
+        }
+        "${foundation_mod_id}" { sourceSet(project(':foundation').sourceSets.main) }
+    }
+    unitTest {
+        enable()
+        testedMod = mods."${realm_mod_id}"
+    }
+}
+
+var templateProperties = [
+        minecraft_version_range: minecraft_version_range, neo_version: neo_version,
+        loader_version_range: loader_version_range, mod_license: mod_license,
+        foundation_mod_id: foundation_mod_id, foundation_version: foundation_version,
+        realm_mod_id: realm_mod_id, realm_mod_name: realm_mod_name, realm_version: realm_version,
+]
+tasks.named('processResources', ProcessResources) {
+    inputs.properties templateProperties
+    filesMatching('META-INF/neoforge.mods.toml') { expand templateProperties }
+}

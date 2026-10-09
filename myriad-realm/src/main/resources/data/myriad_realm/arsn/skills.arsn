@@ -1,0 +1,19 @@
+# Myriad Realm skills. Costs follow the JRMCore DBC skill defaults (JGConfigSkillsDBC) as a starting balance.
+# capacity_cost reserves Mind (the Qi power type's capacity attribute), like DBC's Mind requirement.
+
+# DBC Meditation (MD): while charging (holding the charge key) Qi refills by per_level % of the maximum per second
+# and level, paid with Stamina.
+SkillDef qi_meditation {
+  id: "myriad_realm:qi_meditation", power_type: "myriad_realm:qi",
+  max_level: 10, tp_cost: [250], capacity_cost: [10, 5], effect: "meditation", per_level: 0.5, order: 0
+}
+# DBC Ki Boost (KB): +1 % maximum Qi per level.
+SkillDef qi_condensation {
+  id: "myriad_realm:qi_condensation", power_type: "myriad_realm:qi",
+  max_level: 10, tp_cost: [800], capacity_cost: [10, 5], effect: "energy_pool", per_level: 0.01, order: 1
+}
+# DBC Endurance (EN): -3 % damage taken per level.
+SkillDef endurance {
+  id: "myriad_realm:endurance", power_type: "myriad_realm:qi",
+  max_level: 10, tp_cost: [150], capacity_cost: [10, 5], effect: "endurance", per_level: 0.03, order: 2
+}

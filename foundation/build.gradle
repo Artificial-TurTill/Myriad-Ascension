@@ -1,0 +1,36 @@
+plugins {
+    id 'net.neoforged.moddev'
+}
+
+version = foundation_version
+base { archivesName = foundation_mod_id }
+
+neoForge {
+    version = project.neo_version
+    parchment {
+        mappingsVersion = project.parchment_mappings_version
+        minecraftVersion = project.parchment_minecraft_version
+    }
+    runs {
+        client { client() }
+        server { server(); programArgument '--nogui' }
+    }
+    mods {
+        "${foundation_mod_id}" { sourceSet(sourceSets.main) }
+    }
+    unitTest {
+        enable()
+        testedMod = mods."${foundation_mod_id}"
+    }
+}
+
+var templateProperties = [
+        minecraft_version_range: minecraft_version_range, neo_version: neo_version,
+        loader_version_range: loader_version_range, mod_license: mod_license,
+        foundation_mod_id: foundation_mod_id, foundation_mod_name: foundation_mod_name,
+        foundation_version: foundation_version, foundation_protocol: foundation_protocol,
+]
+tasks.named('processResources', ProcessResources) {
+    inputs.properties templateProperties
+    filesMatching(['META-INF/neoforge.mods.toml', 'foundation.properties']) { expand templateProperties }
+}

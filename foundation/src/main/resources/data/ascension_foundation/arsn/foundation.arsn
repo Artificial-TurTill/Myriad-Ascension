@@ -1,0 +1,32 @@
+# Ascension Foundation built-in content: the Natural power type and the Human race.
+
+# JRMCore Pwrtyp 0 "Natural": "The basic Minecraft interface with nothing additional, except the appearance".
+# Attributes STR / DEX / CON, statistics Melee Dmg (0.3 / STR), Defense (1.0 / DEX), Health (2.0 / CON); hearts stay.
+# A player without a created character is treated as Natural with these starting attributes.
+AttributeDef natural_str { key: "strength", short: "STR" }
+AttributeDef natural_dex { key: "dexterity", short: "DEX" }
+AttributeDef natural_con { key: "constitution", short: "CON" }
+StatDef natural_melee { key: "melee", attribute: 0, per_attribute: 0.3, role: "melee" }
+StatDef natural_defense { key: "defense", attribute: 1, per_attribute: 1.0, role: "defense" }
+StatDef natural_health { key: "health", attribute: 2, per_attribute: 2.0, role: "health" }
+PowerType natural {
+  id: "ascension_foundation:natural",
+  life: "vanilla",
+  attributes: [natural_str, natural_dex, natural_con],
+  stats: [natural_melee, natural_defense, natural_health],
+  starting: [10, 10, 10],
+  attribute_limit: 100,
+  order: 0
+}
+CharacterClass unclassed { id: "ascension_foundation:unclassed", power_type: "ascension_foundation:natural", stat_bonus: [0, 0, 0] }
+
+AppearanceOptions human_look {
+  skin_colors: ["#FFE0C4", "#F2C9A0", "#E0AC80", "#C68A5E", "#9A6440", "#6B4429"],
+  hair_styles: 12,
+  hair_colors: ["#1A1A1A", "#3B2414", "#6B4423", "#A0703C", "#D8B66A", "#B5402A", "#E8E8E8"],
+  eye_colors: ["#2B1B0E", "#3C6E9E", "#4E7A3A", "#7A5A2E", "#5A5A6E"],
+  body_types: 3,
+  min_height: 90,
+  max_height: 110
+}
+Race human { id: "ascension_foundation:human", genders: ["male", "female"], appearance: human_look, order: 0 }
