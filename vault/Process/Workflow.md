@@ -12,6 +12,9 @@ The same process as Dragonblock C+, extended by the idea pipeline.
   (`in` = the version) or `parked` / `rejected`. See [[Adding an Idea]] for how a designed idea becomes game content.
 - **Every release** gets a version note (template [[Templates/Version]]) and a row in [[Version History]], and both
   jars are named with the version (`ascension_foundation-x.y.z.jar`, `myriad_realm-x.y.z.jar`).
+- **Downloads**: every GitHub build artifact (`myriad-ascension-<version>`) holds both jars and
+  `Myriad-Ascension-Vault.zip` (this vault, open the unzipped folder in Obsidian). The coding session also hands the
+  two jars and the vault zip over directly with each release.
 - **Layer rule**: anything that is the character system itself belongs to the **Foundation**; anything that is
   Myriad Realm (Qi, cultivation, its lore and content) belongs to **Myriad Realm** and plugs into the Foundation
   (content files or the `FoundationApi`). The Foundation never depends on Myriad Realm.

@@ -66,3 +66,10 @@ Validation: see `docs/VALIDATION.md` (0.1.0).
   +1 GameTest. One expectation in the new spdFrm test was wrong (3.25, not 2.2); corrected.
 - Vault: 0.1.1 note, keys / Turbo / X menu in Foundation Overview, Combat and Resources, Qi, Transformations, Power
   Types, Stats, Skills, Extraction Map, Open Points, Idea Index.
+
+## 2026-10-09: downloads
+
+- User: the jar downloads and the vault download were missing. Handed over `ascension_foundation-0.1.1-dev.jar`,
+  `myriad_realm-0.1.1-dev.jar` (built from `c3bd611`, same code as `58f737b`) and `Myriad-Ascension-Vault-0.1.1.zip`
+  directly in the session.
+- CI now also zips the vault into the build artifact next to both jars; Workflow note updated.

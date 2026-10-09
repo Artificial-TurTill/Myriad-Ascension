@@ -36,7 +36,13 @@ jobs:
       - name: In-game tests (headless server, both mods)
         run: ./gradlew --no-daemon :myriad-realm:runGameTestServer -PgameTests
 
-      - name: Upload jars and test reports
+      - name: Package the Obsidian vault
+        run: |
+          mkdir -p build/vault
+          cp -r vault "build/vault/Myriad Ascension Vault"
+          cd build/vault && zip -qr ../Myriad-Ascension-Vault.zip "Myriad Ascension Vault"
+
+      - name: Upload jars, vault and test reports
         if: success()
         uses: actions/upload-artifact@v4
         with:
@@ -44,6 +50,7 @@ jobs:
           path: |
             foundation/build/libs/*.jar
             myriad-realm/build/libs/*.jar
+            build/Myriad-Ascension-Vault.zip
             foundation/build/reports/tests/test/
             myriad-realm/build/reports/tests/test/
           if-no-files-found: error
