@@ -26,6 +26,9 @@ Target: Minecraft 1.21.1, NeoForge 21.1.252, Java 21.
     "Qi Surge speed" label touching the panel edge, the editor's repeat button next to the Yaw arrows; the fixes were
     re-checked on screen.
 - Not checked: Skills / Transformations tabs, G / H, Natural characters, other GUI scales, multiplayer.
+- GitHub CI: run [37973547158](https://github.com/Artificial-TurTill/Myriad-Ascension/actions/runs/37973547158) on
+  `384c222` (0.1.2 code `1fac4e4` + its vault note) completed **successfully** (build, unit tests, GameTests, jars
+  and vault zip uploaded).
 
 ## 0.1.1-dev (2026-10-09)
 
