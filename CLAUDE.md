@@ -17,7 +17,9 @@ Two mods in one Gradle build: `foundation/` (Ascension Foundation, the engine ex
 - `docs/WORK_LOG.md`: append what was done, decided and validated in each session. `docs/VALIDATION.md`: what was
   run and the results; never claim an unrun check.
 - Validate before pushing: `./gradlew build` (unit tests incl. content validation) and, for gameplay changes,
-  `./gradlew :myriad-realm:runGameTestServer -PgameTests`.
+  `./gradlew :myriad-realm:runGameTestServer -PgameTests`. Screen / HUD / input changes are checked in the real client
+  on a virtual display with `tools/client-check` (see its README).
+- Every release hands the user both jars and the vault zip (`Myriad-Ascension-Vault-<version>.zip`) directly.
 - Raise `foundation_protocol` (gradle.properties) when a payload changes, `CharacterProfile.SCHEMA` when the save
   format changes (keep loading old saves).
 - Concepts taken from Dragonblock C+ / JRMCore are checked against the DBC+ source; deviations go to

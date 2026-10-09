@@ -73,3 +73,19 @@ Validation: see `docs/VALIDATION.md` (0.1.0).
   `myriad_realm-0.1.1-dev.jar` (built from `c3bd611`, same code as `58f737b`) and `Myriad-Ascension-Vault-0.1.1.zip`
   directly in the session.
 - CI now also zips the vault into the build artifact next to both jars; Workflow note updated.
+
+## 2026-10-09: 0.1.2 hairstyle manager restored, first real-client check
+
+- User: "The hairstyle manager was not needed to be removed." Ported the JRMCore custom hair from Dragonblock C+
+  (`LegacyHair`, `HairEditor`, `HairRenderLayer`, `HairUpdate`/`HairService`) into the Foundation: `HairCode`,
+  `client/hair/*` (state + presets, Barber Menu, five-page editor, HSB colour picker, render layer),
+  `HairUpdatePayload`. No JinGames assets: widgets drawn with fills, own generated 16 x 16 hair texture.
+- Appearance stores the hairstyle code and a free hair colour; content field `hair_styles` -> `hair`; save schema 2
+  (old saves migrate), protocol 3, version 0.1.2.
+- The DBC+ BUG-049 cause (empty preset list when the editor is opened without the Barber Menu) is avoided by loading
+  the presets before every use. DBC+ itself was not changed.
+- Session was interrupted once by a worker restart and the user's usage limit; work resumed from the working tree.
+- Discovered that the real client runs here under Xvfb with Mesa software OpenGL; wrote `tools/client-check`
+  (python-xlib input + screenshots) and checked creation, hairstyle manager, sheet, HUD, C / R / X and Qi Surge speed
+  in the running game (details in VALIDATION.md). Four layout problems were found that way and fixed.
+- Tests: +4 unit tests (30), GameTests unchanged (6), all green.

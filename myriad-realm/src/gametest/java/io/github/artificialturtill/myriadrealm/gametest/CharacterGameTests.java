@@ -85,7 +85,7 @@ public final class CharacterGameTests {
         f.setAttribute(2, 20);
         VanillaBridge.apply(player);
         test.assertTrue(player.getMaxHealth() == 40F, "CON 20 -> Health 40, got " + player.getMaxHealth());
-        f.setAppearance(new Appearance(0, look().skinColor(), 0, look().hairColor(), look().eyeColor(), 0, 110));
+        f.setAppearance(new Appearance(0, look().skinColor(), look().hair(), look().hairColor(), look().eyeColor(), 0, 110));
         VanillaBridge.apply(player);
         test.assertTrue(Math.abs(player.getAttributeValue(Attributes.SCALE) - 1.1) < 1e-6, "Height 110 % must scale the player");
         player.getData(FoundationAttachments.CHARACTER).erase();

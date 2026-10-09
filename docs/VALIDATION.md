@@ -2,6 +2,31 @@
 
 Target: Minecraft 1.21.1, NeoForge 21.1.252, Java 21.
 
+## 0.1.2-dev (2026-10-09)
+
+- `./gradlew build`: **successful**; **30 unit tests**, zero failures (new HairCodeTest 4: presets, fields and strand
+  geometry, schema-1 migration and validation, hairstyle save round trip).
+- `./gradlew :myriad-realm:runGameTestServer -PgameTests`: **all 6 required GameTests passed**.
+- **Real client on a virtual display** (first time; Xvfb + Mesa software OpenGL, scripted input and screenshots with
+  `tools/client-check`, NeoForge 21.1.252, both mods, offline dev player, superflat world):
+  - Title screen and world creation without errors from the mods (only the missing sound device and the
+    unreachable Mojang servers are logged).
+  - V: creation wizard (Appearance, Power Type with Qi at 1 / 1 / 1 / 1 / 1 / 1, Body 20, Max Qi 40, Surge speed
+    150 %, Summary) and the hair preview on the player model.
+  - Hairstyle manager: Barber Menu, editor Front and Top pages (sliders change the preview live), quick colours,
+    HSB colour picker (picked #F86F0B), Done back to creation; Accept created the Qi character.
+  - In the world: HUD Body 20/20, Qi 40/40, Stamina 4/4, vanilla hearts hidden, the custom hairstyle rendered on the
+    player (third person); sheet Hairstyle button: bald and back again reached the server and were drawn.
+  - C (hold 3 s): release 15 %. R: Qi Surge on (HUD label), Qi 40 -> 36 in 2 s; holding W for 2 s moved 14.46 blocks
+    with Qi Surge and 8.63 without (7.2 vs 4.3 blocks / s). With Qi 1 Qi Surge switched itself off as designed.
+  - X: the quick menu opens while held (Qi Surge, Transform into "None yet", Character, Skills, Transformations,
+    Hairstyle, Resource HUD, More) and closes on release.
+  - After a full client restart the character and its hairstyle were loaded from the save.
+  - Found and fixed in this round: Summary hair swatch overlapping its text, X menu hints overlapping the HUD, the
+    "Qi Surge speed" label touching the panel edge, the editor's repeat button next to the Yaw arrows; the fixes were
+    re-checked on screen.
+- Not checked: Skills / Transformations tabs, G / H, Natural characters, other GUI scales, multiplayer.
+
 ## 0.1.1-dev (2026-10-09)
 
 - `./gradlew build`: **successful**; unit tests **Foundation 20 / 20** (StatMathTest 7 incl. the JRMCoreH.spdFrm run

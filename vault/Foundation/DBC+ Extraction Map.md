@@ -26,7 +26,8 @@ and what stayed behind.
 | Alignment (jrmcAlign 67 %) | `Fighter.alignment` | changes only by command / add-on so far |
 | `CreationScreen` (GUI 0 / 2 / 3) | `CreationScreen` | procedural drawing, data-driven rows |
 | `CharacterScreen` (GUI 10), `SkillsScreen`, `LegacyHud` | `CharacterSheetScreen`, `SkillsScreen`, `FormsScreen`, `HudLayer` | procedural drawing |
-| `LegacyBody` / `LegacyHair` design data | `Appearance` + `AppearanceOptions` | presets per race; no renderer yet |
+| `LegacyBody` design data | `Appearance` + `AppearanceOptions` | presets per race; no body renderer yet |
+| `LegacyHair`, `HairEditor` (Barber Menu, editor, presets, colour picker), `HairRenderLayer` (custom hair), `HairUpdate` | `HairCode`, `client/hair/*`, `HairUpdatePayload` | procedural GUI, own hair texture, no transformation hair motion, no classic models |
 | `CharacterService`, `CharacterNetwork`, snapshots | `CharacterService`, `network/*` | owner gets the saved tag and recomputes with the same code |
 | ARSN data layer (`lib/arsn`, `ArsnData`) | `lib/arsn`, `ContentLoader` | content files instead of rule tables |
 | `/dbcplus` | `/foundation` | |
@@ -35,7 +36,7 @@ and what stayed behind.
 All DBC items, blocks, wearables, vanity, extra inventory, plants, trees, music; worlds and dimensions (Namek,
 Otherworld, Space Pod…); NPCs, masters, sagas, dragons and wishes; Ki techniques and attacks, Instant Transmission,
 fusion, Majin absorption, auras and Ki particles; races Saiyan, Half-Saiyan, Namekian, Arcosian, Majin and their
-racial forms; JBRA body / hair models and every JinGames texture and sound; training mini-games, Shadow Dummy,
+racial forms; JBRA body models, the classic hair models 0-11 and every JinGames texture and sound; training mini-games, Shadow Dummy,
 gravity device; difficulty, death / Otherworld system; the 1.7.10 character import.
 
 ## Concepts that can still be extracted (engine features)
@@ -55,3 +56,5 @@ generic Foundation feature with a skill effect or content field, then Myriad Rea
 8. Turbo runs only with Turbo on; DBC's DashKi also ran while sprinting (sprinting stays vanilla here).
 9. Turbo's speed bonus of the race is data (Human has none; DBC Human had +10 % speed).
 10. The X quick menu is not from DBC: it is alpha-16's cultivation quick menu, rebuilt as a generic Foundation menu.
+11. The hairstyle can be changed at any time (DBC: Barber Scissors after the free creation edit).
+12. Hair colour is free in creation and later (DBC Saiyans were forced to black; no such race here).

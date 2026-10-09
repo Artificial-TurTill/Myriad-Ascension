@@ -11,7 +11,7 @@ import net.minecraft.nbt.Tag;
  * installed (an add-on was removed) is kept untouched as a dormant save and comes back when the add-on returns.
  */
 public final class CharacterProfile {
-    public static final int SCHEMA = 1;
+    public static final int SCHEMA = 2;
     private Fighter fighter;
     private CompoundTag dormant = new CompoundTag();
     private long burstTick = Long.MIN_VALUE;

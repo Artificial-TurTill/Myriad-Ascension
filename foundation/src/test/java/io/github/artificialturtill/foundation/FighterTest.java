@@ -33,9 +33,9 @@ class FighterTest {
     @Test void creationValidatesIdentityAndLook() {
         assertThrows(IllegalArgumentException.class, () -> Fighter.create(CONTENT, "test:nobody", "test:energy", "test:fighter", look()));
         assertThrows(IllegalArgumentException.class, () -> Fighter.create(CONTENT, FoundationApi.HUMAN, "test:energy", FoundationApi.UNCLASSED, look()));
-        Appearance purple = new Appearance(0, 0x800080, 0, look().hairColor(), look().eyeColor(), 0, 100);
+        Appearance purple = new Appearance(0, 0x800080, look().hair(), look().hairColor(), look().eyeColor(), 0, 100);
         assertThrows(IllegalArgumentException.class, () -> Fighter.create(CONTENT, FoundationApi.HUMAN, "test:energy", "test:fighter", purple));
-        Appearance tall = new Appearance(0, look().skinColor(), 0, look().hairColor(), look().eyeColor(), 0, 140);
+        Appearance tall = new Appearance(0, look().skinColor(), look().hair(), look().hairColor(), look().eyeColor(), 0, 140);
         assertThrows(IllegalArgumentException.class, () -> Fighter.create(CONTENT, FoundationApi.HUMAN, "test:energy", "test:fighter", tall));
     }
     @Test void bodyCharacterStartsFullWithClassBonuses() {

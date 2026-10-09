@@ -51,6 +51,12 @@ public final class FoundationClient {
         bus.addListener((RegisterKeyMappingsEvent e) -> {
             for (KeyMapping k : List.of(MENU, CHARGE, ASCEND, DESCEND, TURBO, QUICK_MENU)) e.register(k);
         });
+        bus.addListener((net.neoforged.neoforge.client.event.EntityRenderersEvent.AddLayers e) -> {
+            for (var skin : e.getSkins()) {
+                net.minecraft.client.renderer.entity.player.PlayerRenderer renderer = e.getSkin(skin);
+                if (renderer != null) renderer.addLayer(new io.github.artificialturtill.foundation.client.hair.HairRenderLayer(renderer));
+            }
+        });
         bus.addListener((RegisterGuiLayersEvent e) ->
             e.registerAboveAll(ResourceLocation.fromNamespaceAndPath(FoundationApi.MOD_ID, "character_hud"), HudLayer::render));
         NeoForge.EVENT_BUS.addListener(FoundationClient::tick);
@@ -133,6 +139,11 @@ public final class FoundationClient {
             () -> Component.translatable("screen.ascension_foundation.quick_menu.open"),
             () -> QuickMenu.NEUTRAL, () -> ClientCharacter.fighter() != null,
             direction -> Minecraft.getInstance().setScreen(new FormsScreen())));
+        QuickMenu.register(new QuickMenu.Entry("ascension_foundation:hairstyle",
+            () -> Component.translatable("hair.ascension_foundation.barber"),
+            () -> Component.translatable("screen.ascension_foundation.quick_menu.open"),
+            () -> QuickMenu.NEUTRAL, () -> ClientCharacter.fighter() != null && ClientCharacter.fighter().race().appearance().hair(),
+            direction -> CharacterSheetScreen.openBarber()));
         QuickMenu.register(new QuickMenu.Entry("ascension_foundation:hud",
             () -> Component.translatable("screen.ascension_foundation.quick_menu.hud"),
             () -> onOff(hudVisible), () -> hudVisible ? QuickMenu.ON : QuickMenu.OFF, () -> true,

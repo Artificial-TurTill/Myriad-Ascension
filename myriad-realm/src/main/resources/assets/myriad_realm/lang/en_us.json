@@ -27,7 +27,7 @@
   "stat.myriad_realm.stamina": "Stamina",
   "stat.myriad_realm.qi_power": "Qi Power",
   "stat.myriad_realm.qi_pool": "Max Qi",
-  "stat.myriad_realm.speed": "Qi Surge speed",
+  "stat.myriad_realm.speed": "Surge speed",
   "skill.myriad_realm.qi_meditation": "Qi Meditation",
   "skill.myriad_realm.qi_meditation.desc": "While charging, Qi refills by 0.5 % of its maximum per second and level, paid with Stamina.",
   "skill.myriad_realm.qi_condensation": "Qi Condensation",

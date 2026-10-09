@@ -11,7 +11,7 @@ public final class HudLayer {
     public static void render(GuiGraphics g, DeltaTracker delta) {
         Minecraft mc = Minecraft.getInstance();
         Fighter f = ClientCharacter.fighter();
-        if (f == null || !FoundationClient.hudVisible || mc.options.hideGui || mc.player == null || mc.player.isSpectator()) return;
+        if (f == null || !FoundationClient.hudVisible || mc.screen instanceof QuickMenuScreen || mc.options.hideGui || mc.player == null || mc.player.isSpectator()) return;
         Fighter.Caps caps = f.caps();
         int x = 4, y = 4, w = 90;
         boolean any = false;

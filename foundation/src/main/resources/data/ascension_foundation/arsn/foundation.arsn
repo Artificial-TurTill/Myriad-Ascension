@@ -22,7 +22,7 @@ CharacterClass unclassed { id: "ascension_foundation:unclassed", power_type: "as
 
 AppearanceOptions human_look {
   skin_colors: ["#FFE0C4", "#F2C9A0", "#E0AC80", "#C68A5E", "#9A6440", "#6B4429"],
-  hair_styles: 12,
+  hair: true,
   hair_colors: ["#1A1A1A", "#3B2414", "#6B4423", "#A0703C", "#D8B66A", "#B5402A", "#E8E8E8"],
   eye_colors: ["#2B1B0E", "#3C6E9E", "#4E7A3A", "#7A5A2E", "#5A5A6E"],
   body_types: 3,

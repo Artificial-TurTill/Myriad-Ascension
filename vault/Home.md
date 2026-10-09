@@ -28,7 +28,7 @@ Install both jars; Myriad Realm refuses to load without the Foundation.
 ## Process
 [[Workflow]] · [[Adding an Idea]] · History: [[Alpha-16 Archive]]
 
-Current version: [[0.1.1]].
+Current version: [[0.1.2]].
 
 Open this folder (`vault/`) as a vault in Obsidian (https://obsidian.md). New notes go to `Ideas/` by default; the
 templates are in `Templates/` (core plugin "Templates"). The Dataview community plugin is optional; the indexes are

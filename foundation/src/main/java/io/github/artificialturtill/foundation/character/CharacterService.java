@@ -4,6 +4,7 @@ import io.github.artificialturtill.foundation.api.FoundationApi;
 import io.github.artificialturtill.foundation.network.CharacterActionPayload;
 import io.github.artificialturtill.foundation.network.CharacterSyncPayload;
 import io.github.artificialturtill.foundation.network.CreateCharacterPayload;
+import io.github.artificialturtill.foundation.network.HairUpdatePayload;
 import io.github.artificialturtill.foundation.network.PublicLook;
 import io.github.artificialturtill.foundation.network.ResultPayload;
 import net.minecraft.nbt.CompoundTag;
@@ -33,6 +34,24 @@ public final class CharacterService {
             if (!player.isAlive() || player.isSpectator()) throw new IllegalArgumentException("Character creation requires a living player.");
             profile.create(FoundationApi.content(), request.race(), request.powerType(), request.characterClass(), request.appearance());
             VanillaBridge.apply(player);
+            reply(serverPlayer, "");
+        } catch (IllegalArgumentException e) {
+            reply(serverPlayer, e.getMessage());
+        }
+        sync(player, true);
+    }
+
+    /**
+     * The hairstyle manager's Done (DBC+ HairService). Adaptation: DBC needed Barber Scissors after the free creation
+     * edit; the Foundation has no items, so the hairstyle can be changed at any time.
+     */
+    public static void handleHair(Player player, HairUpdatePayload request) {
+        if (!(player instanceof ServerPlayer serverPlayer)) return;
+        CharacterProfile profile = profile(player);
+        if (!profile.acceptClick(player.tickCount)) return;
+        try {
+            Fighter f = profile.fighter();
+            f.setAppearance(f.appearance().withHair(HairCode.upgrade(request.code()), request.color()));
             reply(serverPlayer, "");
         } catch (IllegalArgumentException e) {
             reply(serverPlayer, e.getMessage());

@@ -73,12 +73,13 @@ click = use / next, right click = previous; the game keeps running. The centre c
 | Turbo / Qi Surge | on / off (same as R) |
 | Transform into | which form G aims for: first available or a chosen one (cycles); "None yet" without forms |
 | Character | opens the sheet (or the creation wizard) |
+| Hairstyle | opens the Barber Menu / hairstyle manager ([[Races and Appearance]]) |
 | Skills | opens the Skills tab |
 | Transformations | opens the Transformations tab |
 | Resource HUD | shows / hides the HUD bars |
 
 Add-ons add cells from their client code with `QuickMenu.register(new QuickMenu.Entry(id, title, value, colour,
-available, activate))`; cells fill the grid in registration order (two free cells today).
+available, activate))`; cells fill the grid in registration order (one free cell today).
 
 ## Commands (operators)
 `/foundation content | info <player> | erase <player> | tp <player> <amount> | attribute <player> <index> <value> |

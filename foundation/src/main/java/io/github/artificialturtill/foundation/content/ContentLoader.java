@@ -145,7 +145,7 @@ public final class ContentLoader {
         for (Map<String, Object> s : maps(o, "starting")) starting.put((String) s.get("power_type"), ints(s.get("values")));
         Object lookValue = o.get("appearance");
         @SuppressWarnings("unchecked") Map<String, Object> look = lookValue instanceof Runtime.ArsnObject a ? a.toMap() : (Map<String, Object>) lookValue;
-        AppearanceOptions appearance = new AppearanceOptions(colors(look.get("skin_colors")), num(look.get("hair_styles")).intValue(),
+        AppearanceOptions appearance = new AppearanceOptions(colors(look.get("skin_colors")), (Boolean) look.get("hair"),
             colors(look.get("hair_colors")), colors(look.get("eye_colors")), num(look.get("body_types")).intValue(),
             num(look.get("min_height")).intValue(), num(look.get("max_height")).intValue());
         @SuppressWarnings("unchecked") List<String> genders = List.copyOf((List<String>) o.get("genders"));

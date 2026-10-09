@@ -55,9 +55,10 @@
 @StartingOverride { power_type string, values list(int) }
 
 # What the creation wizard offers for a race. Colours are "#RRGGBB" presets; heights are percent of the normal size.
+# hair: the race has hair (custom hairstyle manager); hair_colors are quick presets, the colour picker allows any.
 @AppearanceOptions {
   skin_colors list(string) [len(skin_colors) > 0],
-  hair_styles int [hair_styles >= 0],
+  hair bool: true,
   hair_colors list(string),
   eye_colors list(string) [len(eye_colors) > 0],
   body_types int [body_types > 0],

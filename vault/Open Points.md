@@ -4,15 +4,15 @@ tags: [index]
 # Open Points
 
 ## Not verified yet
-- Graphical client: creation wizard, character sheet, Skills / Transformations tabs, X menu, HUD, keys and the Qi
-  Surge run were compiled but not used in a real client (the build host has no display). Server-side behaviour is
-  covered by GameTests.
+- Graphical client: checked on a virtual display in 0.1.2 (creation, hairstyle manager, sheet, HUD, C / R / X, Qi
+  Surge speed); the Skills and Transformations tabs, G / H and Natural characters were not clicked through yet. A
+  real screen / GUI scale other than the default was not tried.
 - Multiplayer: public look sync to other players, two characters fighting each other.
 
 ## Foundation engine
-- **Appearance renderer**: skin, hair style / colour, eyes and body type are chosen and saved but not drawn; only the
-  height (scale) is visible. Needs original models / textures (Dragonblock C+'s JBRA assets are JinGames' and are not
-  copied).
+- **Body renderer**: skin, eyes and body type are chosen and saved but not drawn (hair and height are). Needs
+  original models / textures (Dragonblock C+'s JBRA assets are JinGames' and are not copied).
+- Hair motion while charging / transforming (JRMCore shape change) and an option to require a barber item.
 - Transformation visuals: aura while charging, form colour on hair / aura (data is synced in `PublicLook`).
 - Energy attacks (`energy_power` statistic has no use yet) and other DBC concepts listed in
   [[DBC+ Extraction Map]] → "Concepts that can still be extracted".

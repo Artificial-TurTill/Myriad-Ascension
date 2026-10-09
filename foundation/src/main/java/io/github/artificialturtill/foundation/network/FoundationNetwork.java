@@ -18,6 +18,8 @@ public final class FoundationNetwork {
             (payload, context) -> context.enqueueWork(() -> CharacterService.handleAction(context.player(), payload)));
         registrar.playToServer(CreateCharacterPayload.TYPE, CreateCharacterPayload.CODEC,
             (payload, context) -> context.enqueueWork(() -> CharacterService.handleCreate(context.player(), payload)));
+        registrar.playToServer(HairUpdatePayload.TYPE, HairUpdatePayload.CODEC,
+            (payload, context) -> context.enqueueWork(() -> CharacterService.handleHair(context.player(), payload)));
         registrar.playToClient(CharacterSyncPayload.TYPE, CharacterSyncPayload.CODEC,
             (payload, context) -> context.enqueueWork(() -> { if (FMLEnvironment.dist.isClient()) ClientBridge.sync(payload); }));
         registrar.playToClient(ResultPayload.TYPE, ResultPayload.CODEC,

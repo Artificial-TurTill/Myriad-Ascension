@@ -23,10 +23,12 @@ import net.neoforged.neoforge.network.PacketDistributor;
  * by the server's own maths) and Summary with Accept. Nothing is sent before Accept; the server validates everything.
  * The selections are kept while the game runs (like JRMCore's static *Slcted fields).
  */
-public final class CreationScreen extends FoundationScreen {
+public final class CreationScreen extends FoundationScreen implements io.github.artificialturtill.foundation.client.hair.HairState.Preview {
     private static final int APPEARANCE = 0, POWER = 1, SUMMARY = 2;
     private static int page, raceIndex, powerIndex, classIndex;
-    private static int gender, skin, hairStyle, hairColor, eye, bodyType, height = 100;
+    private static int gender, skin, hairColor, eye, bodyType, height = 100;
+    /** The hairstyle code ("" = bald) from the hairstyle manager. */
+    private static String hair = io.github.artificialturtill.foundation.character.HairCode.DEFAULT;
     private static String lastRace = "";
 
     private CreationScreen() { super(Component.translatable("screen.ascension_foundation.creation")); }
@@ -49,7 +51,7 @@ public final class CreationScreen extends FoundationScreen {
         if (!race.id().equals(lastRace)) {
             lastRace = race.id();
             Appearance d = Appearance.defaults(race);
-            gender = d.gender(); skin = 0; hairStyle = d.hairStyle(); hairColor = 0; eye = 0; bodyType = 0; height = d.height();
+            gender = d.gender(); skin = 0; hair = d.hair(); hairColor = d.hairColor(); eye = 0; bodyType = 0; height = d.height();
             powerIndex = 0; classIndex = 0;
         }
         if (!race.genders().contains(gender == Appearance.MALE ? "male" : "female")) gender = 1 - gender;
@@ -57,14 +59,28 @@ public final class CreationScreen extends FoundationScreen {
         eye = Math.floorMod(eye, o.eyeColors().size());
         bodyType = Math.floorMod(bodyType, o.bodyTypes());
         height = Math.clamp(height, o.minHeight(), o.maxHeight());
-        if (o.canHaveHair()) { hairStyle = Math.clamp(hairStyle, -1, o.hairStyles() - 1); hairColor = Math.floorMod(hairColor, o.hairColors().size()); }
-        else hairStyle = -1;
+        if (!o.hair()) hair = "";
     }
     private static Appearance look() {
         AppearanceOptions o = race().appearance();
-        return new Appearance(gender, o.skinColors().get(skin), hairStyle, o.canHaveHair() ? o.hairColors().get(hairColor) : 0,
+        return new Appearance(gender, o.skinColors().get(skin), o.hair() ? hair : "", o.hair() ? hairColor : 0,
             o.eyeColors().get(eye), bodyType, height);
     }
+    @Override public String previewHair() { return race() == null ? "" : look().hair(); }
+    @Override public int previewColor() { return race() == null ? 0 : look().hairColor(); }
+    /** Cycles the race's quick hair colour presets (any colour comes from the hairstyle manager's picker). */
+    private static void cycleHairColor(List<Integer> presets, int direction) {
+        if (presets.isEmpty()) return;
+        int at = presets.indexOf(hairColor);
+        hairColor = presets.get(Math.floorMod(at < 0 ? (direction > 0 ? 0 : -1) : at + direction, presets.size()));
+    }
+    /** The hairstyle manager for the character being created: Done keeps the result here and returns. */
+    private static void openBarber() {
+        io.github.artificialturtill.foundation.client.hair.HairState.begin(hair, hairColor, race().appearance().hairColors(),
+            CreationScreen::open, r -> { hair = r.code(); hairColor = r.color(); });
+        net.minecraft.client.Minecraft.getInstance().setScreen(new io.github.artificialturtill.foundation.client.hair.BarberScreen());
+    }
+
     /** A throw-away character of the current choice, so the preview uses the real rules. */
     private static Fighter preview() {
         try { return Fighter.create(content(), race().id(), power().id(), characterClass().id(), look()); }
@@ -89,9 +105,10 @@ public final class CreationScreen extends FoundationScreen {
                 arrows(0, () -> raceIndex--, () -> raceIndex++);
                 if (race().genders().size() > 1) arrows(1, () -> gender = 1 - gender, () -> gender = 1 - gender);
                 arrows(2, () -> skin--, () -> skin++);
-                if (o.canHaveHair()) {
-                    arrows(3, () -> hairStyle = hairStyle <= -1 ? o.hairStyles() - 1 : hairStyle - 1, () -> hairStyle = hairStyle >= o.hairStyles() - 1 ? -1 : hairStyle + 1);
-                    arrows(4, () -> hairColor--, () -> hairColor++);
+                if (o.hair()) {
+                    addRenderableWidget(Button.builder(Component.translatable("hair.ascension_foundation.barber"), b -> openBarber())
+                        .bounds(left + 178, rowY(3) - 3, WIDTH - 186, 14).build());
+                    arrows(4, () -> cycleHairColor(o.hairColors(), -1), () -> cycleHairColor(o.hairColors(), 1));
                 }
                 arrows(5, () -> eye--, () -> eye++);
                 if (o.bodyTypes() > 1) arrows(6, () -> bodyType--, () -> bodyType++);
@@ -155,8 +172,8 @@ public final class CreationScreen extends FoundationScreen {
         row(g, 0, "race", Names.of("race", race().id()));
         row(g, 1, "gender", Component.translatable("screen.ascension_foundation.gender." + (gender == Appearance.MALE ? "male" : "female")));
         swatchRow(g, 2, "skin", look.skinColor());
-        if (o.canHaveHair()) {
-            row(g, 3, "hair", hairStyle < 0 ? Component.translatable("screen.ascension_foundation.bald") : Component.literal("#" + (hairStyle + 1)));
+        if (o.hair()) {
+            text(g, Component.translatable("screen.ascension_foundation.hair"), left + 110, rowY(3), DIM);
             swatchRow(g, 4, "hair_color", look.hairColor());
         } else row(g, 3, "hair", Component.translatable("screen.ascension_foundation.no_hair"));
         swatchRow(g, 5, "eyes", look.eyeColor());
@@ -208,7 +225,11 @@ public final class CreationScreen extends FoundationScreen {
             Component.translatable("screen.ascension_foundation.gender." + (gender == Appearance.MALE ? "male" : "female")).getString(), x, y += 12, TEXT);
         text(g, Component.translatable("screen.ascension_foundation.skin"), x, y += 12, DIM); swatch(g, x + 80, y, 40, look.skinColor());
         text(g, Component.translatable("screen.ascension_foundation.hair"), x, y += 12, DIM);
-        if (look.hairStyle() >= 0) { text(g, "#" + (look.hairStyle() + 1), x + 80, y, TEXT); swatch(g, x + 110, y, 30, look.hairColor()); }
+        if (!look.bald()) {
+            Component custom = Component.translatable("hair.ascension_foundation.custom");
+            text(g, custom, x + 80, y, TEXT);
+            swatch(g, x + 86 + font.width(custom), y, 24, look.hairColor());
+        }
         else text(g, Component.translatable("screen.ascension_foundation.bald"), x + 80, y, TEXT);
         text(g, Component.translatable("screen.ascension_foundation.eyes"), x, y += 12, DIM); swatch(g, x + 80, y, 40, look.eyeColor());
         pair(g, Component.translatable("screen.ascension_foundation.body_type"), "#" + (look.bodyType() + 1) + "  " + look.height() + " %", x, y += 12, TEXT);

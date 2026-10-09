@@ -35,8 +35,21 @@ public final class CharacterSheetScreen extends FoundationScreen {
         }
         addRenderableWidget(Button.builder(Component.literal("x" + amount), b -> { multiplier = (multiplier + 1) % 4; rebuildWidgets(); })
             .bounds(left + 8, attrY(f.powerType().attributeCount()) + 2, 36, 12).build());
+        if (f.race().appearance().hair())
+            addRenderableWidget(Button.builder(Component.translatable("hair.ascension_foundation.barber"), b -> openBarber())
+                .bounds(left + WIDTH - 78, top + HEIGHT - 18, 72, 14).build());
     }
     private int attrY(int i) { return top + 102 + i * 11; }
+
+    /** The Barber Menu for the own character: Done sends the hairstyle to the server, then returns to the sheet. */
+    public static void openBarber() {
+        Fighter f = ClientCharacter.fighter();
+        if (f == null) return;
+        var look = f.appearance();
+        io.github.artificialturtill.foundation.client.hair.HairState.begin(look.hair(), look.hairColor(), f.race().appearance().hairColors(),
+            CharacterSheetScreen::new, r -> PacketDistributor.sendToServer(new io.github.artificialturtill.foundation.network.HairUpdatePayload(r.code(), r.color())));
+        net.minecraft.client.Minecraft.getInstance().setScreen(new io.github.artificialturtill.foundation.client.hair.BarberScreen());
+    }
 
     @Override protected void drawContent(GuiGraphics g, int mx, int my) {
         Fighter f = ClientCharacter.fighter();

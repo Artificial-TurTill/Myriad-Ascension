@@ -7,7 +7,7 @@ Two mods for **Minecraft 1.21.1 / NeoForge**:
 | **Ascension Foundation** | `ascension_foundation` | `ascension_foundation-<version>.jar` | The character engine extracted from Dragonblock C+ (its JRMCore layer): races and appearance, power types, attributes and statistics, classes, Training Points, power release, skills, transformations with mastery, Body-as-life combat, creation wizard, character sheet, HUD. |
 | **Myriad Realm** | `myriad_realm` | `myriad_realm-<version>.jar` | The cultivation add-on. **Requires the Foundation.** Adds Qi (its own power type, every attribute starts at 1, Qi Surge), its classes and skills. Transformations come later. |
 
-Install both jars. Current version: **0.1.1-dev** (network protocol 2, save schema 1).
+Install both jars. Current version: **0.1.2-dev** (network protocol 3, save schema 2).
 
 ## In game
 - **V**: character menu. Without a character it opens the creation wizard (Appearance → Power Type → Summary).
@@ -21,6 +21,9 @@ Install both jars. Current version: **0.1.1-dev** (network protocol 2, save sche
 | H | Back to base form |
 | R | Qi Surge (Turbo) on / off: run faster for Qi per second |
 | X (hold) | X menu: hover a cell, release X (left / right click cycles) |
+
+Hairstyle: the JRMCore / Dragonblock C+ hairstyle manager (Barber Menu, five-page editor, presets, colour picker) from
+the creation wizard, the character sheet (Hairstyle button) or the X menu.
 
 - Character sheet: spend TP on attributes ("+", UC multiplier x1/x10/x100/x1000), Skills tab, Transformations tab.
 - Operators: `/foundation content | info | tp | attribute | skill | mastery | release | alignment | restore | erase`.

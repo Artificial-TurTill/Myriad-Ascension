@@ -8,6 +8,7 @@ Channel: dev (development builds). Both jars share the version for now.
 
 | Version | Date | Title | Protocol | Schema | Commit | Bugs fixed |
 | --- | --- | --- | --- | --- | --- | --- |
+| [[0.1.2]] | 2026-10-09 | Hairstyle manager restored | 3 | 2 | see note | 0 |
 | [[0.1.1]] | 2026-10-09 | Key layout, Qi Surge (Turbo), X menu, no transformations yet | 2 | 1 | `58f737b` | 0 |
 | [[0.1.0]] | 2026-10-09 | Foundation extracted from Dragonblock C+, Myriad Realm add-on | 1 | 1 | `b54bd4f` | 0 |
 
