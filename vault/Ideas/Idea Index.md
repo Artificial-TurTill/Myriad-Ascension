@@ -24,5 +24,5 @@ rejected.
 | [[IDEA-009 Medicines, Poisons and Martial Tools]] | content | Medicines, Poisons and Martial Tools | parked | - |
 | [[IDEA-010 Empire Politics]] | system | Empire Politics | parked | - |
 
-The example transformation **Qi Surge** in `transformations.arsn` is a placeholder, not an idea: replace it with the
-first designed transformation.
+Transformations are not introduced yet (decision 2026-10-09); `transformations.arsn` is empty and ready.
+**Qi Surge** is Qi's Turbo (R), not a transformation.

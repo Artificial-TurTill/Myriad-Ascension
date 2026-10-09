@@ -12,7 +12,8 @@
 
 # One statistic computed from one attribute: ceil(per_attribute x attribute x (1 + race% + class% + skill bonus)).
 # released: the shown/used value is scaled by the power release (DBC Melee, Defense, Ki Power).
-# role: what the engine does with it: melee, defense, body, stamina, energy_power, energy_pool, health ("" = display).
+# role: what the engine does with it: melee, defense, body, stamina, energy_power, energy_pool, health, speed
+# ("" = display). speed: the running speed of Turbo (DBC statInc SPEED; the attribute is DBC's DEX).
 @StatDef {
   key string,
   attribute int [attribute >= 0],
@@ -23,6 +24,7 @@
 
 # A power type (JRMCore Pwrtyp: Natural, Ki, ...). life "vanilla" keeps the hearts (Natural), "body" makes Body the
 # only life (DBC). energy "" = no energy resource, otherwise the lang suffix of the resource (e.g. "qi").
+# turbo: the power type has DBC Turbo (toggle key; needs release and energy, a speed statistic for the run speed).
 @PowerType {
   id! unique string,
   energy string: "",
@@ -35,6 +37,7 @@
   capacity_attribute int: -1,
   tp_attribute int: -1,
   passive_defense int: 20,
+  turbo bool: false,
   order int: 0
 }
 
@@ -76,6 +79,7 @@
 # A skill. power_type "" = any. tp_cost / capacity_cost: per level step (the last entry repeats).
 # effect: what the engine does per level: energy_pool (+per_level max energy), meditation (+per_level % of max
 # energy per second while charging), endurance (-per_level damage taken), recovery (+per_level body regeneration),
+# dash (+per_level on the Turbo run speed, DBC Dash 0.075),
 # "" = concept only (no engine effect yet). learn: "sheet" (bought in the Skills tab) or "teacher" (given by command
 # or by add-on code, e.g. a master).
 @SkillDef {

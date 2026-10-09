@@ -16,7 +16,7 @@ full design is in `archive/alpha-16/README.md (Core Combat Concept), archive/alp
 Stored Qi, active output level, normal circulation vs. Burst (R), suppression (H); higher output = stronger and faster drain.
 
 ## How it could fit now
-The Foundation's power release (charge key G, Shift+G lower) is the DBC form of this. Burst could be a transformation; allocation (body / movement / weapon) is an engine need.
+The Foundation's power release (charge key C, Shift+C lower) is the DBC form of this, and Qi Surge (R, DBC Turbo) is the closest thing to Burst today. Allocation (body / movement / weapon) is an engine need.
 
 ## Open questions
 - Keep, change or drop?

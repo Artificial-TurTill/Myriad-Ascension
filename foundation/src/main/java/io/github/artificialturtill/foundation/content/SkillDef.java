@@ -6,7 +6,7 @@ package io.github.artificialturtill.foundation.content;
  */
 public record SkillDef(String id, String powerType, int maxLevel, int[] tpCost, int[] capacityCost, String effect,
                        float perLevel, String learn, int order) {
-    public static final String ENERGY_POOL = "energy_pool", MEDITATION = "meditation", ENDURANCE = "endurance", RECOVERY = "recovery";
+    public static final String ENERGY_POOL = "energy_pool", MEDITATION = "meditation", ENDURANCE = "endurance", RECOVERY = "recovery", DASH = "dash";
     public static final String LEARN_SHEET = "sheet", LEARN_TEACHER = "teacher";
 
     public boolean availableTo(String powerTypeId) { return powerType.isEmpty() || powerType.equals(powerTypeId); }

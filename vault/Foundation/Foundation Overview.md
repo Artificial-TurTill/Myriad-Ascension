@@ -54,12 +54,31 @@ public final class MyAddon {
 | Key | Function |
 | --- | --- |
 | V | Character menu (creation wizard without a character) |
-| G (hold) | Charge: power release +5 % per second; with a meditation skill also refills energy |
-| Shift + G (hold) | Lower the power release 5 % per second |
-| R | Transform (ascend to the selected or first available form) |
-| Z | Descend to the base form |
+| C (hold) | Charge: power release +5 % per second (twice as fast in Turbo); with a meditation skill also refills energy |
+| Shift + C (hold) | Lower the power release 5 % per second |
+| G | Transform (ascend to the selected or first available form) |
+| H | Descend to the base form |
+| R | Turbo on / off (Myriad Realm: **Qi Surge**), see [[Combat and Resources]] |
+| X (hold) | Quick menu (below) |
 
-All keys can be changed in the controls menu (category "Ascension Foundation").
+All keys can be changed in the controls menu (category "Ascension Foundation"). C and X are also the vanilla
+creative hotbar save / load keys; both actions fire (only matters in creative).
+
+## X menu (quick menu)
+Alpha-16's translucent in-world grid, now part of the Foundation: hold X, hover a cell, release X to use it; left
+click = use / next, right click = previous; the game keeps running. The centre cell is "More" (future controls).
+
+| Cell | Function |
+| --- | --- |
+| Turbo / Qi Surge | on / off (same as R) |
+| Transform into | which form G aims for: first available or a chosen one (cycles); "None yet" without forms |
+| Character | opens the sheet (or the creation wizard) |
+| Skills | opens the Skills tab |
+| Transformations | opens the Transformations tab |
+| Resource HUD | shows / hides the HUD bars |
+
+Add-ons add cells from their client code with `QuickMenu.register(new QuickMenu.Entry(id, title, value, colour,
+available, activate))`; cells fill the grid in registration order (two free cells today).
 
 ## Commands (operators)
 `/foundation content | info <player> | erase <player> | tp <player> <amount> | attribute <player> <index> <value> |

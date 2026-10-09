@@ -57,4 +57,13 @@ class StatMathTest {
         assertEquals(1, StatMath.alignmentGroup(50));
         assertEquals(2, StatMath.alignmentGroup(10));
     }
+    @Test void turboRunFactorFollowsSpdFrm() {
+        StatDef speed = new StatDef("speed", 1, 1.0F, false, StatDef.SPEED);
+        float human = StatMath.statInc(speed, 100, 10, 0F) * 0.01F; // DBC Human: +10 % speed
+        assertEquals(1.1F, human, 1e-6F);
+        assertEquals(1.65F, StatMath.runFactor(human, 0, 10, 10_000, 100, true), 1e-5F);   // (1 + 0.5) x 1.1
+        assertEquals(0.825F, StatMath.runFactor(human, 0, 10, 10_000, 50, false), 1e-5F); // (0.5 + 0.25) x 1.1
+        assertEquals(2, StatMath.turboCost(1.65F));
+        assertEquals(3.25F, StatMath.runFactor(1F, 0.075 * 10, 10_000, 10_000, 100, true), 1e-5F); // 1 + (0.75 Dash 10 + 1 DEX at the limit + 0.5)
+    }
 }

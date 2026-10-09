@@ -14,7 +14,7 @@ comments, checked when the game loads.
 | `…/ascension_foundation/arsn/foundation.arsn` | Foundation | Natural, Unclassed, Human |
 | `myriad-realm/src/main/resources/data/myriad_realm/arsn/qi.arsn` | Myriad Realm | Qi power type and classes |
 | `…/myriad_realm/arsn/skills.arsn` | Myriad Realm | Qi skills |
-| `…/myriad_realm/arsn/transformations.arsn` | Myriad Realm | Qi transformations |
+| `…/myriad_realm/arsn/transformations.arsn` | Myriad Realm | Qi transformations (none yet) |
 
 New Myriad Realm files are added to `MyriadRealm.CONTENT` (Java list of file names).
 

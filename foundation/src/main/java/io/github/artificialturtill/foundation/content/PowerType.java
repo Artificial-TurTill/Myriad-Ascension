@@ -5,10 +5,11 @@ import java.util.List;
 /**
  * A power type (JRMCore Pwrtyp): Natural (built in), Ki in Dragonblock C+, Qi in Myriad Realm. It owns its attributes,
  * statistics, starting attributes and classes. {@code bodyLife}: Body is the only life (DBC); otherwise vanilla hearts.
+ * {@code turbo}: the power type has DBC Turbo (Myriad Realm names it Qi Surge for Qi).
  */
 public record PowerType(String id, String energy, boolean bodyLife, List<AttributeDef> attributes, List<StatDef> stats,
                         int[] starting, int attributeLimit, boolean release, int capacityAttribute, int tpAttribute,
-                        int passiveDefense, int order) {
+                        int passiveDefense, boolean turbo, int order) {
     public boolean hasEnergy() { return !energy.isEmpty(); }
     public int attributeCount() { return attributes.size(); }
     /** Index of the first statistic with that role, or -1. */

@@ -25,6 +25,7 @@ the capacity attribute (DBC Mind); forgetting frees the reservation without refu
 | `meditation` | while charging: + per_level % of max energy per second, costs 1 % max Stamina | Meditation (MD) |
 | `endurance` | − per_level of damage taken | Endurance (EN) 3 % |
 | `recovery` | + per_level × Body regeneration | (Foundation) |
+| `dash` | + per_level on the Turbo run factor | Dash (DS) 0.075 |
 
 A new mechanic (e.g. flight, dash, sense) is a new engine effect: Foundation code + test, then content can use it.
 

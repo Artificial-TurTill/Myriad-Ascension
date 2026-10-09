@@ -54,7 +54,8 @@ public final class CharacterService {
         if (!profile.acceptClick(player.tickCount)) return;
         try {
             if (!player.isAlive() || player.isSpectator()) throw new IllegalArgumentException("Character changes require a living player.");
-            apply(profile, request);
+            if (request.action() == CharacterActionPayload.TURBO) toggleTurbo(player, profile.fighter());
+            else apply(profile, request);
             VanillaBridge.apply(player);
             if (request.action() != CharacterActionPayload.REFRESH) reply(serverPlayer, "");
         } catch (IllegalArgumentException e) {
@@ -76,6 +77,21 @@ public final class CharacterService {
         }
     }
 
+    /** DBCKiTech.TurboMode: R toggles; switching on needs release above 0 % and energy. */
+    public static void toggleTurbo(Player player, Fighter f) {
+        CharacterRuntime runtime = player.getData(FoundationAttachments.RUNTIME);
+        if (runtime.turbo) { runtime.turbo = false; return; }
+        String reason = f.turboBlocker();
+        if (reason != null) throw new IllegalArgumentException(reason);
+        runtime.turbo = true;
+        runtime.turboTicks = 0;
+    }
+    /** Turbo pays per second only while the run can happen (DashKi: not flying, swimming, riding or gliding). */
+    static boolean turboRuns(Player player) {
+        return !player.getAbilities().flying && !player.isFallFlying() && !player.isPassenger() && !player.isInWaterOrBubble()
+            && !player.isInLava() && !player.isSpectator();
+    }
+
     private static void reply(ServerPlayer player, String message) { PacketDistributor.sendToPlayer(player, new ResultPayload(message)); }
 
     /** Sends the owner snapshot (only when it changed unless forced) and refreshes the public look. */
@@ -84,7 +100,7 @@ public final class CharacterService {
         CharacterProfile profile = profile(player);
         CharacterRuntime runtime = player.getData(FoundationAttachments.RUNTIME);
         Fighter f = profile.fighterOrNull();
-        PublicLook look = f == null ? PublicLook.NONE : PublicLook.of(f, runtime.charging);
+        PublicLook look = f == null ? PublicLook.NONE : PublicLook.of(f, runtime.charging, runtime.turbo);
         if (!look.equals(player.getData(FoundationAttachments.LOOK))) player.setData(FoundationAttachments.LOOK, look);
         CompoundTag tag = f == null ? new CompoundTag() : f.save();
         if (!force && tag.equals(runtime.lastSent)) return;
@@ -95,7 +111,7 @@ public final class CharacterService {
     /** Erase (operator command): the player starts over at the creation wizard. */
     public static void erase(ServerPlayer player) {
         profile(player).erase();
-        player.getData(FoundationAttachments.RUNTIME).charging = false;
+        player.getData(FoundationAttachments.RUNTIME).stop();
         VanillaBridge.apply(player);
         sync(player, true);
     }
@@ -113,11 +129,12 @@ public final class CharacterService {
         Player player = event.getEntity();
         Fighter f = fighter(player);
         if (f != null && !event.isEndConquered()) f.resetAfterDeath();
+        player.getData(FoundationAttachments.RUNTIME).stop();
         VanillaBridge.apply(player);
         sync(player, true);
     }
     public static void changeDimension(PlayerEvent.PlayerChangedDimensionEvent event) {
-        event.getEntity().getData(FoundationAttachments.RUNTIME).charging = false;
+        event.getEntity().getData(FoundationAttachments.RUNTIME).stop();
         sync(event.getEntity(), true);
     }
 
@@ -130,11 +147,19 @@ public final class CharacterService {
         if (!player.isAlive()) return;
         f.tickRecoveryDelay();
         CharacterRuntime runtime = player.getData(FoundationAttachments.RUNTIME);
-        if (player.tickCount % 20 == 0) {
-            if (runtime.charging) f.chargeSecond(runtime.lowering);
-            f.tickFormSecond();
+        // Turbo ends at 0 % release or without energy; while it runs it costs (int)(1 + run factor) energy per second.
+        if (runtime.turbo && f.turboMustStop()) runtime.turbo = false;
+        if (runtime.turbo && turboRuns(player) && ++runtime.turboTicks >= 20) {
+            runtime.turboTicks = 0;
+            if (!player.getAbilities().instabuild && !f.spendTurboSecond()) runtime.turbo = false;
         }
-        if (player.tickCount % 100 == 0) f.recover(player.getFoodData().getFoodLevel() > 0);
+        // ChargeKi: one 5 % step per 20 ticks, twice as fast with Turbo.
+        if (runtime.charging && ++runtime.chargeTicks >= (runtime.turbo ? 10 : 20)) {
+            runtime.chargeTicks = 0;
+            f.chargeSecond(runtime.lowering);
+        }
+        if (player.tickCount % 20 == 0) f.tickFormSecond();
+        if (player.tickCount % 100 == 0) f.recover(player.getFoodData().getFoodLevel() > 0, runtime.turbo);
         if (player.tickCount % 20 == 0) {
             VanillaBridge.apply(player);
             sync(player, false);

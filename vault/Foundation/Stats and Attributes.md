@@ -32,6 +32,7 @@ Each statistic grows from one attribute:
 | `energy_pool` | Maximum energy (Ki / Qi). |
 | `energy_power` | Shown on the sheet; reserved for energy attacks (open point). |
 | `health` | Natural: vanilla max health modifier. |
+| `speed` | Turbo run speed: statInc of 100 points × 0.01, its attribute is DBC's DEX ([[Combat and Resources]]); shown as a % on the sheet. |
 | `""` | Display only. |
 
 ## Level

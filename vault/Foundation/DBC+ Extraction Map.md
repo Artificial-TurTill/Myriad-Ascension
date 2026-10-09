@@ -21,6 +21,7 @@ and what stayed behind.
 | `TransformSkill`, `LegacyForms`, `TransformService` (forms, mastery) | ARSN `Transformation` + `Fighter.ascend / descend / tickFormSecond` | generic chains, drain %, mastery relief |
 | Power types `Natural` / `Ki` (JRMCore Pwrtyps) | `PowerType` (Natural built in) | Ki is not shipped; Qi is Myriad Realm's own |
 | Release (charge key, handleRls) | `Fighter.changeRelease / chargeSecond` | Meditation as an effect |
+| Turbo (`AbilityService.toggleTurbo`, `MovementService` DashKi run, `DashClient`) | `CharacterService.toggleTurbo`, `Fighter.runFactor / turboCost`, `TurboClient` | power-type flag + `speed` statistic; only Turbo runs (not sprint); no flight |
 | TP per hit (jrmcExp) | `Fighter.rewardHit` | chance 25 % for every race |
 | Alignment (jrmcAlign 67 %) | `Fighter.alignment` | changes only by command / add-on so far |
 | `CreationScreen` (GUI 0 / 2 / 3) | `CreationScreen` | procedural drawing, data-driven rows |
@@ -51,3 +52,6 @@ generic Foundation feature with a skill effect or content field, then Myriad Rea
 5. GUIs drawn with fills instead of JRMCore textures.
 6. Height as the 1.21 `scale` attribute (no JRMCore counterpart).
 7. Release changes are allowed in any form (DBC blocked lowering in Kaioken and for Humans / Namekians in a form).
+8. Turbo runs only with Turbo on; DBC's DashKi also ran while sprinting (sprinting stays vanilla here).
+9. Turbo's speed bonus of the race is data (Human has none; DBC Human had +10 % speed).
+10. The X quick menu is not from DBC: it is alpha-16's cultivation quick menu, rebuilt as a generic Foundation menu.

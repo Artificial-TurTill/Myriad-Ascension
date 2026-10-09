@@ -32,6 +32,10 @@ public final class Names {
         return power.hasEnergy() ? Component.translatableWithFallback("resource." + namespace(power) + "." + power.energy(), pretty(power.energy()))
             : Component.literal("-");
     }
+    /** The power type's Turbo name ("turbo.<ns>.<path>", e.g. Qi Surge), "Turbo" by default. */
+    public static Component turbo(PowerType power) {
+        return Component.translatableWithFallback("turbo." + power.id().replace(':', '.'), "Turbo");
+    }
     public static String pretty(String path) {
         StringBuilder out = new StringBuilder();
         for (String word : path.split("[_/]")) {

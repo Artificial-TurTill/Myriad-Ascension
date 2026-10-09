@@ -82,6 +82,13 @@ public final class CharacterSheetScreen extends FoundationScreen {
         for (int s = 0; s < p.stats().size(); s++) {
             StatDef def = p.stats().get(s);
             y += 11;
+            if (def.role().equals(StatDef.SPEED)) {
+                // JRMCore sheet "Running speed": spdFrm at 100 % release with Turbo.
+                pair(g, Names.stat(p, s), f.turboSpeedPercent() + " %", rx, y, BLUE);
+                hover(Component.translatable("screen.ascension_foundation.speed_desc", Names.turbo(p), p.attributes().get(def.attribute()).shortName()),
+                    rx, y, WIDTH - 166, 10, mx, my);
+                continue;
+            }
             String value = def.released() ? Names.num(f.output(s)) + " / " + Names.num(f.fullStat(s)) : Names.num(f.output(s));
             pair(g, Names.stat(p, s), value, rx, y, BLUE);
             float inc = StatMath.statInc(def, f.statBonus(s), f.skillBonus(s));

@@ -17,8 +17,22 @@ tags: [foundation, combat]
 - Empty food bar: Body loses 5 % of its maximum instead.
 
 ## Power release
-0-100 % in 5 % steps (new characters 0 %, after death 0 %). Hold G: +5 % per second; Shift + G: −5 % per second.
-Released statistics scale with it; high release slows Body / energy regeneration.
+0-100 % in 5 % steps (new characters 0 %, after death 0 %). Hold C: +5 % per second; Shift + C: −5 % per second
+(both twice as fast while Turbo is on). Released statistics scale with it; high release slows Body / energy
+regeneration.
+
+## Turbo (DBC TurboMode; Myriad Realm: Qi Surge)
+For power types with `turbo: true` (needs an energy, a release and a `speed` statistic).
+- R toggles it. Switching on needs release above 0 % and energy; it switches itself off at 0 % release, without
+  energy or Body, on death, dimension change and logout.
+- While on (on foot: not flying, gliding, riding, swimming; not in creative): the horizontal motion is replaced by
+  `run factor × 0.25` blocks per tick in the input direction (DBC DashKi), costing `(int)(1 + run factor)` energy per
+  second. Run factor (JRMCoreH.spdFrm): `(0.5 + 0.5 + (dash + DEX / attribute_limit + 0.5) × release%) × speed`,
+  speed = statInc(speed statistic, 100) × 0.01 (race / class % included), DEX / limit is an integer division.
+- Charging steps twice as fast; passive energy regeneration pauses (Body and Stamina still regenerate).
+- No FOV change and head bobbing capped at the sprint pace while running.
+- The sheet's speed row shows the Turbo pace at 100 % release in percent (`(1 + dash + DEX / limit + 0.5) × speed`).
+- Adaptation: DBC also ran with sprint; here sprinting stays vanilla, only Turbo runs.
 
 ## Damage (JRMCoreEH + jrmcDam) for Body characters
 1. Vanilla armor / enchantment / effect / absorption reductions are switched off (for Body victims and for hits of

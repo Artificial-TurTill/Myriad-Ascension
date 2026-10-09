@@ -6,12 +6,12 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 
-/** The resource HUD (JRMCoreGuiBars): Body, energy and Stamina bars, power release and the active form, top left. */
+/** The resource HUD (JRMCoreGuiBars): Body, energy and Stamina bars, power release, Turbo and the active form, top left; switched off in the X menu. */
 public final class HudLayer {
     public static void render(GuiGraphics g, DeltaTracker delta) {
         Minecraft mc = Minecraft.getInstance();
         Fighter f = ClientCharacter.fighter();
-        if (f == null || mc.options.hideGui || mc.player == null || mc.player.isSpectator()) return;
+        if (f == null || !FoundationClient.hudVisible || mc.options.hideGui || mc.player == null || mc.player.isSpectator()) return;
         Fighter.Caps caps = f.caps();
         int x = 4, y = 4, w = 90;
         boolean any = false;
@@ -20,6 +20,8 @@ public final class HudLayer {
         if (caps.stamina() > 0) { line(g, mc, x, y, w, f.stamina(), caps.stamina(), 0xFFE8C040, Component.translatable("screen.ascension_foundation.stamina")); y += 11; any = true; }
         if (!any) return;
         String status = f.powerType().release() ? f.release() + " %" : "";
+        if (mc.player.getData(io.github.artificialturtill.foundation.character.FoundationAttachments.LOOK).turbo())
+            status += (status.isEmpty() ? "" : "  ") + Names.turbo(f.powerType()).getString();
         if (!f.inBaseForm()) status += (status.isEmpty() ? "" : "  ") + Names.of("form", f.form()).getString();
         if (!status.isEmpty()) g.drawString(mc.font, status, x, y + 1, 0xFFFFD27F, true);
     }

@@ -6,6 +6,9 @@ tags: [foundation, transformations]
 DBC forms as data. A transformation multiplies attributes for the released statistics while it drains energy and
 Stamina; time in the form raises mastery, which lowers the drain.
 
+**Status:** the engine is ready (fields, keys G / H, Transformations tab, X menu cell), but no transformation content
+exists yet: Myriad Realm introduces its transformations later.
+
 | Field | Meaning |
 | --- | --- |
 | `id` | `namespace:path` |
@@ -24,10 +27,11 @@ Stamina; time in the form raises mastery, which lowers the drain.
 | `order` | position in the list; also the order R tries forms in |
 
 ## Rules
-- **R (ascend)**: the form selected in the Transformations tab if it is the next step from the current form,
+- **G (ascend)**: the form selected in the Transformations tab if it is the next step from the current form,
   otherwise the first reachable form (in `order`). Requirements: previous form, skill level, release ≥ min_release,
   energy > 0.
-- **Z (descend)**: back to the base form.
+- **H (descend)**: back to the base form.
+- The target can also be chosen in the X menu ("Transform into").
 - Every second: drain `ceil(max × drain% × (1 − relief × mastery / max))`; not enough energy / Stamina or release
   below the minimum → back to base. Mastery + `mastery_gain`.
 - Released statistics (Melee, Defense, energy power) use `attribute × multiplier`; pools (Body, energy, Stamina) do

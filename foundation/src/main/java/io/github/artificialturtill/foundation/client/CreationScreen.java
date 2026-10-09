@@ -185,6 +185,12 @@ public final class CreationScreen extends FoundationScreen {
         }
         for (int s = 0; s < p.stats().size(); s++) {
             int yy = y + s * 10;
+            if (p.stats().get(s).role().equals(io.github.artificialturtill.foundation.content.StatDef.SPEED)) {
+                pair(g, Names.stat(p, s), f.turboSpeedPercent() + " %", left + 190, yy, BLUE);
+                hover(Component.translatable("screen.ascension_foundation.speed_desc", Names.turbo(p), p.attributes().get(p.stats().get(s).attribute()).shortName()),
+                    left + 190, yy, WIDTH - 196, 10, mouseX, mouseY);
+                continue;
+            }
             pair(g, Names.stat(p, s), Names.num(f.fullStat(s)), left + 190, yy, BLUE);
             float inc = StatMath.statInc(p.stats().get(s), f.statBonus(s), f.skillBonus(s));
             hover(Component.translatable("screen.ascension_foundation.stat_inc", p.attributes().get(p.stats().get(s).attribute()).shortName(), inc),

@@ -6,5 +6,5 @@ package io.github.artificialturtill.foundation.content;
  */
 public record StatDef(String key, int attribute, float perAttribute, boolean released, String role) {
     public static final String MELEE = "melee", DEFENSE = "defense", BODY = "body", STAMINA = "stamina",
-        ENERGY_POWER = "energy_power", ENERGY_POOL = "energy_pool", HEALTH = "health";
+        ENERGY_POWER = "energy_power", ENERGY_POOL = "energy_pool", HEALTH = "health", SPEED = "speed";
 }

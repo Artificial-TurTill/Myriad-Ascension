@@ -8,6 +8,7 @@ Channel: dev (development builds). Both jars share the version for now.
 
 | Version | Date | Title | Protocol | Schema | Commit | Bugs fixed |
 | --- | --- | --- | --- | --- | --- | --- |
+| [[0.1.1]] | 2026-10-09 | Key layout, Qi Surge (Turbo), X menu, no transformations yet | 2 | 1 | see note | 0 |
 | [[0.1.0]] | 2026-10-09 | Foundation extracted from Dragonblock C+, Myriad Realm add-on | 1 | 1 | `b54bd4f` | 0 |
 
 New version: copy [[Templates/Version]], link the fixed bugs and implemented ideas, add a row above and update [[Home]].

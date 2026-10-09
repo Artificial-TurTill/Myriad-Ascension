@@ -1,7 +1,8 @@
 # Myriad Realm: the Qi power type and its classes.
 #
 # Qi is Myriad Realm's own energy system (separate from Dragonblock C+'s Ki). The structure follows the JRMCore Ki
-# power type (six attributes, six statistics, three classes, power release, Training Points), but every Qi character
+# power type (six attributes, six statistics + running speed, three classes, power release, Turbo, Training Points),
+# but every Qi character
 # starts with 1 in each attribute: a cultivator begins as an ordinary mortal body.
 # The per-attribute increases are the JRMCore 1.3.51 Ki defaults (statInc[1]) as a starting balance; tune them here.
 
@@ -18,33 +19,36 @@ StatDef qi_body { key: "body", attribute: 2, per_attribute: 20.0, role: "body" }
 StatDef qi_stamina { key: "stamina", attribute: 2, per_attribute: 3.5, role: "stamina" }
 StatDef qi_power { key: "qi_power", attribute: 3, per_attribute: 5.2, released: true, role: "energy_power" }
 StatDef qi_pool { key: "qi_pool", attribute: 5, per_attribute: 40.0, role: "energy_pool" }
+# Running speed of Qi Surge (DBC Turbo): statInc SPEED 1.0 per point, grows with DEX (DEX / attribute_limit).
+StatDef qi_speed { key: "speed", attribute: 1, per_attribute: 1.0, role: "speed" }
 
 PowerType qi {
   id: "myriad_realm:qi",
   energy: "qi",
   life: "body",
   attributes: [qi_str, qi_dex, qi_con, qi_wil, qi_mnd, qi_spi],
-  stats: [qi_melee, qi_defense, qi_body, qi_stamina, qi_power, qi_pool],
+  stats: [qi_melee, qi_defense, qi_body, qi_stamina, qi_power, qi_pool, qi_speed],
   starting: [1, 1, 1, 1, 1, 1],
   attribute_limit: 10000,
   release: true,
   capacity_attribute: 4,
   tp_attribute: 4,
   passive_defense: 20,
+  turbo: true,
   order: 10
 }
 
 # Classes mirror JRMCore's Martial Artist / Spiritualist / Warrior (statIncBonusClass[1]).
-# stat_bonus order: melee, defense, body, stamina, qi_power, qi_pool. recovery_bonus: body, qi, stamina.
+# stat_bonus order: melee, defense, body, stamina, qi_power, qi_pool, speed. recovery_bonus: body, qi, stamina.
 CharacterClass martial_cultivator {
   id: "myriad_realm:martial_cultivator", power_type: "myriad_realm:qi",
-  stat_bonus: [0, 0, 0, 0, 0, 0], recovery_bonus: [0, 0, 0], order: 0
+  stat_bonus: [0, 0, 0, 0, 0, 0, 0], recovery_bonus: [0, 0, 0], order: 0
 }
 CharacterClass spirit_cultivator {
   id: "myriad_realm:spirit_cultivator", power_type: "myriad_realm:qi",
-  stat_bonus: [-10, 10, -10, -10, 10, 10], recovery_bonus: [-10, 10, -10], order: 1
+  stat_bonus: [-10, 10, -10, -10, 10, 10, 10], recovery_bonus: [-10, 10, -10], order: 1
 }
 CharacterClass body_cultivator {
   id: "myriad_realm:body_cultivator", power_type: "myriad_realm:qi",
-  stat_bonus: [10, -10, 10, 10, -10, -10], recovery_bonus: [10, -10, 10], order: 2
+  stat_bonus: [10, -10, 10, 10, -10, -10, -10], recovery_bonus: [10, -10, 10], order: 2
 }

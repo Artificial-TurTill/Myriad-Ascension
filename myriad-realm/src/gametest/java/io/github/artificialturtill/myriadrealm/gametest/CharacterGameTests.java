@@ -3,6 +3,7 @@ package io.github.artificialturtill.myriadrealm.gametest;
 import io.github.artificialturtill.foundation.api.FoundationApi;
 import io.github.artificialturtill.foundation.character.Appearance;
 import io.github.artificialturtill.foundation.character.CharacterProfile;
+import io.github.artificialturtill.foundation.character.CharacterRuntime;
 import io.github.artificialturtill.foundation.character.CharacterService;
 import io.github.artificialturtill.foundation.character.Fighter;
 import io.github.artificialturtill.foundation.character.FoundationAttachments;
@@ -19,6 +20,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.GameType;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
+import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 
 /** Both mods in a real server: content loaded by the Foundation, Qi characters from Myriad Realm, real damage events. */
 @GameTestHolder(MyriadRealm.MOD_ID)
@@ -102,6 +104,25 @@ public final class CharacterGameTests {
         test.assertTrue(loaded.hasCharacter() && loaded.fighter().tp() == 123 && loaded.fighter().characterClass().id().equals("myriad_realm:spirit_cultivator"),
             "The character must survive save and load");
         test.assertTrue(CharacterService.fighter(player) == f, "The service must see the attached character");
+        test.succeed();
+    }
+
+    @GameTest(template = "empty", timeoutTicks = 40)
+    public static void qiSurgeCostsQiAndStopsAtZeroRelease(GameTestHelper test) {
+        Player player = test.makeMockPlayer(GameType.SURVIVAL);
+        Fighter f = create(player, MyriadRealm.QI, "myriad_realm:martial_cultivator");
+        CharacterRuntime runtime = player.getData(FoundationAttachments.RUNTIME);
+        test.assertTrue(f.turboBlocker() != null, "Qi Surge must be refused at 0 % release");
+        f.setRelease(50);
+        CharacterService.toggleTurbo(player, f);
+        test.assertTrue(runtime.turbo, "Qi Surge must switch on with release and Qi");
+        int qi = f.energy();
+        for (int i = 0; i < 20; i++) { player.tickCount++; CharacterService.tick(new PlayerTickEvent.Post(player)); }
+        test.assertTrue(f.energy() == qi - f.turboCost(), "One second of Qi Surge costs (int)(1 + run factor) Qi, Qi " + f.energy());
+        f.setRelease(0);
+        player.tickCount++;
+        CharacterService.tick(new PlayerTickEvent.Post(player));
+        test.assertTrue(!runtime.turbo, "Qi Surge must stop at 0 % release");
         test.succeed();
     }
 }

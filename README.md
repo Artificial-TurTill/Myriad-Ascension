@@ -5,15 +5,23 @@ Two mods for **Minecraft 1.21.1 / NeoForge**:
 | Mod | Id | Jar | What it is |
 | --- | --- | --- | --- |
 | **Ascension Foundation** | `ascension_foundation` | `ascension_foundation-<version>.jar` | The character engine extracted from Dragonblock C+ (its JRMCore layer): races and appearance, power types, attributes and statistics, classes, Training Points, power release, skills, transformations with mastery, Body-as-life combat, creation wizard, character sheet, HUD. |
-| **Myriad Realm** | `myriad_realm` | `myriad_realm-<version>.jar` | The cultivation add-on. **Requires the Foundation.** Adds Qi (its own power type, every attribute starts at 1), its classes, skills and transformations. |
+| **Myriad Realm** | `myriad_realm` | `myriad_realm-<version>.jar` | The cultivation add-on. **Requires the Foundation.** Adds Qi (its own power type, every attribute starts at 1, Qi Surge), its classes and skills. Transformations come later. |
 
-Install both jars. Current version: **0.1.0-dev** (network protocol 1, save schema 1).
+Install both jars. Current version: **0.1.1-dev** (network protocol 2, save schema 1).
 
 ## In game
 - **V**: character menu. Without a character it opens the creation wizard (Appearance → Power Type → Summary).
   Choose **Human** and **Natural** (plain vanilla) or **Qi** (Myriad Realm).
-- **G** (hold): raise the power release; with Qi Meditation it also refills Qi. **Shift + G**: lower the release.
-- **R**: transform. **Z**: back to the base form.
+| Key | Function |
+| --- | --- |
+| V | Character menu (creation wizard if you have no character) |
+| C (hold) | Raise power release (with Qi Meditation also refills Qi) |
+| Shift + C | Lower power release |
+| G | Transform (no transformations exist yet) |
+| H | Back to base form |
+| R | Qi Surge (Turbo) on / off: run faster for Qi per second |
+| X (hold) | X menu: hover a cell, release X (left / right click cycles) |
+
 - Character sheet: spend TP on attributes ("+", UC multiplier x1/x10/x100/x1000), Skills tab, Transformations tab.
 - Operators: `/foundation content | info | tp | attribute | skill | mastery | release | alignment | restore | erase`.
 

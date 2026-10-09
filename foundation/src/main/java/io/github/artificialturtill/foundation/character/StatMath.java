@@ -27,6 +27,21 @@ public final class StatMath {
         float value = bs + (float) bonusPercent * 0.01F * bs + bs * skillBonus;
         return new BigDecimal(Float.toString(value)).setScale(1, RoundingMode.DOWN).floatValue();
     }
+    /** JRMCoreH.statInc(stat, attribute, …): the increase of {@code attribute} points, ROUND_DOWN to one decimal. */
+    public static float statInc(StatDef def, int attribute, int bonusPercent, float skillBonus) {
+        float bs = def.perAttribute() * (float) attribute;
+        float value = bs + (float) bonusPercent * 0.01F * bs + bs * skillBonus;
+        return new BigDecimal(Float.toString(value)).setScale(1, RoundingMode.DOWN).floatValue();
+    }
+    /**
+     * DBC Turbo / DashKi run factor (JRMCoreH.spdFrm): (0.5 + 0.5 when turbo + (dash + attribute / limit + 0.5) x
+     * release %) x speed, where speed = statInc(SPEED, 100) x 0.01 and attribute / limit keeps the integer division.
+     */
+    public static float runFactor(float speed, double dash, int attribute, int limit, int release, boolean turbo) {
+        return (0.5F + (turbo ? 0.5F : 0F) + ((float) dash + (float) (attribute / Math.max(1, limit)) + 0.5F) * (release * 0.01F)) * speed;
+    }
+    /** DashKi cost per second: (int)(1 + run factor) energy. */
+    public static int turboCost(float runFactor) { return (int) (1F + runFactor); }
     /** Current output of a release-scaled statistic: (int)(stat x 0.01 x release). */
     public static int released(int stat, int release) { return (int) ((double) stat * 0.01D * (double) release); }
     /** StatPasDef: while not blocking only this percent of the defense protects. */

@@ -192,14 +192,16 @@ public final class Fighter {
      * JRMCoreComTickH regeneration step (every 100 ticks). With an empty food bar Body drains 5 % instead. Body and
      * energy only regenerate in the base form and without the hurt pause.
      */
-    public void recover(boolean fed) {
+    public void recover(boolean fed) { recover(fed, false); }
+    /** {@code energyPaused}: Turbo pauses passive energy regeneration (JRMCoreComTickH, status effect 3). */
+    public void recover(boolean fed, boolean energyPaused) {
         Caps c = caps();
         if (!fed) { if (power.bodyLife() && body > 0) body = Math.max(0, body - (int) (c.body() * 0.05D)); return; }
         if (power.bodyLife() && body == 0) return;
         if (recoveryDelay == 0 && form.isEmpty()) {
             double bodyFactor = 1D + skillEffect(SkillDef.RECOVERY);
             body = addCapped(body, (int) (StatMath.recovery(c.body(), characterClass.recoveryBonus(0), 0, release()) * bodyFactor), c.body());
-            energy = addCapped(energy, StatMath.recovery(c.energy(), characterClass.recoveryBonus(1), 1, release()), c.energy());
+            if (!energyPaused) energy = addCapped(energy, StatMath.recovery(c.energy(), characterClass.recoveryBonus(1), 1, release()), c.energy());
         }
         stamina = addCapped(stamina, StatMath.recovery(c.stamina(), characterClass.recoveryBonus(2), 2, release()), c.stamina());
     }
@@ -234,6 +236,46 @@ public final class Fighter {
         int restored = (int) Math.ceil(c.energy() * meditation * 0.01D);
         stamina -= cost;
         energy = addCapped(energy, restored, c.energy());
+    }
+
+    // ---- Turbo (DBC TurboMode; Myriad Realm: Qi Surge) ------------------------------------------------------------
+    /** statInc(SPEED, 100) x 0.01 of the power type's speed statistic (race / class bonuses included), 0 without one. */
+    public float speed() {
+        int index = power.statIndex(StatDef.SPEED);
+        if (index < 0) return 0F;
+        return StatMath.statInc(power.stats().get(index), 100, statBonus(index), 0F) * 0.01F;
+    }
+    private int speedAttribute() {
+        StatDef def = power.stat(StatDef.SPEED);
+        return def == null ? 0 : attributes[def.attribute()];
+    }
+    /** The run factor at the current release (DashKi "add"); the motion per tick is factor x 0.25 blocks. */
+    public float runFactor(boolean turbo) {
+        return StatMath.runFactor(speed(), skillEffect(SkillDef.DASH), speedAttribute(), power.attributeLimit(), release(), turbo);
+    }
+    /** Energy per second while Turbo runs: (int)(1 + run factor). */
+    public int turboCost() { return StatMath.turboCost(runFactor(true)); }
+    /** The sheet's speed row (JRMCoreH.spdFrm at 100 % release with Turbo), in percent of the normal pace. */
+    public int turboSpeedPercent() {
+        float prc = 1F + ((float) skillEffect(SkillDef.DASH) + (float) (speedAttribute() / Math.max(1, power.attributeLimit())) + 0.5F);
+        return (int) (prc * speed() * 100F);
+    }
+    /** Why Turbo cannot be switched on now, or null (TurboMode: release above 0 % and energy left). */
+    public String turboBlocker() {
+        if (!power.turbo()) return "This power type has no Turbo.";
+        if (power.bodyLife() && body <= 0) return "Cannot use Turbo now.";
+        if (release() <= 0) return "Needs more than 0 % release.";
+        if (energy <= 0) return "Needs energy.";
+        return null;
+    }
+    /** DBCreleaseZeroTurnOffTurbo / TurboMode: Turbo stops at 0 % release, without energy or Body. */
+    public boolean turboMustStop() { return turboBlocker() != null; }
+    /** One second of Turbo: pays the run cost; false (and nothing paid) when the energy is not enough. */
+    public boolean spendTurboSecond() {
+        int cost = turboCost();
+        if (energy < cost) return false;
+        energy -= cost;
+        return true;
     }
 
     // ---- skills -------------------------------------------------------------------------------------------------

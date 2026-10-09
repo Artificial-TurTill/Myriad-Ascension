@@ -47,3 +47,22 @@ Problems met:
 - Maven Central answered 429 once while downloading JUnit; the retry passed.
 
 Validation: see `docs/VALIDATION.md` (0.1.0).
+
+## 2026-10-09: 0.1.1 key layout, Qi Surge (Turbo), X menu, no transformations yet
+
+- CI of 0.1.0 checked: both runs green (see VALIDATION.md).
+- User request: keys V menu, C (hold) raise release, Shift+C lower, G transform, H base form, R Qi Surge (Turbo),
+  X the X menu (still exists); transformations are not introduced yet.
+- Read DBC+ Turbo (`AbilityService.toggleTurbo`, `MovementService` DashKi, `DashClient`, docs/TURBO_SWOOP_0_6_4.md)
+  and alpha-16's `CultivationQuickMenuScreen` (git `bcdb5d1`).
+- Foundation: Turbo as a power-type feature (`turbo: true` + a `speed` statistic): toggle with DBC conditions,
+  JRMCoreH.spdFrm run factor, `(int)(1 + factor)` energy per second, charge twice as fast, energy regeneration
+  paused, client run motion without FOV change; skill effect `dash`. Generic X menu (`QuickMenu` registry +
+  `QuickMenuScreen`), six built-in cells. Key layout changed. Protocol 2 (PublicLook carries Turbo). Version 0.1.1.
+- Myriad Realm: `qi_speed` statistic, class speed bonuses, `turbo: true`, name "Qi Surge"; example transformation
+  removed, `transformations.arsn` left empty with instructions.
+- Decision: sprinting stays vanilla (DBC also ran with sprint); recorded as an adaptation.
+- Tests: +1 Foundation unit test, Myriad Realm example-form test replaced by "no transformations" + Qi Surge test,
+  +1 GameTest. One expectation in the new spdFrm test was wrong (3.25, not 2.2); corrected.
+- Vault: 0.1.1 note, keys / Turbo / X menu in Foundation Overview, Combat and Resources, Qi, Transformations, Power
+  Types, Stats, Skills, Extraction Map, Open Points, Idea Index.

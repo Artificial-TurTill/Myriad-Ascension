@@ -4,9 +4,9 @@ tags: [index]
 # Open Points
 
 ## Not verified yet
-- Graphical client: creation wizard, character sheet, Skills / Transformations tabs, HUD and keys were compiled but
-  not clicked through in a real client (the build host has no display). Server-side behaviour is covered by
-  GameTests.
+- Graphical client: creation wizard, character sheet, Skills / Transformations tabs, X menu, HUD, keys and the Qi
+  Surge run were compiled but not used in a real client (the build host has no display). Server-side behaviour is
+  covered by GameTests.
 - Multiplayer: public look sync to other players, two characters fighting each other.
 
 ## Foundation engine
@@ -22,6 +22,7 @@ tags: [index]
 - German / other translations.
 
 ## Myriad Realm
-- Qi Surge is an example: replace with the first designed transformation ([[Idea Index]]).
+- Transformations: none yet by decision; the first one comes from a designed idea ([[Idea Index]]).
+- Qi Surge visuals (aura while it runs) and a flight / swoop that it would also speed up (DBC Turbo did).
 - Decide which parked alpha-16 ideas come back (IDEA-001 … IDEA-010).
 - Balance: the Qi numbers are the JRMCore Ki defaults as a starting point.

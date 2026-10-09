@@ -65,14 +65,32 @@ class QiContentTest {
         f.learnSkill("myriad_realm:qi_condensation", false);
         assertEquals(41, f.caps().energy()); // 40 +1 % -> 40.4 -> 41
     }
-    @Test void exampleTransformationNeedsHalfRelease() {
+    @Test void noTransformationsYet() {
+        assertEquals(0, CONTENT.transformations().size());
         Fighter f = qi("martial_cultivator");
-        assertEquals(1, f.availableForms().size());
-        assertThrows(IllegalArgumentException.class, f::ascend);
+        f.setRelease(100);
+        var none = assertThrows(IllegalArgumentException.class, f::ascend);
+        assertTrue(none.getMessage().contains("No transformation"), none.getMessage());
+    }
+    @Test void qiSurgeIsDbcTurbo() {
+        assertTrue(CONTENT.powerType(MyriadRealm.QI).turbo());
+        Fighter f = qi("martial_cultivator");
+        assertEquals(1.0F, f.speed());
+        assertEquals(1.1F, qi("spirit_cultivator").speed(), 1e-6F);
+        assertEquals(0.9F, qi("body_cultivator").speed(), 1e-6F);
+        assertEquals(150, f.turboSpeedPercent());
+        assertTrue(f.turboBlocker().contains("release"), f.turboBlocker()); // a new character is at 0 %
         f.setRelease(50);
-        assertEquals("myriad_realm:qi_surge", f.ascend().id());
-        assertEquals(1, f.formAttribute(0)); // 1 x 1.25 stays 1 until trained
-        f.setAttribute(0, 100);
-        assertEquals(125, f.formAttribute(0));
+        assertEquals(null, f.turboBlocker());
+        assertEquals(1.25F, f.runFactor(true), 1e-6F);
+        assertEquals(2, f.turboCost());
+        assertTrue(f.spendTurboSecond());
+        assertEquals(38, f.energy());
+        f.recover(true, true);   // Qi Surge pauses passive Qi regeneration
+        assertEquals(38, f.energy());
+        f.recover(true, false);
+        assertTrue(f.energy() > 38);
+        f.setResources(f.body(), 1, f.stamina());
+        assertTrue(!f.spendTurboSecond() && f.energy() == 1, "Not enough Qi: nothing is paid");
     }
 }

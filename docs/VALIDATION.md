@@ -2,6 +2,18 @@
 
 Target: Minecraft 1.21.1, NeoForge 21.1.252, Java 21.
 
+## 0.1.1-dev (2026-10-09)
+
+- `./gradlew build`: **successful**; unit tests **Foundation 20 / 20** (StatMathTest 7 incl. the JRMCoreH.spdFrm run
+  factor with DBC Human values, ContentTest 4, FighterTest 9) and **Myriad Realm 6 / 6** (QiContentTest incl. Qi
+  Surge numbers, cost, paused regeneration, and no transformations). Zero failures.
+- `./gradlew :myriad-realm:runGameTestServer -PgameTests`: **all 6 required GameTests passed** (new: Qi Surge refused
+  at 0 % release, costs `(int)(1 + run factor)` Qi per second through the real tick handler, stops at 0 % release).
+  Content log: `1 races, 2 power types, 4 classes, 3 skills, 0 transformations`.
+
+Not run: graphical client (new keys, X menu, Turbo motion, HUD label), multiplayer. GitHub CI of the 0.1.1 commit:
+see its workflow run.
+
 ## 0.1.0-dev (2026-10-09)
 
 Run on the build host (Linux, OpenJDK 21.0.12):
@@ -24,7 +36,9 @@ Not run:
 - No graphical client session: the screens, HUD, key handling and client payload handling compiled but were not
   exercised on screen (the build host has no display).
 - No multiplayer session.
-- GitHub CI for this commit: see the workflow run of the pushed commit (not yet observed when this was written).
+- GitHub CI (observed afterwards): runs [37916494971](https://github.com/Artificial-TurTill/Myriad-Ascension/actions/runs/37916494971)
+  (`b54bd4f`) and [37916507882](https://github.com/Artificial-TurTill/Myriad-Ascension/actions/runs/37916507882) (`bf527e6`)
+  completed **successfully** (build, unit tests, GameTests, artifact upload).
 
 Reproduce:
 ```sh

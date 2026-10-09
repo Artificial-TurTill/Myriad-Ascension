@@ -19,6 +19,7 @@ values, attribute limit, classes and whether Body replaces the hearts.
 | `capacity_attribute` | attribute reserved by skills (DBC Mind), −1 = none |
 | `tp_attribute` | attribute that raises TP per hit (DBC Mind), −1 = none |
 | `passive_defense` | % of released Defense that protects while not blocking (JRMCore StatPasDef 20) |
+| `turbo` | has DBC Turbo (R key); needs an energy, `release` and a `speed` statistic. Its name comes from the lang key `turbo.<ns>.<path>` (Qi: "Qi Surge") |
 | `order` | position in the creation wizard |
 
 ## Natural (Foundation, built in)

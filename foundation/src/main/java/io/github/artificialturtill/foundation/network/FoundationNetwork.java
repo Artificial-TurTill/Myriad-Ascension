@@ -30,7 +30,7 @@ public final class FoundationNetwork {
             if (in != null) properties.load(in);
         } catch (IOException ignored) { }
         String protocol = properties.getProperty("protocol", "1");
-        return protocol.startsWith("${") ? "1" : protocol;
+        return protocol.startsWith("${") ? "dev" : protocol;
     }
     private FoundationNetwork() {}
 }

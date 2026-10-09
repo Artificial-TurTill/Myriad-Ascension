@@ -82,6 +82,8 @@ public final class ContentLoader {
             if (p.hasEnergy() && p.stat(StatDef.ENERGY_POOL) == null) errors.add("power type " + p.id() + ": an energy needs a statistic with role energy_pool");
             for (int v : p.starting()) if (v < 1 || v > p.attributeLimit()) errors.add("power type " + p.id() + ": starting attributes must be 1.." + p.attributeLimit());
             if (classes.values().stream().noneMatch(c -> c.powerType().equals(p.id()))) errors.add("power type " + p.id() + " has no class");
+            if (p.turbo() && (!p.hasEnergy() || !p.release() || p.stat(StatDef.SPEED) == null))
+                errors.add("power type " + p.id() + ": turbo needs an energy, a power release and a statistic with role speed");
         }
         for (CharacterClass c : classes.values()) {
             PowerType p = powerTypes.get(c.powerType());
@@ -100,7 +102,7 @@ public final class ContentLoader {
         for (SkillDef s : skills.values()) {
             if (!s.powerType().isEmpty() && !powerTypes.containsKey(s.powerType())) errors.add("skill " + s.id() + ": unknown power type " + s.powerType());
             if (!s.learn().equals(SkillDef.LEARN_SHEET) && !s.learn().equals(SkillDef.LEARN_TEACHER)) errors.add("skill " + s.id() + ": learn must be sheet or teacher");
-            if (!List.of("", SkillDef.ENERGY_POOL, SkillDef.MEDITATION, SkillDef.ENDURANCE, SkillDef.RECOVERY).contains(s.effect()))
+            if (!List.of("", SkillDef.ENERGY_POOL, SkillDef.MEDITATION, SkillDef.ENDURANCE, SkillDef.RECOVERY, SkillDef.DASH).contains(s.effect()))
                 errors.add("skill " + s.id() + ": unknown effect " + s.effect());
         }
         for (Transformation t : transformations.values()) {
@@ -131,7 +133,7 @@ public final class ContentLoader {
                 (Boolean) s.get("released"), (String) s.get("role")));
         return new PowerType(str(o, "id"), str(o, "energy"), str(o, "life").equals("body"), List.copyOf(attributes), List.copyOf(stats),
             ints(o.get("starting")), i(o, "attribute_limit"), (Boolean) o.get("release"), i(o, "capacity_attribute"), i(o, "tp_attribute"),
-            i(o, "passive_defense"), i(o, "order"));
+            i(o, "passive_defense"), (Boolean) o.get("turbo"), i(o, "order"));
     }
     private static CharacterClass characterClass(Runtime.ArsnObject o) {
         return new CharacterClass(str(o, "id"), str(o, "power_type"), ints(o.get("stat_bonus")), ints(o.get("recovery_bonus")), i(o, "order"));

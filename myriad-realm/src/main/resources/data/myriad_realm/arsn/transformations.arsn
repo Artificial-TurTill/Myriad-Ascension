@@ -1,17 +1,4 @@
-# Myriad Realm transformations. EXAMPLE ONLY: "Qi Surge" shows the format and lets the system be tested in game.
-# Replace or delete it when the first real Myriad Realm transformation is designed (vault: Ideas/).
+# Myriad Realm transformations: none yet. Transformations are introduced later (the engine, the G / H keys and the
+# Transformations tab are ready). Add the first designed one here, see vault/Process/Adding an Idea.md.
 #
-# multipliers order: STR, DEX, CON, WIL, MND, SPI (applied to the released statistics Melee, Defense, Qi Power).
-Transformation qi_surge {
-  id: "myriad_realm:qi_surge",
-  power_type: "myriad_realm:qi",
-  multipliers: [1.25, 1.25, 1.0, 1.25, 1.0, 1.0],
-  energy_drain: 2.0,
-  stamina_drain: 0.0,
-  min_release: 50,
-  mastery_gain: 0.05,
-  mastery_max: 100.0,
-  mastery_relief: 0.5,
-  color: "#7FE3FF",
-  order: 0
-}
+# Fields: vault/Foundation/Transformations.md. multipliers order: STR, DEX, CON, WIL, MND, SPI.
