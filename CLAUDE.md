@@ -11,6 +11,8 @@ Two mods in one Gradle build: `foundation/` (Ascension Foundation, the engine ex
 - **Vault process** (`vault/`, Obsidian), same as Dragonblock C+:
   - user bug report → `vault/Bugs/BUG-0xx.md` from `Templates/Bug.md` + row in `Bugs/Bug Index.md`;
   - user idea → `vault/Ideas/IDEA-0xx <Name>.md` from the matching `Templates/Idea - *.md` + row in `Ideas/Idea Index.md`;
+  - user rambling (unsorted thoughts) → `vault/Myriad Realm/Rambling/YYYY-MM-DD <Thema>.md` from `Templates/Rambling.md`
+    + row in `Rambling/Rambling.md`; rambling is not an order, nothing is implemented until the user asks;
   - every release → `vault/Versions/<version>.md` from `Templates/Version.md` + row in `Versions/Version History.md`,
     update `Home.md` (current version) and `Open Points.md`;
   - reference notes in `vault/Foundation/` and `vault/Myriad Realm/` must match the code (fields, formulas, keys).

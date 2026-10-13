@@ -18,6 +18,9 @@ Mortal → Tempered Body (9 stages) → Initial Element → … up to multiverse
 ## How it could fit now
 A Myriad Realm system on top of Qi: a realm could gate transformations (field `previous`/`skill` today, a realm requirement later = engine need), raise attribute limits, and unlock skills. Engine need: a generic "progression track" in the Foundation that add-ons can define (realm list + requirements).
 
+## Notes
+- Rambling 2026-10-13: minor ranks inside a realm and major advancement Body Tempering → Initial Element (unlocks WIL and SPI), see [[2026-10-13 Stats, Release und Realm Advancement]].
+
 ## Open questions
 - Keep, change or drop?
 

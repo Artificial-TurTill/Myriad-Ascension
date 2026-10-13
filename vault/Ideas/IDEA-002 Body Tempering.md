@@ -18,6 +18,9 @@ Tempered Body stages 1-9: physical training (1-3), energy sensing / perception (
 ## How it could fit now
 Maps onto Qi attributes (STR / DEX / CON training) and the charge key. Could become the first cultivation realm (IDEA-001).
 
+## Notes
+- Rambling 2026-10-13: Body Tempering uses STR, DEX, CON and MND only, see [[2026-10-13 Stats, Release und Realm Advancement]].
+
 ## Open questions
 - Keep, change or drop?
 

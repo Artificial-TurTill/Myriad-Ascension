@@ -23,7 +23,7 @@ Install both jars; Myriad Realm refuses to load without the Foundation.
 [[Skills]] · [[Transformations]] · [[Combat and Resources]] · [[Content Files]] · [[DBC+ Extraction Map]]
 
 ## Myriad Realm (add-on)
-[[Myriad Realm Overview]] · [[Qi]]
+[[Myriad Realm Overview]] · [[Qi]] · [[Rambling]] (design thoughts, not yet orders)
 
 ## Process
 [[Workflow]] · [[Adding an Idea]] · History: [[Alpha-16 Archive]]

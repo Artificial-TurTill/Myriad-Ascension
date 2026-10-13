@@ -89,3 +89,13 @@ Validation: see `docs/VALIDATION.md` (0.1.0).
   (python-xlib input + screenshots) and checked creation, hairstyle manager, sheet, HUD, C / R / X and Qi Surge speed
   in the running game (details in VALIDATION.md). Four layout problems were found that way and fixed.
 - Tests: +4 unit tests (30), GameTests unchanged (6), all green.
+
+## 2026-10-13: rambling note on stats, release and realm advancement
+
+- User rambling (German): release-based percentage scaling of stats (from 5 %), only CON effective at 0 %, mobility
+  only through Qi Surge (fine for the start), Body Tempering limited to STR / DEX / CON plus MND, minor and major realm
+  advancement (Body Tempering -> Initial Element unlocks WIL and SPI), Martial Peak inspiration; Myriad Realm is
+  mostly self-developed (little to port).
+- Recorded only, no code change: new `vault/Myriad Realm/Rambling/` (index, note with the user's points, the current
+  code state per stat, open design questions, possible building blocks), template `Templates/Rambling.md`, Workflow
+  and CLAUDE.md rule "rambling is not an order", links from Home, Myriad Realm Overview, IDEA-001 and IDEA-002.

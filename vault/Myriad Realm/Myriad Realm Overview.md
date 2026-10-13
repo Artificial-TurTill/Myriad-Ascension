@@ -24,4 +24,5 @@ techniques, sects, world Qi, items …) lives in this mod and talks to the Found
 
 ## Next
 Ideas are collected in the [[Idea Index]]; the parked alpha-16 designs (realms, Body Tempering, affinities, …) wait
-there for a decision.
+there for a decision. Unsorted design thoughts go to [[Rambling]] first; the current one is about release scaling,
+stat unlocks per realm and minor / major realm advancement ([[2026-10-13 Stats, Release und Realm Advancement]]).
